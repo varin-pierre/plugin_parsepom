@@ -1,0 +1,44 @@
+<#include "parsepom_tabs.html" />
+<@tabs tab="site" />
+
+<div class="row" >
+    <div class="col-sm-12">
+
+    <form class="form-horizontal" method="post" action="jsp/site/Portal.jsp?page=site">
+        <fieldset>
+            <legend>#i18n{parsepom.modify_site.tableLabel}</legend>
+
+            <@messages errors=errors />
+            <input type="hidden" id="id" name="id" value="${site.id}"/>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name" >#i18n{parsepom.modify_site.labelName} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="name" name="name"  maxlength="50" value="${site.name}" tabindex="1" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="nbdependencies" >#i18n{parsepom.modify_site.labelNbDependencies} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="nbdependencies" name="nbdependencies"  value="${site.nbDependencies}" tabindex="1" />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button name="action_modifySite" class="btn btn-primary" type="submit" tabindex="2" >
+                        #i18n{portal.util.labelModify}
+                    </button>
+                    <button name="view_manageSites" class="btn" type="submit" >
+                        #i18n{portal.util.labelCancel}
+                    </button>	
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+    </div>  
+
+</div>
+
+  

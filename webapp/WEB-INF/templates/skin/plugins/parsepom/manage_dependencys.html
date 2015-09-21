@@ -1,0 +1,64 @@
+<#include "parsepom_tabs.html" />
+<@tabs tab="dependency" />
+
+<div class="row" >
+    <div class="col-sm-12">
+
+        <@messages infos=infos />
+
+        <form method="post"  action="jsp/site/Portal.jsp?page=dependency">
+            <button name="view_createDependency" class="btn btn-primary pull-right" type="submit">
+                <span class="glyphicon glyphicon-plus"></span>
+                #i18n{parsepom.manage_dependencys.buttonAdd}
+            </button>
+        </form>
+
+    <h4>#i18n{parsepom.manage_dependencys.tableLabel}</h4>
+        
+    <table class="table table-condensed table-striped">
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <th>#i18n{parsepom.manage_dependencys.columnGroupId}</th>
+            <th>#i18n{parsepom.manage_dependencys.columnArtifactId}</th>
+            <th>#i18n{parsepom.manage_dependencys.columnVersion}</th>
+            <th>#i18n{parsepom.manage_dependencys.columnType}</th>
+            <th>#i18n{parsepom.manage_dependencys.columnSId}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+            <#list dependency_list as dependency >
+        <tr>
+            <input type="hidden" id="id" name="id" />
+            <td>
+                ${dependency.groupId}
+            </td>    
+            <td>
+                ${dependency.artifactId}
+            </td>    
+            <td>
+                ${dependency.version}
+            </td>    
+            <td>
+                ${dependency.type}
+            </td>    
+            <td>
+                ${dependency.sId}
+            </td>    
+        <td>
+            <a href="jsp/site/Portal.jsp?page=dependency&view=modifyDependency&id=${dependency.id}"
+               class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+
+            <a href="jsp/site/Portal.jsp?page=dependency&action=confirmRemoveDependency&id=${dependency.id}"
+               class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </td>
+        </tr>
+        </#list>
+    </table>
+    
+    </div>
+</div>
+
+  

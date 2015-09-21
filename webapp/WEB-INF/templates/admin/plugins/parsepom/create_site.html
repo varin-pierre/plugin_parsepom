@@ -1,0 +1,14 @@
+<#include "manageparsepom_tabs.html" />
+<@tabs tab="site" />
+
+<@rowBoxHeader i18nTitleKey="parsepom.create_site.pageTitle">
+    <form class="form-horizontal" method="post" name="create_site" action="jsp/admin/plugins/parsepom/ManageSites.jsp">
+        <@messages errors=errors />
+        <input type="hidden" id="id" name="id"/>
+        
+        <@fieldInputText i18nLabelKey="parsepom.create_site.labelName" inputName="name" mandatory=true value="${site.name!''}" i18nHelpBlockKey="parsepom.create_site.labelName.help" />
+        <@fieldInputText i18nLabelKey="parsepom.create_site.labelNbDependencies" inputName="nbdependencies"  value="${site.nbDependencies!''}" i18nHelpBlockKey="parsepom.create_site.labelNbDependencies.help" />
+        <@actionButtons button1Name="action_createSite" button2Name="view_manageSites"/>
+    </form>
+</@rowBoxHeader>
+

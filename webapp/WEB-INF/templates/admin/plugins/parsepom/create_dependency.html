@@ -1,0 +1,17 @@
+<#include "manageparsepom_tabs.html" />
+<@tabs tab="dependency" />
+
+<@rowBoxHeader i18nTitleKey="parsepom.create_dependency.pageTitle">
+    <form class="form-horizontal" method="post" name="create_dependency" action="jsp/admin/plugins/parsepom/ManageDependencys.jsp">
+        <@messages errors=errors />
+        <input type="hidden" id="id" name="id"/>
+        
+        <@fieldInputText i18nLabelKey="parsepom.create_dependency.labelGroupId" inputName="groupid" mandatory=true value="${dependency.groupId!''}" i18nHelpBlockKey="parsepom.create_dependency.labelGroupId.help" />
+        <@fieldInputText i18nLabelKey="parsepom.create_dependency.labelArtifactId" inputName="artifactid" mandatory=true value="${dependency.artifactId!''}" i18nHelpBlockKey="parsepom.create_dependency.labelArtifactId.help" />
+        <@fieldInputText i18nLabelKey="parsepom.create_dependency.labelVersion" inputName="version" mandatory=true value="${dependency.version!''}" i18nHelpBlockKey="parsepom.create_dependency.labelVersion.help" />
+        <@fieldInputText i18nLabelKey="parsepom.create_dependency.labelType" inputName="type" mandatory=true value="${dependency.type!''}" i18nHelpBlockKey="parsepom.create_dependency.labelType.help" />
+        <@fieldInputText i18nLabelKey="parsepom.create_dependency.labelSId" inputName="sid" mandatory=true value="${dependency.sId!''}" i18nHelpBlockKey="parsepom.create_dependency.labelSId.help" />
+        <@actionButtons button1Name="action_createDependency" button2Name="view_manageDependencys"/>
+    </form>
+</@rowBoxHeader>
+

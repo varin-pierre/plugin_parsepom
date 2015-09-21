@@ -1,0 +1,63 @@
+<#include "parsepom_tabs.html" />
+<@tabs tab="dependency" />
+
+<div class="row" >
+    <div class="col-sm-12">
+
+    <form class="form-horizontal" role="form" method="post" action="jsp/site/Portal.jsp?page=dependency">
+        <fieldset>
+            <legend>#i18n{parsepom.create_dependency.tableLabel}</legend>
+
+            <@messages errors=errors />
+            <input type="hidden" id="id" name="id"/>  
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="groupid" >#i18n{parsepom.create_dependency.labelGroupId} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="groupid" name="groupid" value="${dependency.groupId!''}"  maxlength="50" tabindex="0" />
+                    <span class="help-block">#i18n{parsepom.create_dependency.labelGroupId.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="artifactid" >#i18n{parsepom.create_dependency.labelArtifactId} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="artifactid" name="artifactid" value="${dependency.artifactId!''}"  maxlength="50" tabindex="1" />
+                    <span class="help-block">#i18n{parsepom.create_dependency.labelArtifactId.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="version" >#i18n{parsepom.create_dependency.labelVersion} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="version" name="version" value="${dependency.version!''}"  maxlength="50" tabindex="2" />
+                    <span class="help-block">#i18n{parsepom.create_dependency.labelVersion.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="type" >#i18n{parsepom.create_dependency.labelType} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="type" name="type" value="${dependency.type!''}"  maxlength="50" tabindex="3" />
+                    <span class="help-block">#i18n{parsepom.create_dependency.labelType.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="sid" >#i18n{parsepom.create_dependency.labelSId} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="sid" name="sid" value="${dependency.sId!''}"  tabindex="4" />
+                    <span class="help-block">#i18n{parsepom.create_dependency.labelSId.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button name="action_createDependency" class="btn btn-primary" type="submit" tabindex="5">
+                        #i18n{portal.util.labelCreate}
+                    </button>
+                    <button name="view_manageDependencys" class="btn" type="submit" >
+                        #i18n{portal.util.labelCancel}
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    </div>
+</div>
+
+  
