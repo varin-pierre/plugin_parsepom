@@ -1,0 +1,42 @@
+<#include "parsepom_tabs.html" />
+<@tabs tab="site" />
+
+<div class="row" >
+    <div class="col-sm-12">
+
+    <form class="form-horizontal" role="form" method="post" action="jsp/site/Portal.jsp?page=site">
+        <fieldset>
+            <legend>#i18n{parsepom.create_site.tableLabel}</legend>
+
+            <@messages errors=errors />
+            <input type="hidden" id="id" name="id"/>  
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="name" >#i18n{parsepom.create_site.labelName} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="name" name="name" value="${site.name!''}"  maxlength="255" tabindex="0" />
+                    <span class="help-block">#i18n{parsepom.create_site.labelName.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="nb_dependencies" >#i18n{parsepom.create_site.labelNbDependencies} * :</label>
+                <div class="col-sm-9">
+                    <input class="form-control" type="text" id="nb_dependencies" name="nb_dependencies" value="${site.nbDependencies!''}"  tabindex="1" />
+                    <span class="help-block">#i18n{parsepom.create_site.labelNbDependencies.help}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button name="action_createSite" class="btn btn-primary" type="submit" tabindex="2">
+                        #i18n{portal.util.labelCreate}
+                    </button>
+                    <button name="view_manageSites" class="btn" type="submit" >
+                        #i18n{portal.util.labelCancel}
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    </div>
+</div>
+
+  

@@ -1,0 +1,52 @@
+<#include "parsepom_tabs.html" />
+<@tabs tab="site" />
+
+<div class="row" >
+    <div class="col-sm-12">
+
+        <@messages infos=infos />
+
+        <form method="post"  action="jsp/site/Portal.jsp?page=site">
+            <button name="view_createSite" class="btn btn-primary pull-right" type="submit">
+                <span class="glyphicon glyphicon-plus"></span>
+                #i18n{parsepom.manage_sites.buttonAdd}
+            </button>
+        </form>
+
+    <h4>#i18n{parsepom.manage_sites.tableLabel}</h4>
+        
+    <table class="table table-condensed table-striped">
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <th>#i18n{parsepom.manage_sites.columnName}</th>
+            <th>#i18n{parsepom.manage_sites.columnNbDependencies}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+            <#list site_list as site >
+        <tr>
+            <input type="hidden" id="id" name="id" />
+            <td>
+                ${site.name}
+            </td>    
+            <td>
+                ${site.nbDependencies}
+            </td>    
+        <td>
+            <a href="jsp/site/Portal.jsp?page=site&view=modifySite&id=${site.id}"
+               class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+
+            <a href="jsp/site/Portal.jsp?page=site&action=confirmRemoveSite&id=${site.id}"
+               class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </td>
+        </tr>
+        </#list>
+    </table>
+    
+    </div>
+</div>
+
+  

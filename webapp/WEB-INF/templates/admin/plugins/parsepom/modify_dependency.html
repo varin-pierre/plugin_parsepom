@@ -1,0 +1,17 @@
+<#include "manageparsepom_tabs.html" />
+<@tabs tab="dependency" />
+
+<@rowBoxHeader i18nTitleKey="parsepom.modify_dependency.pageTitle">
+    <form class="form-horizontal" method="post" name="modify_dependency" action="jsp/admin/plugins/parsepom/ManageDependencys.jsp">
+        <@messages errors=errors />
+        <input type="hidden" id="id" name="id" value="${dependency.id}"/>
+        
+        <@fieldInputText i18nLabelKey="parsepom.modify_dependency.labelGroupId" inputName="group_id" mandatory=true value="${dependency.groupId}" i18nHelpBlockKey="parsepom.modify_dependency.labelGroupId.help" />
+        <@fieldInputText i18nLabelKey="parsepom.modify_dependency.labelArtifactId" inputName="artifact_id" mandatory=true value="${dependency.artifactId}" i18nHelpBlockKey="parsepom.modify_dependency.labelArtifactId.help" />
+        <@fieldInputText i18nLabelKey="parsepom.modify_dependency.labelVersion" inputName="version" mandatory=true value="${dependency.version}" i18nHelpBlockKey="parsepom.modify_dependency.labelVersion.help" />
+        <@fieldInputText i18nLabelKey="parsepom.modify_dependency.labelType" inputName="type" mandatory=true value="${dependency.type}" i18nHelpBlockKey="parsepom.modify_dependency.labelType.help" />
+        <@fieldInputText i18nLabelKey="parsepom.modify_dependency.labelSiteId" inputName="site_id" mandatory=true value="${dependency.siteId}" i18nHelpBlockKey="parsepom.modify_dependency.labelSiteId.help" />
+        <@actionButtons button1Name="action_modifyDependency" button2Name="view_manageDependencys"/>
+    </form>
+</@rowBoxHeader>
+
