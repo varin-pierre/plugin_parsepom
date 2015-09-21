@@ -12,6 +12,7 @@ RemoteSystemsTempFiles/
 local.properties
 .settings/
 .loadpath
+target/
 
 # Eclipse Core
 .project
