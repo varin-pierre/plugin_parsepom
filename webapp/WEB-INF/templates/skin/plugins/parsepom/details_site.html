@@ -1,0 +1,14 @@
+<div class="row">
+  	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  		<div class="panel panel-primary">
+  			<div class="panel-heading">
+     			<h3 class="panel-title">${site.name}</h3>
+   			</div>
+ 	 		<ul class="list-group">
+ 	 			<#list depend_list_by_id as depend >
+    				<li class="list-group-item">Dépendance : ${depend.artifactId}</li>
+    			</#list>
+  			</ul>
+  		</div>
+  	</div>
+</div>

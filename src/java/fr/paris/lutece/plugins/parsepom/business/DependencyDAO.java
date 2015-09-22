@@ -55,6 +55,7 @@ public final class DependencyDAO implements IDependencyDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_dependency SET id_dependency = ?, group_id = ?, artifact_id = ?, version = ?, type = ?, site_id = ? WHERE id_dependency = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_dependency FROM parsepom_dependency";
+    private static final String SQL_QUERY_SELECTALL_BY_SITE_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE site_id = ?";
 
     /**
      * Generates a new primary key
@@ -173,11 +174,11 @@ public final class DependencyDAO implements IDependencyDAO
             Dependency dependency = new Dependency(  );
             
             dependency.setId( daoUtil.getInt( 1 ) );
-                dependency.setGroupId( daoUtil.getString( 2 ) );
-                dependency.setArtifactId( daoUtil.getString( 3 ) );
-                dependency.setVersion( daoUtil.getString( 4 ) );
-                dependency.setType( daoUtil.getString( 5 ) );
-                dependency.setSiteId( daoUtil.getInt( 6 ) );
+            dependency.setGroupId( daoUtil.getString( 2 ) );
+            dependency.setArtifactId( daoUtil.getString( 3 ) );
+            dependency.setVersion( daoUtil.getString( 4 ) );
+            dependency.setType( daoUtil.getString( 5 ) );
+            dependency.setSiteId( daoUtil.getInt( 6 ) );
 
             dependencyList.add( dependency );
         }
@@ -203,5 +204,34 @@ public final class DependencyDAO implements IDependencyDAO
 
             daoUtil.free( );
             return dependencyList;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Collection<Dependency> selectDependencysListBySiteId( Plugin plugin, int sId )
+    {
+        Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_SITE_ID, plugin );
+        daoUtil.setInt( 1, sId );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            Dependency dependency = new Dependency(  );
+            
+            dependency.setId( daoUtil.getInt( 1 ) );
+            dependency.setGroupId( daoUtil.getString( 2 ) );
+            dependency.setArtifactId( daoUtil.getString( 3 ) );
+            dependency.setVersion( daoUtil.getString( 4 ) );
+            dependency.setType( daoUtil.getString( 5 ) );
+            dependency.setSiteId( daoUtil.getInt( 6 ) );
+
+            dependencyList.add( dependency );
+        }
+
+        daoUtil.free( );
+        return dependencyList;
     }
 }

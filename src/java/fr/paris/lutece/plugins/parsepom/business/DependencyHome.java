@@ -120,5 +120,15 @@ public final class DependencyHome
     {
         return _dao.selectIdDependencysList( _plugin );
     }
+    
+    /**
+     * Load the data of all the dependency objects by site and returns them in form of a collection
+     * @param sId The identifier of the site 
+     * @return the collection which contains the data of all the dependency objects
+     */
+    public static Collection<Dependency> getDependencysListBySiteId( int sId )
+    {
+        return _dao.selectDependencysListBySiteId( _plugin, sId );
+    }
 }
 

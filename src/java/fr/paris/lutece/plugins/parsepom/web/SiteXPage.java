@@ -32,7 +32,8 @@
  * License 1.0
  */
 package fr.paris.lutece.plugins.parsepom.web;
- 
+
+import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -58,6 +59,7 @@ public class SiteXPage extends MVCApplication
     private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_CREATE_SITE="/skin/plugins/parsepom/create_site.html";
     private static final String TEMPLATE_MODIFY_SITE="/skin/plugins/parsepom/modify_site.html";
+    private static final String TEMPLATE_DETAILS_SITE="/skin/plugins/parsepom/details_site.html";
     
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
@@ -70,6 +72,7 @@ public class SiteXPage extends MVCApplication
     // Markers
     private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_SITE = "site";
+    private static final String MARK_DEPEND_LIST_BY_ID = "depend_list_by_id";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
@@ -78,6 +81,7 @@ public class SiteXPage extends MVCApplication
     private static final String VIEW_MANAGE_SITES = "manageSites";
     private static final String VIEW_CREATE_SITE = "createSite";
     private static final String VIEW_MODIFY_SITE = "modifySite";
+    private static final String VIEW_DETAILS_SITE = "detailsSite";
 
     // Actions
     private static final String ACTION_CREATE_SITE = "createSite";
@@ -222,5 +226,28 @@ public class SiteXPage extends MVCApplication
         addInfo( INFO_SITE_UPDATED, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
+    }
+    
+    /**
+     * Returns the form to update info about a site
+     *
+     * @param request The Http request
+     * @return The HTML form to update info
+     */
+    @View( VIEW_DETAILS_SITE )
+    public XPage getDetailsSite( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
+
+        if ( _site == null  || ( _site.getId( ) != nId ))
+        {
+            _site = SiteHome.findByPrimaryKey( nId );
+        }
+
+        Map<String, Object> model = getModel(  );
+        model.put( MARK_SITE, _site );
+        model.put( MARK_DEPEND_LIST_BY_ID, DependencyHome.getDependencysListBySiteId( nId ) );
+        
+        return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }
 }

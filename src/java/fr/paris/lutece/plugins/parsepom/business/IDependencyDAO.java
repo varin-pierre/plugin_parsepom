@@ -90,5 +90,13 @@ public interface IDependencyDAO
      * @return The collection which contains the id of all the dependency objects
      */
     Collection<Integer> selectIdDependencysList( Plugin plugin );
+    
+    /**
+     * Load the data of all the dependency objects by site and returns them as a collection
+     * @param sId The identifier of the site
+     * @param plugin the Plugin
+     * @return The collection which contains the data of all the dependency objects by site
+     */
+    Collection<Dependency> selectDependencysListBySiteId( Plugin plugin, int sId );
 }
 

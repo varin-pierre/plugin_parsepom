@@ -42,6 +42,16 @@
         </#list>
     </table>
     
+    <div class="dropdown">
+  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece site list
+  		<span class="caret"></span></button>
+  		<ul class="dropdown-menu">
+  		<#list site_list as site >
+    		<li><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.name}</a></li>	
+    	</#list>
+  		</ul>
+	</div>
+    
     </div>
 </div>
 
