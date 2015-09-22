@@ -1,4 +1,4 @@
-*.pydevproject
+*.pydev project
 .recommenders
 .metadata
 .gradle
@@ -12,10 +12,8 @@ RemoteSystemsTempFiles/
 local.properties
 .settings/
 .loadpath
+build/
 target/
-.classpath
-.project
-
 
 # Eclipse Core
 .project
