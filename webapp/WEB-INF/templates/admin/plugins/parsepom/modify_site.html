@@ -7,7 +7,6 @@
         <input type="hidden" id="id" name="id" value="${site.id}"/>
         
         <@fieldInputText i18nLabelKey="parsepom.modify_site.labelName" inputName="name" mandatory=true value="${site.name}" i18nHelpBlockKey="parsepom.modify_site.labelName.help" />
-        <@fieldInputText i18nLabelKey="parsepom.modify_site.labelNbDependencies" inputName="nb_dependencies" mandatory=true value="${site.nbDependencies}" i18nHelpBlockKey="parsepom.modify_site.labelNbDependencies.help" />
         <@actionButtons button1Name="action_modifySite" button2Name="view_manageSites"/>
     </form>
 </@rowBoxHeader>

@@ -21,7 +21,6 @@
         <tr>
             <input type="hidden" id="id" name="id"/>
             <th>#i18n{parsepom.manage_sites.columnName}</th>
-            <th>#i18n{parsepom.manage_sites.columnNbDependencies}</th>
             <th>#i18n{portal.util.labelActions}</th>
         </tr>
         <@tableHeadBodySeparator />
@@ -30,9 +29,6 @@
             <input type="hidden" id="id" name="id"/>
             <td>
                 ${site.name}
-            </td>
-            <td>
-                ${site.nbDependencies}
             </td>
         <td>
             <a href="jsp/admin/plugins/parsepom/ManageSites.jsp?view=modifySite&id=${site.id}"

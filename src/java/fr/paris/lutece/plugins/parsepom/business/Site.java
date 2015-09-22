@@ -48,8 +48,6 @@ public class Site
     @NotEmpty( message = "#i18n{parsepom.validation.site.Name.notEmpty}" )
     @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
-    
-    private int _nNbDependencies;
 
     /**
      * Returns the Id
@@ -85,22 +83,5 @@ public class Site
     public void setName( String strName )
     {
         _strName = strName;
-    }
-    /**
-     * Returns the NbDependencies
-     * @return The NbDependencies
-     */
-    public int getNbDependencies( )
-    {
-        return _nNbDependencies;
-    }
-
-    /**
-     * Sets the NbDependencies
-     * @param nNbDependencies The NbDependencies
-     */ 
-    public void setNbDependencies( int nNbDependencies )
-    {
-        _nNbDependencies = nNbDependencies;
     }
 }

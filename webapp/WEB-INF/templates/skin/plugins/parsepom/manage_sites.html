@@ -19,7 +19,6 @@
         <tr>
             <input type="hidden" id="id" name="id"/>
             <th>#i18n{parsepom.manage_sites.columnName}</th>
-            <th>#i18n{parsepom.manage_sites.columnNbDependencies}</th>
             <th>#i18n{portal.util.labelActions}</th>
         </tr>
             <#list site_list as site >
@@ -27,10 +26,7 @@
             <input type="hidden" id="id" name="id" />
             <td>
                 ${site.name}
-            </td>    
-            <td>
-                ${site.nbDependencies}
-            </td>    
+            </td>   
         <td>
             <a href="jsp/site/Portal.jsp?page=site&view=modifySite&id=${site.id}"
                class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">

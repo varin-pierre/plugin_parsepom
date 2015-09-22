@@ -49,11 +49,11 @@ public final class SiteDAO implements ISiteDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_site ) FROM parsepom_site";
-    private static final String SQL_QUERY_SELECT = "SELECT id_site, name, nb_dependencies FROM parsepom_site WHERE id_site = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, name, nb_dependencies ) VALUES ( ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_site, name FROM parsepom_site WHERE id_site = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, name ) VALUES ( ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM parsepom_site WHERE id_site = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, name = ?, nb_dependencies = ? WHERE id_site = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_site, name, nb_dependencies FROM parsepom_site";
+    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, name = ? WHERE id_site = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_site, name FROM parsepom_site";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
 
     /**
@@ -90,7 +90,6 @@ public final class SiteDAO implements ISiteDAO
 
         daoUtil.setInt( 1, site.getId( ) );
         daoUtil.setString( 2, site.getName( ) );
-        daoUtil.setInt( 3, site.getNbDependencies( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -113,7 +112,6 @@ public final class SiteDAO implements ISiteDAO
             site = new Site();
             site.setId( daoUtil.getInt( 1 ) );
             site.setName( daoUtil.getString( 2 ) );
-            site.setNbDependencies( daoUtil.getInt( 3 ) );
         }
 
         daoUtil.free( );
@@ -142,8 +140,7 @@ public final class SiteDAO implements ISiteDAO
         
         daoUtil.setInt( 1, site.getId( ) );
         daoUtil.setString( 2, site.getName( ) );
-        daoUtil.setInt( 3, site.getNbDependencies( ) );
-        daoUtil.setInt( 4, site.getId( ) );
+        daoUtil.setInt( 3, site.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -164,8 +161,7 @@ public final class SiteDAO implements ISiteDAO
             Site site = new Site(  );
             
             site.setId( daoUtil.getInt( 1 ) );
-                site.setName( daoUtil.getString( 2 ) );
-                site.setNbDependencies( daoUtil.getInt( 3 ) );
+            site.setName( daoUtil.getString( 2 ) );
 
             siteList.add( site );
         }

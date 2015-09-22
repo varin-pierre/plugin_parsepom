@@ -69,7 +69,6 @@ public class SiteRest
     
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
-    private static final String KEY_NB_DEPENDENCIES = "nb_dependencies";
     
     @GET
     @Path( Constants.ALL_PATH )
@@ -258,7 +257,6 @@ public class SiteRest
             if ( site != null )
             {
                 site.setName( name );
-                site.setNbDependencies( Integer.parseInt( nb_dependencies ) );
                 SiteHome.update( site );
             }
         }
@@ -267,7 +265,6 @@ public class SiteRest
             Site site = new Site( );
             
             site.setName( name );
-            site.setNbDependencies( Integer.parseInt( nb_dependencies ) );
             SiteHome.create( site );
         }
         return getSites(accept, format);
@@ -283,7 +280,6 @@ public class SiteRest
         XmlUtil.beginElement( sbXML, KEY_SITE );
         XmlUtil.addElement( sbXML, KEY_ID , site.getId( ) );
         XmlUtil.addElement( sbXML, KEY_NAME , site.getName( ) );
-        XmlUtil.addElement( sbXML, KEY_NB_DEPENDENCIES , site.getNbDependencies( ) );
         XmlUtil.endElement( sbXML, KEY_SITE );
     }
     
@@ -297,7 +293,6 @@ public class SiteRest
         JSONObject jsonSite = new JSONObject(  );
         jsonSite.accumulate( KEY_ID , site.getId( ) );
         jsonSite.accumulate( KEY_NAME, site.getName( ) );
-        jsonSite.accumulate( KEY_NB_DEPENDENCIES, site.getNbDependencies( ) );
         json.accumulate( KEY_SITE, jsonSite );
     }
 }

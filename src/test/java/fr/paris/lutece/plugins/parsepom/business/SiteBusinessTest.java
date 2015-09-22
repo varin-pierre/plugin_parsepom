@@ -41,29 +41,23 @@ public class SiteBusinessTest extends LuteceTestCase
 {
     private final static String NAME1 = "Name1";
     private final static String NAME2 = "Name2";
-    private final static int NBDEPENDENCIES1 = 1;
-    private final static int NBDEPENDENCIES2 = 2;
 
     public void testBusiness(  )
     {
         // Initialize an object
         Site site = new Site();
         site.setName( NAME1 );
-        site.setNbDependencies( NBDEPENDENCIES1 );
 
         // Create test
         SiteHome.create( site );
         Site siteStored = SiteHome.findByPrimaryKey( site.getId( ) );
         assertEquals( siteStored.getName() , site.getName( ) );
-        assertEquals( siteStored.getNbDependencies() , site.getNbDependencies( ) );
 
         // Update test
         site.setName( NAME2 );
-        site.setNbDependencies( NBDEPENDENCIES2 );
         SiteHome.update( site );
         siteStored = SiteHome.findByPrimaryKey( site.getId( ) );
         assertEquals( siteStored.getName() , site.getName( ) );
-        assertEquals( siteStored.getNbDependencies() , site.getNbDependencies( ) );
 
         // List test
         SiteHome.getSitesList();
