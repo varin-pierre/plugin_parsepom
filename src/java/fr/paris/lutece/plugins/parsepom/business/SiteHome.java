@@ -120,5 +120,15 @@ public final class SiteHome
     {
         return _dao.selectIdSitesList( _plugin );
     }
+    
+    /**
+     * Load the data of all the site objects and returns them in form of a collection
+     * @param strKeySite The foreign key of the dependency referencing the name of the sites
+     * @return the collection which contains the data of all the dependency objects
+     */
+    public static Collection<Site> getSitesListByDependency( String strDKeySite ) 
+    {
+    	return _dao.selectSitesListByDependency( strDKeySite, _plugin );
+    }
 }
 

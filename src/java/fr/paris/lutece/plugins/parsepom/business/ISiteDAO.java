@@ -90,5 +90,13 @@ public interface ISiteDAO
      * @return The collection which contains the id of all the site objects
      */
     Collection<Integer> selectIdSitesList( Plugin plugin );
+    
+    /**
+     * Load the data of all the site objects and returns them as a collection
+     * @param plugin the Plugin
+     * @param strDKeySite The foreign key of the dependency referencing the name of the sites
+     * @return The collection which contains the data of all the site objects
+     */
+    Collection<Site> selectSitesListByDependency( String strDKeySite, Plugin plugin );
 }
 

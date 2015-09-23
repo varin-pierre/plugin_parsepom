@@ -210,11 +210,11 @@ public final class DependencyDAO implements IDependencyDAO
      * {@inheritDoc }
      */
     @Override
-    public Collection<Dependency> selectDependencysListBySiteId( Plugin plugin, int sId )
+    public Collection<Dependency> selectDependencysListBySiteId( int nSId, Plugin plugin )
     {
         Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_SITE_ID, plugin );
-        daoUtil.setInt( 1, sId );
+        daoUtil.setInt( 1, nSId );
         daoUtil.executeQuery(  );
 
         while ( daoUtil.next(  ) )

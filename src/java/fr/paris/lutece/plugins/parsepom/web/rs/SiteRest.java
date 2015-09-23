@@ -69,6 +69,7 @@ public class SiteRest
     
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_ID_PLUGINS = "id_plugins";
     
     @GET
     @Path( Constants.ALL_PATH )
@@ -244,8 +245,8 @@ public class SiteRest
     @POST
     public Response createSite(
     @FormParam( KEY_ID ) String id,
-    @FormParam( "name" ) String name, 
-    @FormParam( "nb_dependencies" ) String nb_dependencies, 
+    @FormParam( KEY_NAME ) String name, 
+    @FormParam( KEY_ID_PLUGINS ) String id_plugins, 
     @HeaderParam(HttpHeaders.ACCEPT) String accept, @QueryParam( Constants.FORMAT_QUERY ) String format) throws IOException
     {
         if( id != null )
@@ -257,6 +258,7 @@ public class SiteRest
             if ( site != null )
             {
                 site.setName( name );
+                site.setIdPlugins( id_plugins );
                 SiteHome.update( site );
             }
         }
@@ -265,6 +267,7 @@ public class SiteRest
             Site site = new Site( );
             
             site.setName( name );
+            site.setIdPlugins( id_plugins );
             SiteHome.create( site );
         }
         return getSites(accept, format);
@@ -280,6 +283,7 @@ public class SiteRest
         XmlUtil.beginElement( sbXML, KEY_SITE );
         XmlUtil.addElement( sbXML, KEY_ID , site.getId( ) );
         XmlUtil.addElement( sbXML, KEY_NAME , site.getName( ) );
+        XmlUtil.addElement( sbXML, KEY_ID_PLUGINS , site.getIdPlugins( ) );
         XmlUtil.endElement( sbXML, KEY_SITE );
     }
     
@@ -293,6 +297,7 @@ public class SiteRest
         JSONObject jsonSite = new JSONObject(  );
         jsonSite.accumulate( KEY_ID , site.getId( ) );
         jsonSite.accumulate( KEY_NAME, site.getName( ) );
+        jsonSite.accumulate( KEY_ID_PLUGINS, site.getIdPlugins( ) );
         json.accumulate( KEY_SITE, jsonSite );
     }
 }

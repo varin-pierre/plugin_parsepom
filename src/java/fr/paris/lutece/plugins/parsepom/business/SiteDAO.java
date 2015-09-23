@@ -49,12 +49,13 @@ public final class SiteDAO implements ISiteDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_site ) FROM parsepom_site";
-    private static final String SQL_QUERY_SELECT = "SELECT id_site, name FROM parsepom_site WHERE id_site = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, name ) VALUES ( ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE id_site = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, name, id_plugins ) VALUES ( ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM parsepom_site WHERE id_site = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, name = ? WHERE id_site = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_site, name FROM parsepom_site";
+    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, name = ?, id_plugins = ? WHERE id_site = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_site, name, id_plugins FROM parsepom_site";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
+    private static final String SQL_QUERY_SELECTALL_BY_DEPENDENCY = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE id_plugins = ?";
 
     /**
      * Generates a new primary key
@@ -90,6 +91,7 @@ public final class SiteDAO implements ISiteDAO
 
         daoUtil.setInt( 1, site.getId( ) );
         daoUtil.setString( 2, site.getName( ) );
+        daoUtil.setString( 3, site.getIdPlugins( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -112,6 +114,7 @@ public final class SiteDAO implements ISiteDAO
             site = new Site();
             site.setId( daoUtil.getInt( 1 ) );
             site.setName( daoUtil.getString( 2 ) );
+            site.setIdPlugins( daoUtil.getString( 3 ) );
         }
 
         daoUtil.free( );
@@ -140,7 +143,8 @@ public final class SiteDAO implements ISiteDAO
         
         daoUtil.setInt( 1, site.getId( ) );
         daoUtil.setString( 2, site.getName( ) );
-        daoUtil.setInt( 3, site.getId( ) );
+        daoUtil.setString( 3, site.getIdPlugins( ) );
+        daoUtil.setInt( 4, site.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -162,6 +166,7 @@ public final class SiteDAO implements ISiteDAO
             
             site.setId( daoUtil.getInt( 1 ) );
             site.setName( daoUtil.getString( 2 ) );
+            site.setIdPlugins( daoUtil.getString( 3 ) );
 
             siteList.add( site );
         }
@@ -187,5 +192,31 @@ public final class SiteDAO implements ISiteDAO
 
             daoUtil.free( );
             return siteList;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Collection<Site> selectSitesListByDependency( String strDKeySite, Plugin plugin )
+    {
+        Collection<Site> siteList = new ArrayList<Site>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_DEPENDENCY, plugin );
+        daoUtil.setString( 1, strDKeySite );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            Site site = new Site(  );
+            
+            site.setId( daoUtil.getInt( 1 ) );
+            site.setName( daoUtil.getString( 2 ) );
+            site.setIdPlugins( daoUtil.getString( 3 ) );
+
+            siteList.add( site );
+        }
+
+        daoUtil.free( );
+        return siteList;
     }
 }

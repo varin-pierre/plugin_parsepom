@@ -123,12 +123,12 @@ public final class DependencyHome
     
     /**
      * Load the data of all the dependency objects by site and returns them in form of a collection
-     * @param sId The identifier of the site 
+     * @param nSId The identifier of the site 
      * @return the collection which contains the data of all the dependency objects
      */
-    public static Collection<Dependency> getDependencysListBySiteId( int sId )
+    public static Collection<Dependency> getDependencysListBySiteId( int nSId )
     {
-        return _dao.selectDependencysListBySiteId( _plugin, sId );
+        return _dao.selectDependencysListBySiteId( nSId, _plugin);
     }
 }
 

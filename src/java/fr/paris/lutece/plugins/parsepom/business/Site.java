@@ -48,6 +48,10 @@ public class Site
     @NotEmpty( message = "#i18n{parsepom.validation.site.Name.notEmpty}" )
     @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
+    
+    @NotEmpty( message = "#i18n{parsepom.validation.site.IdPlugins.notEmpty}" )
+    @Size( max = 20000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
+    private String _strIdPlugins;
 
     /**
      * Returns the Id
@@ -83,5 +87,23 @@ public class Site
     public void setName( String strName )
     {
         _strName = strName;
+    }
+    
+    /**
+     * Returns the IdPLugins
+     * @return The IdPlugins
+     */
+    public String getIdPlugins( )
+    {
+        return _strIdPlugins;
+    }
+
+    /**
+     * Sets the IdPlugins
+     * @param strName The IdPlugins
+     */ 
+    public void setIdPlugins( String strIdPlugins )
+    {
+        _strIdPlugins = strIdPlugins;
     }
 }

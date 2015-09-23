@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.parsepom.web;
  
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
+import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -58,6 +59,7 @@ public class DependencyXPage extends MVCApplication
     private static final String TEMPLATE_MANAGE_DEPENDENCYS="/skin/plugins/parsepom/manage_dependencys.html";
     private static final String TEMPLATE_CREATE_DEPENDENCY="/skin/plugins/parsepom/create_dependency.html";
     private static final String TEMPLATE_MODIFY_DEPENDENCY="/skin/plugins/parsepom/modify_dependency.html";
+    private static final String TEMPLATE_DETAILS_DEPENDENCY="/skin/plugins/parsepom/details_dependency.html";
     
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
@@ -70,6 +72,7 @@ public class DependencyXPage extends MVCApplication
     // Markers
     private static final String MARK_DEPENDENCY_LIST = "dependency_list";
     private static final String MARK_DEPENDENCY = "dependency";
+    private static final String MARK_SITES_LIST_BY_DEPENDENCY = "sites_list_by_dependency";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_DEPENDENCY = "parsepom.message.confirmRemoveDependency";
@@ -78,6 +81,7 @@ public class DependencyXPage extends MVCApplication
     private static final String VIEW_MANAGE_DEPENDENCYS = "manageDependencys";
     private static final String VIEW_CREATE_DEPENDENCY = "createDependency";
     private static final String VIEW_MODIFY_DEPENDENCY = "modifyDependency";
+    private static final String VIEW_DETAILS_DEPENDENCY = "detailsDependency";
 
     // Actions
     private static final String ACTION_CREATE_DEPENDENCY = "createDependency";
@@ -222,5 +226,30 @@ public class DependencyXPage extends MVCApplication
         addInfo( INFO_DEPENDENCY_UPDATED, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
+    }
+    
+    /**
+     * Returns the form to get info about a dependency
+     *
+     * @param request The Http request
+     * @return The HTML form to get info
+     */
+    @View( VIEW_DETAILS_DEPENDENCY )
+    public XPage getDetailsSite( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
+
+        if ( _dependency == null  || ( _dependency.getId( ) != nId ))
+        {
+            _dependency = DependencyHome.findByPrimaryKey( nId );
+        }
+        
+        String strKeySite = _dependency.getArtifactId( );
+
+        Map<String, Object> model = getModel(  );
+        model.put( MARK_DEPENDENCY, _dependency );
+        model.put( MARK_SITES_LIST_BY_DEPENDENCY, SiteHome.getSitesListByDependency( strKeySite ) );
+        
+        return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }
 }

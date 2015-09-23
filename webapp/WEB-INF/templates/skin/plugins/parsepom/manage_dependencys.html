@@ -58,6 +58,16 @@
         </#list>
     </table>
     
+    <div class="dropdown">
+  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece site list
+  		<span class="caret"></span></button>
+  		<ul class="dropdown-menu">
+  		<#list dependency_list as dependency >
+    		<li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>	
+    	</#list>
+  		</ul>
+	</div>
+    
     </div>
 </div>
 
