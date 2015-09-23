@@ -41,17 +41,27 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.services.PomHandler;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 
+import java.util.List;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.midi.MidiDevice.Info;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.springframework.ui.Model;
+import org.xml.sax.InputSource;
 
-import com.sun.xml.bind.v2.schemagen.xmlschema.List; 
 
 /**
  * This class provides the user interface to manage Site xpages ( manage, create, modify, remove )
@@ -102,37 +112,127 @@ public class ParseXPage extends MVCApplication
 
         return getXPage( TEMPLATE_PARSE );
     }
+    
+    // Dev zone
+    // variables
     Site s;
     Dependency d;
     String path;
+    
     @View( value = VIEW_TMP )
     public XPage getTmp( HttpServletRequest request )
     {
     	
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PARSE, path);
-		addInfo( "path to ", getLocale( request ) );
+    	model.put( "list", listFiles );
+    	addInfo( "path to ", getLocale( request ) );
 
         return getXPage( TEMPLATE_TMP,request.getLocale(  ), model );
     }
     
     @Action( ACTION_PARSE )
     public XPage doParse( HttpServletRequest request )
-    {    
-		
+    {		
 		int len;
-
-		path= request.getParameter("path");
-		StringBuilder tmp = new StringBuilder(path);
-		len = path.length() - 1;
-		if (len > 0 && path.charAt( len ) != '/')
+// TODO clear len
+		path = request.getParameter( "path" );
+		StringBuilder tmp = new StringBuilder( path );
+		len = path.length( ) - 1;
+		if ( len > 0 && path.charAt( len ) != '/' )
 		{
-			tmp.append("/");
+			tmp.append( "/" );
 		}
-		path = tmp.toString();
-
+		path = tmp.toString( );
 		
-        return redirectView( request, VIEW_TMP );
+		
+		openDir( path );
+		
+		return redirectView( request, VIEW_TMP );
     }
     
+    private static final String PREFIX_PLUGIN = "plugin-";
+    private static final String PREFIX_MODULE = "module-";
+    List<String>listFiles;
+    
+    private void openDir( String path )
+    {
+    	listFiles = new ArrayList<String>();
+    	
+    	FileFilter filter = new DirFilter ();
+    	File dirs = new File( path );
+    	
+    	listFiles.add(dirs.getName( ));
+    	if ( dirs.isDirectory() )
+    		listFiles.add("true");
+    	else
+    		listFiles.add("flase") ;
+    	File[] site = dirs.listFiles(filter);
+    	for ( File d : site )
+    	{
+    		String name = d.getName();
+    		listFiles.add(name);
+    		parsePom(name, d );
+    	}
+//    	listFiles.add(file.getName());
+//    	listFiles.add("toto");
+    	
+    }
+    
+ 
+    private void parsePom(String name, File fDir) {
+		// TODO Auto-generated method stub
+    	 FileFilter _pomFilter = new PomFilter(  );
+         File[] pom = fDir.listFiles( _pomFilter );
+         for (File p : pom)
+         {
+        	 String namePom = p.getName();
+        	 listFiles.add(namePom);
+        	 extratInfoPom( p );
+         }
+	}
+
+   
+	private void extratInfoPom(File pom) {
+		// TODO Auto-generated method stub
+		listFiles.add("extractInfoPom " + pom.getName());
+		PomHandler handler = new PomHandler(  );
+        handler.parse( pom );
+        List<Dependency> lDep = handler.getDependencies(  );
+        if ( lDep.isEmpty())
+        	listFiles.add( "list vide ");
+        for ( Dependency d : lDep )
+        {
+        	listFiles.add("+1");
+        	listFiles.add(d.getVersion());
+        }
+	}
+
+	
+	/**
+     * Directory filter
+     */
+    static class DirFilter implements FileFilter
+    {
+        @Override
+        public boolean accept( File file )
+        {
+            return file.isDirectory(  );
+        }
+    }
+    
+    /**
+     * A class that implements the Java FileFilter interface.
+     */
+    public class PomFilter implements FileFilter
+    {
+    	@Override
+    	public boolean accept( File file )
+    	{
+    		return file.getName().equals("pom.xml");
+    	}
+    }
+    
+   
 }
+
