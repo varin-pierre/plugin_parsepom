@@ -72,7 +72,7 @@ public class SiteXPage extends MVCApplication
     // Markers
     private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_SITE = "site";
-    private static final String MARK_DEPEND_LIST_BY_ID = "depend_list_by_id";
+    private static final String MARK_DEPEND_LIST_BY_SITE = "depend_list_by_site";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
@@ -246,7 +246,7 @@ public class SiteXPage extends MVCApplication
 
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE, _site );
-        model.put( MARK_DEPEND_LIST_BY_ID, DependencyHome.getDependencysListBySiteId( nId ) );
+        model.put( MARK_DEPEND_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }

@@ -4,11 +4,48 @@
   			<div class="panel-heading">
      			<h3 class="panel-title">${site.name}</h3>
    			</div>
- 	 		<ul class="list-group">
- 	 			<#list depend_list_by_id as depend >
-    				<li class="list-group-item">Dépendance : ${depend.artifactId}</li>
-    			</#list>
-  			</ul>
+   			<table class="table">
+   				<thead>
+                <tr>
+                    <th>groupId</th>
+                    <th>artifactId</th>
+                    <th>version</th>
+                    <th>type</th>
+                </tr>
+            </thead>
+            <tbody>
+            	<#assign d = 0>
+            	<#assign l = 0>
+            	<#assign m = 0>
+            	<#assign p = 0>
+            	<#assign y = []>
+            	<#list depend_list_by_site as depend >
+                <tr>
+                    <td>${depend.groupId}</td>
+                    <td>${depend.artifactId}</td>
+                    <td>${depend.version}</td>
+                    <td>${depend.type}</td>
+                </tr>                
+                <#assign y = y + [ "${depend.artifactId}" ]>
+                <#if "${y[d]?substring(0,6)}" == "plugin">
+                	<#assign p = p + 1/>
+                </#if>
+                <#if "${y[d]?substring(0,6)}" == "module">
+                	<#assign m = m + 1/>
+                </#if>
+                <#if "${y[d]?substring(0,7)}" == "library">
+                	<#assign l = l + 1/>
+                </#if>
+                <#assign d = d + 1>
+                </#list>                
+            </tbody>
+   			</table>
+   			<div class="panel-body">
+				<p>Nombre de dépendences (total) : ${d}</p>
+				<p>Nombre de plugins : ${p}</p>
+				<p>Nombre de modules : ${m}</p>
+				<p>Nombre de bibliothèques : ${l}</p>
+			</div>
   		</div>
   	</div>
 </div>
