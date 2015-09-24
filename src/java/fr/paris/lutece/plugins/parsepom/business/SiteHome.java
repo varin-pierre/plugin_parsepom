@@ -92,12 +92,22 @@ public final class SiteHome
 
     /**
      * Update of the site which the Id is specified in second parameter
-     * @param nDId The id of the dependency to store
-     * @param nDSiteId The id of the Site to update registered in the dependency
+     * @param nDId The id of the dependency to add
+     * @param nDSiteId The id of the Site to update, registered in the dependency
      */
     public static void updateDependencyInSite( int nDId, int nDSiteId )
     {
     	_dao.addDependencyIdToSite( nDId, nDSiteId, _plugin );
+    }
+    
+    /**
+     * Update of the site which the Id is specified in second parameter
+     * @param nDId The id of the dependency to delete
+     * @param nDSiteId The id of the Site to update, registered in the dependency
+     */
+    public static void removeDependencyFromSite( int nDId, int nDSiteId )
+    {
+    	_dao.deleteDependencyIdFromSite( nDId, nDSiteId, _plugin );
     }
     
     ///////////////////////////////////////////////////////////////////////////

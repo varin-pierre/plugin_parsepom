@@ -49,7 +49,6 @@ public class Site
     @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
     
-    @NotEmpty( message = "#i18n{parsepom.validation.site.IdPlugins.notEmpty}" )
     @Size( max = 20000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
     private String _strIdPlugins;
 

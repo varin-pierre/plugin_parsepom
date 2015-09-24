@@ -56,7 +56,7 @@ public final class SiteDAO implements ISiteDAO
     private static final String SQL_QUERY_SELECTALL = "SELECT id_site, name, id_plugins FROM parsepom_site";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
     //private static final String SQL_QUERY_SELECTALL_BY_DEPENDENCY = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE id_plugins = ?";
-    private static final String SQL_QUERY_MODIFY_PLUGIN_FIELD = "UPDATE parsepom_site SET id_plugins = ? WHERE id_site = ?";
+    private static final String SQL_QUERY_UPDATE_PLUGIN_FIELD = "UPDATE parsepom_site SET id_plugins = ? WHERE id_site = ?";
 
     /**
      * Generates a new primary key
@@ -213,7 +213,7 @@ public final class SiteDAO implements ISiteDAO
         addDependencyId.append( nDId );
         addDependencyId.append( ";" );
            
-        DAOUtil daoUtil2 = new DAOUtil( SQL_QUERY_MODIFY_PLUGIN_FIELD, plugin );
+        DAOUtil daoUtil2 = new DAOUtil( SQL_QUERY_UPDATE_PLUGIN_FIELD, plugin );
         
         daoUtil2.setString( 1, addDependencyId.toString( ) );
         daoUtil2.setInt( 2, nDSiteId );
@@ -221,5 +221,38 @@ public final class SiteDAO implements ISiteDAO
 
         daoUtil.free( );
         daoUtil2.free( );
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void deleteDependencyIdFromSite( int nDId, int nDSiteId, Plugin plugin )
+    {
+    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
+        daoUtil.setInt( 1, nDSiteId );	
+        daoUtil.executeQuery(  );
+        
+        String StringToModify = "";
+        String value = String.valueOf(nDId) + ";";
+        int len = value.length( );
+        
+        if ( daoUtil.next( ) )
+        	StringToModify = daoUtil.getString( 3 );
+        StringBuilder deleteDependencyId = new StringBuilder( StringToModify );
+        int start = deleteDependencyId.indexOf( value );
+        if ( start != -1 )
+        {
+        	deleteDependencyId.delete( start, start + len );
+        
+        	DAOUtil daoUtil2 = new DAOUtil( SQL_QUERY_UPDATE_PLUGIN_FIELD, plugin );
+        
+        	daoUtil2.setString( 1, deleteDependencyId.toString( ) );
+        	daoUtil2.setInt( 2, nDSiteId );
+        	daoUtil2.executeUpdate(  );
+        	
+        	daoUtil2.free( );
+        }
+        daoUtil.free( );
     }
 }

@@ -182,7 +182,17 @@ public class DependencyXPage extends MVCApplication
     public XPage doRemoveDependency( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
-        DependencyHome.remove( nId );
+        
+        if ( _dependency == null  || ( _dependency.getId( ) != nId ))
+        {
+            _dependency = DependencyHome.findByPrimaryKey( nId );
+        }
+        
+        int nDSiteId = _dependency.getSiteId( );
+        
+        DependencyHome.remove( nId );      
+        SiteHome.removeDependencyFromSite( nId, nDSiteId );
+        
         addInfo( INFO_DEPENDENCY_REMOVED, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );

@@ -74,6 +74,14 @@ public interface ISiteDAO
      */
     void addDependencyIdToSite( int nDId, int nDSiteId, Plugin plugin );
 
+    /**
+     * Update the id_plugin field in the table Site
+     * @param nDId The identifier of the Dependency to delete
+     * @param nDSiteId The identifier of the site registered in the dependency
+     * @param plugin the Plugin
+     */
+    void deleteDependencyIdFromSite( int nDId, int nDSiteId, Plugin plugin );
+    
     ///////////////////////////////////////////////////////////////////////////
     // Finders
 
