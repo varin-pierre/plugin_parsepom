@@ -55,7 +55,8 @@ public final class SiteDAO implements ISiteDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, name = ?, id_plugins = ? WHERE id_site = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_site, name, id_plugins FROM parsepom_site";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
-    private static final String SQL_QUERY_SELECTALL_BY_DEPENDENCY = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE id_plugins = ?";
+    //private static final String SQL_QUERY_SELECTALL_BY_DEPENDENCY = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE id_plugins = ?";
+    private static final String SQL_QUERY_MODIFY_PLUGIN_FIELD = "UPDATE parsepom_site SET id_plugins = ? WHERE id_site = ?";
 
     /**
      * Generates a new primary key
@@ -198,25 +199,27 @@ public final class SiteDAO implements ISiteDAO
      * {@inheritDoc }
      */
     @Override
-    public Collection<Site> selectSitesListByDependency( String strDKeySite, Plugin plugin )
+    public void addDependencyIdToSite( int nDId, int nDSiteId, Plugin plugin )
     {
-        Collection<Site> siteList = new ArrayList<Site>(  );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_DEPENDENCY, plugin );
-        daoUtil.setString( 1, strDKeySite );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
+        daoUtil.setInt( 1, nDSiteId );	
         daoUtil.executeQuery(  );
-
-        while ( daoUtil.next(  ) )
-        {
-            Site site = new Site(  );
-            
-            site.setId( daoUtil.getInt( 1 ) );
-            site.setName( daoUtil.getString( 2 ) );
-            site.setIdPlugins( daoUtil.getString( 3 ) );
-
-            siteList.add( site );
-        }
+        
+        String StringToModify = "";
+        
+        if ( daoUtil.next( ) )
+        	StringToModify = daoUtil.getString( 3 );
+        StringBuilder addDependencyId = new StringBuilder( StringToModify );
+        addDependencyId.append( nDId );
+        addDependencyId.append( ";" );
+           
+        DAOUtil daoUtil2 = new DAOUtil( SQL_QUERY_MODIFY_PLUGIN_FIELD, plugin );
+        
+        daoUtil2.setString( 1, addDependencyId.toString( ) );
+        daoUtil2.setInt( 2, nDSiteId );
+        daoUtil2.executeUpdate(  );
 
         daoUtil.free( );
-        return siteList;
+        daoUtil2.free( );
     }
 }

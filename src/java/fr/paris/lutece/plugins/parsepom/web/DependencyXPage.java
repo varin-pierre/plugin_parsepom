@@ -46,7 +46,7 @@ import java.util.Map;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import javax.servlet.http.HttpServletRequest; 
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class provides the user interface to manage Dependency xpages ( manage, create, modify, remove )
@@ -142,6 +142,11 @@ public class DependencyXPage extends MVCApplication
         }
 
         DependencyHome.create( _dependency );
+        
+        int nDId = _dependency.getId( );
+        int nDSiteId = _dependency.getSiteId( );
+        SiteHome.updateDependencyInSite( nDId, nDSiteId );
+        
         addInfo( INFO_DEPENDENCY_CREATED, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
@@ -244,11 +249,11 @@ public class DependencyXPage extends MVCApplication
             _dependency = DependencyHome.findByPrimaryKey( nId );
         }
         
-        String strKeySite = _dependency.getArtifactId( );
+        //String strKeySite = _dependency.getArtifactId( );
 
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
-        model.put( MARK_SITES_LIST_BY_DEPENDENCY, SiteHome.getSitesListByDependency( strKeySite ) );
+        //model.put( MARK_SITES_LIST_BY_DEPENDENCY, SiteHome.getSitesListByDependency( strKeySite ) );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }

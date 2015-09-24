@@ -65,6 +65,14 @@ public interface ISiteDAO
      * @param plugin the Plugin
      */
     void delete( int nKey, Plugin plugin );
+    
+    /**
+     * Update the id_plugin field in the table Site
+     * @param nDId The identifier of the Dependency to add
+     * @param nDSiteId The identifier of the site registered in the dependency
+     * @param plugin the Plugin
+     */
+    void addDependencyIdToSite( int nDId, int nDSiteId, Plugin plugin );
 
     ///////////////////////////////////////////////////////////////////////////
     // Finders
@@ -97,6 +105,5 @@ public interface ISiteDAO
      * @param strDKeySite The foreign key of the dependency referencing the name of the sites
      * @return The collection which contains the data of all the site objects
      */
-    Collection<Site> selectSitesListByDependency( String strDKeySite, Plugin plugin );
 }
 
