@@ -259,11 +259,12 @@ public class DependencyXPage extends MVCApplication
             _dependency = DependencyHome.findByPrimaryKey( nId );
         }
         
-        //String strKeySite = _dependency.getArtifactId( );
+        //String strArtifactId = _dependency.getArtifactId( );
+        SiteHome.getIdSitesListByDependency(  );
 
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
-        //model.put( MARK_SITES_LIST_BY_DEPENDENCY, SiteHome.getSitesListByDependency( strKeySite ) );
+        //model.put( MARK_SITES_LIST_BY_DEPENDENCY, SiteHome.getSitesListByDependency( nId, strArtifactId ) );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }

@@ -37,6 +37,7 @@ package fr.paris.lutece.plugins.parsepom.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import java.util.Collection;
+import java.util.List;
 
 
 
@@ -108,10 +109,10 @@ public interface ISiteDAO
     Collection<Integer> selectIdSitesList( Plugin plugin );
     
     /**
-     * Load the data of all the site objects and returns them as a collection
+     * Load the id of all the dependency objects and returns them as a double list of integers
      * @param plugin the Plugin
-     * @param strDKeySite The foreign key of the dependency referencing the name of the sites
-     * @return The collection which contains the data of all the site objects
+     * @return The bidimensional List of integers which contains the ids of all the dependency objects by site
      */
+    public List<List<Integer>> selectIdSitesListByDependency( Plugin plugin );
 }
 

@@ -38,6 +38,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class provides instances management methods (create, find, ...) for Site objects
@@ -142,9 +143,12 @@ public final class SiteHome
     }
     
     /**
-     * Load the data of all the site objects and returns them in form of a collection
-     * @param strKeySite The foreign key of the dependency referencing the name of the sites
-     * @return the collection which contains the data of all the dependency objects
+     * Load the id of all the dependency objects and returns them in form of a double list of integers
+     * @return the bidimensional list which contains the id of all the dependency objects by site
      */
+   public static List<List<Integer>> getIdSitesListByDependency(  )
+   {
+	   return _dao.selectIdSitesListByDependency( _plugin );
+   }
 }
 

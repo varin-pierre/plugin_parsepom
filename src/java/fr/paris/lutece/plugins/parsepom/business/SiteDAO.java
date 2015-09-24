@@ -40,6 +40,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class provides Data Access methods for Site objects
@@ -238,7 +239,9 @@ public final class SiteDAO implements ISiteDAO
         int len = value.length( );
         
         if ( daoUtil.next( ) )
+        {
         	StringToModify = daoUtil.getString( 3 );
+        }
         StringBuilder deleteDependencyId = new StringBuilder( StringToModify );
         int start = deleteDependencyId.indexOf( value );
         if ( start != -1 )
@@ -254,5 +257,30 @@ public final class SiteDAO implements ISiteDAO
         	daoUtil2.free( );
         }
         daoUtil.free( );
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<List<Integer>> selectIdSitesListByDependency( Plugin plugin )
+    {
+    	List<List<Integer>> siteIdList = new ArrayList<List<Integer>>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            String strIdPlugins = daoUtil.getString( 3 );
+            List<Integer> pluginsIdList = new ArrayList<Integer>( );
+            for ( String id : strIdPlugins.split( ";" ) )
+            {
+            	pluginsIdList.add( Integer.valueOf( id ) );
+            }
+            siteIdList.add( pluginsIdList );
+        }
+
+        daoUtil.free( );
+        return siteIdList;
     }
 }
