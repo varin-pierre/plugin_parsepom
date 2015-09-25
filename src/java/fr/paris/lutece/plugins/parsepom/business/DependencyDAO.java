@@ -40,6 +40,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides Data Access methods for Dependency objects
@@ -56,6 +60,7 @@ public final class DependencyDAO implements IDependencyDAO
     private static final String SQL_QUERY_SELECTALL = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_dependency FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_BY_SITE_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE site_id = ?";
+    private static final String SQL_QUERY_SELECT_BY_DEPENDENCY_ID = "SELECT artifact_id, version, pd.name FROM parsepom_dependency pd JOIN parsepom_site ps ON pd.site_id = ps.id_site WHERE id_dependency = ?";
 
     /**
      * Generates a new primary key
@@ -233,5 +238,33 @@ public final class DependencyDAO implements IDependencyDAO
 
         daoUtil.free( );
         return dependencyList;
+    }
+    
+    public Map<String, String> selectSitesListByDependencyId( String strArtifactId, List<List<Integer>> idSitesList, Plugin plugin )
+    {
+    	Iterator<List<Integer>> itr = idSitesList.iterator( );	
+    	Map<String, String> listSite = new HashMap<>( );
+    	
+    	while ( itr.hasNext( ) )
+    	{
+    		List<Integer> id = itr.next( );
+    		Iterator<Integer> itr2 = id.iterator( );
+    		while ( itr2.hasNext( ) )
+    		{
+    			DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DEPENDENCY_ID, plugin );
+    			daoUtil.setInt( 1, itr2.next( ) );
+    	        daoUtil.executeQuery(  );
+    	        
+    	        if (daoUtil.getString( 1 ) == strArtifactId )
+    	        {
+    	        	String strDependencyVersion = daoUtil.getString( 2 );
+    	        	String strName = daoUtil.getString( 3 );
+    	        	listSite.put( strName, strDependencyVersion );
+    	        }
+    	        daoUtil.free( );
+    		}
+    	}
+    	
+    	return listSite;
     }
 }

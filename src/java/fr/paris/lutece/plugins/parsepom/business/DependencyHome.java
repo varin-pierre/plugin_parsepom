@@ -38,6 +38,8 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides instances management methods (create, find, ...) for Dependency objects
@@ -129,6 +131,17 @@ public final class DependencyHome
     public static Collection<Dependency> getDependencysListBySiteId( int nSId )
     {
         return _dao.selectDependencysListBySiteId( nSId, _plugin);
+    }
+    
+    /**
+     * Load the name of all the site objects by dependency and load the versions of this dependency by site and returns them as a map
+     * @param strArtifactId The Artifact Id of the site
+     * @param idSitesList The double list of the Dependency ids by site
+     * @return The map which contains the name of all the site objects by dependency and the versions of this dependency by site
+     */
+    public static Map<String, String> getSitesListByDependencyId( String strArtifactId, List<List<Integer>> idSitesList )
+    {
+    	return _dao.selectSitesListByDependencyId( strArtifactId, idSitesList, _plugin );
     }
 }
 

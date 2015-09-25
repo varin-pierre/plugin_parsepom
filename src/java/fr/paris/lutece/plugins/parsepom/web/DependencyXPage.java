@@ -42,6 +42,8 @@ import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
+
+import java.util.List;
 import java.util.Map;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
@@ -250,7 +252,7 @@ public class DependencyXPage extends MVCApplication
      * @return The HTML form to get info
      */
     @View( VIEW_DETAILS_DEPENDENCY )
-    public XPage getDetailsSite( HttpServletRequest request )
+    public XPage getDetailsDependency( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
 
@@ -259,12 +261,12 @@ public class DependencyXPage extends MVCApplication
             _dependency = DependencyHome.findByPrimaryKey( nId );
         }
         
-        //String strArtifactId = _dependency.getArtifactId( );
-        SiteHome.getIdSitesListByDependency(  );
-
+        String strArtifactId = _dependency.getArtifactId( );
+        List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency(  );
+        
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
-        //model.put( MARK_SITES_LIST_BY_DEPENDENCY, SiteHome.getSitesListByDependency( nId, strArtifactId ) );
+        model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }

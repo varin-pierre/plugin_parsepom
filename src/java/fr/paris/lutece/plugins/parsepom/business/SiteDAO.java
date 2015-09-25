@@ -273,6 +273,7 @@ public final class SiteDAO implements ISiteDAO
         {
             String strIdPlugins = daoUtil.getString( 3 );
             List<Integer> pluginsIdList = new ArrayList<Integer>( );
+            
             for ( String id : strIdPlugins.split( ";" ) )
             {
             	pluginsIdList.add( Integer.valueOf( id ) );
