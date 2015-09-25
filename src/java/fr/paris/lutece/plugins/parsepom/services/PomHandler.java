@@ -16,6 +16,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
+import fr.paris.lutece.plugins.parsepom.business.Site;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class PomHandler extends DefaultHandler
 {
@@ -25,6 +27,8 @@ public class PomHandler extends DefaultHandler
     private boolean _nInsideDependency;
     private StringBuffer _sbBodyText = new StringBuffer(  );
     private String _strVersion;
+    private boolean _nInsideParent;
+    private Site _site;
 
     /**
      * @return the dependencies attribute of the Bootstrap object
@@ -32,6 +36,11 @@ public class PomHandler extends DefaultHandler
     public List<Dependency> getDependencies(  )
     {
         return _listDependencies;
+    }
+    
+    public Site getSite( )
+    {
+    	return _site;
     }
     
     public String getVersion(  ) 
@@ -55,15 +64,15 @@ public class PomHandler extends DefaultHandler
         }
         catch ( ParserConfigurationException e )
         {
-            System.err.println( e.getMessage(  ) );
+        	 AppLogService.error( e.getMessage() , e );
         }
         catch ( SAXException e )
         {
-            System.err.println( e.getMessage(  ) );
+        	 AppLogService.error( e.getMessage() , e );
         }
         catch ( IOException e )
         {
-            System.err.println( e.getMessage(  ) );
+        	 AppLogService.error( e.getMessage() , e );
         }
     }
 
@@ -74,14 +83,21 @@ public class PomHandler extends DefaultHandler
      * @param rawName element name
      * @param attributes element attributes
      */
-    // TODO import attribute ??? check if is good one
     @Override
     public void startElement( String uri, String localName, String rawName, Attributes attributes )
     {
+    	if ( "parent".equals( rawName ) )
+    	{
+    		_nInsideParent = true;
+    	}
         if ( "dependency".equals( rawName ) )
         {
             _currentDependency = new Dependency(  );
             _nInsideDependency = true;
+        }
+        if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+        {
+        	_site = new Site( );
         }
     }
 
@@ -114,7 +130,15 @@ public class PomHandler extends DefaultHandler
     @Override
     public void endElement( String uri, String localName, String rawName )
     {
-        if ( "dependency".equals( rawName ) )
+    	if ( "parent".equals( rawName ) )
+    	{
+    		_nInsideParent = false;
+    	}
+    	if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	{
+    		_site.setName( getBodyText(  ) );
+    	}
+    	if ( "dependency".equals( rawName ) )
         {
             _listDependencies.add( _currentDependency );
             _nInsideDependency = false;
@@ -134,5 +158,20 @@ public class PomHandler extends DefaultHandler
                 _strVersion = getBodyText(  );
             }
         }
+        else if ( "type".equals( rawName ) && _nInsideDependency )
+        {
+            _currentDependency.setType( getBodyText(  ) );
+        }
+        else if ( "groupId".equals( rawName ) && _nInsideDependency )
+        {
+            _currentDependency.setGroupId( getBodyText(  ) );
+        }
+        else if ( "artifactId".equals( rawName ) && _nInsideDependency )
+        {
+            _currentDependency.setArtifactId( getBodyText(  ) );
+        }
+
+        _sbBodyText = new StringBuffer(  );
+        
     }
 }
