@@ -53,7 +53,6 @@ public class PomHandler extends DefaultHandler
             InputSource is = new InputSource( new FileInputStream( project ) );
             parser.parse( is, this );
         }
-        // TODO warning cath error log ?
         catch ( ParserConfigurationException e )
         {
             System.err.println( e.getMessage(  ) );

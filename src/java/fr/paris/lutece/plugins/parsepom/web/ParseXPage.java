@@ -203,7 +203,6 @@ public class ParseXPage extends MVCApplication
         	listFiles.add( "list vide ");
         for ( Dependency d : lDep )
         {
-        	listFiles.add("+1");
         	listFiles.add(d.getVersion());
         }
 	}
