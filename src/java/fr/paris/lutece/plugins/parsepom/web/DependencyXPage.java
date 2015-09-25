@@ -262,7 +262,7 @@ public class DependencyXPage extends MVCApplication
         }
         
         String strArtifactId = _dependency.getArtifactId( );
-        List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency(  );
+        List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
         
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );

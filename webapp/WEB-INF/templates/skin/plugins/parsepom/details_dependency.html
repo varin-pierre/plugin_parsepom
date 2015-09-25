@@ -18,9 +18,9 @@
                 </tr>
             </thead>
             <tbody>
-            	<#list sites_list_by_dependency as site >
+            	<#list sites_list_by_dependency?keys as site >
             	<tr>
-            		<td>${site.name}</td>
+            		<td>${site.strName}</td>
             		<!--<td>${dependency.version}</td>-->
             	</tr>
             	</#list>

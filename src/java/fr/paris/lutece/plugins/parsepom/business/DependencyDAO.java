@@ -60,7 +60,7 @@ public final class DependencyDAO implements IDependencyDAO
     private static final String SQL_QUERY_SELECTALL = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_dependency FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_BY_SITE_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE site_id = ?";
-    private static final String SQL_QUERY_SELECT_BY_DEPENDENCY_ID = "SELECT artifact_id, version, pd.name FROM parsepom_dependency pd JOIN parsepom_site ps ON pd.site_id = ps.id_site WHERE id_dependency = ?";
+    private static final String SQL_QUERY_SELECT_BY_DEPENDENCY_ID = "SELECT artifact_id, version, name FROM parsepom_dependency JOIN parsepom_site ON parsepom_dependency.site_id = parsepom_site.id_site WHERE id_dependency = ?";
 
     /**
      * Generates a new primary key
@@ -241,30 +241,40 @@ public final class DependencyDAO implements IDependencyDAO
     }
     
     public Map<String, String> selectSitesListByDependencyId( String strArtifactId, List<List<Integer>> idSitesList, Plugin plugin )
-    {
+    {  	
     	Iterator<List<Integer>> itr = idSitesList.iterator( );	
     	Map<String, String> listSite = new HashMap<>( );
-    	
+    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DEPENDENCY_ID, plugin );
     	while ( itr.hasNext( ) )
     	{
+    		
     		List<Integer> id = itr.next( );
     		Iterator<Integer> itr2 = id.iterator( );
+   	        System.out.println("-----------------rentre dedans--------------------");
+   	     	
     		while ( itr2.hasNext( ) )
     		{
-    			DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DEPENDENCY_ID, plugin );
     			daoUtil.setInt( 1, itr2.next( ) );
-    	        daoUtil.executeQuery(  );
-    	        
-    	        if (daoUtil.getString( 1 ) == strArtifactId )
+    	        daoUtil.executeQuery(  );  	        
+    	        while ( daoUtil.next( ) )
     	        {
-    	        	String strDependencyVersion = daoUtil.getString( 2 );
-    	        	String strName = daoUtil.getString( 3 );
-    	        	listSite.put( strName, strDependencyVersion );
+    	        	System.out.println("-------------------------------------");
+    	        	System.out.println( daoUtil.getString( 1 ) );
+    	        	System.out.println( daoUtil.getString( 2 ) );
+    	        	System.out.println( daoUtil.getString( 3 ) );
+    	        	System.out.println("-------------------------------------");
+    	        	if (daoUtil.getString( 1 ).equals( strArtifactId ) )
+    	        	{
+    	        		String strDependencyVersion = daoUtil.getString( 2 );
+    	        		String strName = daoUtil.getString( 3 );
+    	        		listSite.put( strName, strDependencyVersion );
+    	        	}
     	        }
-    	        daoUtil.free( );
     		}
+    		
     	}
+    	daoUtil.free( );
     	
-    	return listSite;
+    	return null;
     }
 }
