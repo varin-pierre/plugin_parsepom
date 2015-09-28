@@ -52,6 +52,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -115,9 +116,9 @@ public class ParseXPage extends MVCApplication
     
     // Dev zone
     // variables
-    Site s;
-    Dependency d;
-    String path;
+    private Dependency _dependency;
+    private String path;
+    private Site _site;
     
     @View( value = VIEW_TMP )
     public XPage getTmp( HttpServletRequest request )
@@ -134,6 +135,7 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_PARSE )
     public XPage doParse( HttpServletRequest request )
     {		
+    	listFiles = new ArrayList<String>();
 		int len;
 // TODO clear len
 		path = request.getParameter( "path" );
@@ -145,38 +147,30 @@ public class ParseXPage extends MVCApplication
 		}
 		path = tmp.toString( );
 		
-		
-		openDir( path );
+		FileFilter filter = new DirFilter ();
+    	File dirs = new File( path );
+    	if ( !dirs.isDirectory( ) )
+    		return redirectView( request, VIEW_PARSE );
+    	listFiles.add("@action dirs name = " + dirs.getName());
+    	listFiles.add("@action dirs path = " + dirs.getPath());
+    	listFiles.add("@action dirs  = " + dirs);
+		openDir( dirs, filter );
 		
 		return redirectView( request, VIEW_TMP );
     }
     
-    private static final String PREFIX_PLUGIN = "plugin-";
-    private static final String PREFIX_MODULE = "module-";
     List<String>listFiles;
     
-    private void openDir( String path )
+    private void openDir( File dirs, FileFilter filter )
     {
-    	listFiles = new ArrayList<String>();
-    	
-    	FileFilter filter = new DirFilter ();
-    	File dirs = new File( path );
-    	
-    	listFiles.add(dirs.getName( ));
-    	if ( dirs.isDirectory() )
-    		listFiles.add("true");
-    	else
-    		listFiles.add("flase") ;
+    	listFiles.add("Dir Name = " + dirs.getName( ));
     	File[] site = dirs.listFiles(filter);
     	for ( File d : site )
     	{
     		String name = d.getName();
-    		listFiles.add(name);
     		parsePom(name, d );
+    		openDir( d, filter );
     	}
-//    	listFiles.add(file.getName());
-//    	listFiles.add("toto");
-    	
     }
     
  
@@ -186,29 +180,61 @@ public class ParseXPage extends MVCApplication
          File[] pom = fDir.listFiles( _pomFilter );
          for (File p : pom)
          {
-        	 String namePom = p.getName();
-        	 listFiles.add(namePom);
         	 extratInfoPom( p );
          }
 	}
-
-   
-	private void extratInfoPom(File pom) {
+//TODO delete after working
+    
+    List<String> listDep;
+	private void extratInfoPom( File pom )
+	{
 		// TODO Auto-generated method stub
 		listFiles.add("extractInfoPom " + pom.getName());
 		PomHandler handler = new PomHandler(  );
         handler.parse( pom );
         List<Dependency> lDep = handler.getDependencies(  );
-        if ( lDep.isEmpty())
-        	listFiles.add( "list vide ");
+        _site = new Site();
+        _site = handler.getSite();
+        StringBuffer strIdPlugins = new StringBuffer();
+        listFiles.add( "Site name : " +  _site.getName());
+        
+    	Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
+    	Boolean flag = false;
+    	listDep = new ArrayList<String>();
+    	_site.setIdPlugins("");
+    	SiteHome.create( _site );
+    	
         for ( Dependency d : lDep )
         {
-        	listFiles.add("+1");
-        	listFiles.add(d.getVersion());
+        	listFiles.add("Type : " + d.getType());
+        	listFiles.add("Groupeid : " + d.getGroupId());
+        	listFiles.add("Version : " + d.getVersion());
+        	listFiles.add("ArtifactId " + d.getArtifactId());
+        	listFiles.add("Site Id " + _site.getId());
+        	dependencyList = DependencyHome.getDependencysByArtifactId( d.getArtifactId( ) );
+
+        	d.setSiteId( _site.getId( ) );
+        	if ( dependencyList.size( ) == 0 )
+        	{
+        		DependencyHome.create( d );
+        	}
+        	else
+        	{
+        		for ( Dependency elem : dependencyList )
+        		{
+        			if ( elem.getVersion().equals(d.getVersion()))
+        				flag = true;
+        		}
+        		if ( flag )
+            		DependencyHome.create( d );
+        	}        	
+        	strIdPlugins.append(d.getId());
+        	strIdPlugins.append(";");
         }
+        _site.setIdPlugins(strIdPlugins.toString());
+        SiteHome.update( _site );
 	}
 
-	
 	/**
      * Directory filter
      */
