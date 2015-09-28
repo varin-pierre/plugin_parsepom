@@ -41,9 +41,11 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class provides Data Access methods for Dependency objects
@@ -62,7 +64,7 @@ public final class DependencyDAO implements IDependencyDAO
     private static final String SQL_QUERY_SELECTALL_BY_SITE_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE site_id = ?";
     private static final String SQL_QUERY_SELECT_BY_DEPENDENCY_ID = "SELECT artifact_id, version, name FROM parsepom_dependency JOIN parsepom_site ON parsepom_dependency.site_id = parsepom_site.id_site WHERE id_dependency = ?";
     private static final String SQL_QUERY_SELECTALL_BY_ARTIFACT_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE artifact_id = ?";
-
+    private static final String SQL_QUERY_SELECTALL_BY_UNIQUE_ARTIFACT_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency GROUP BY artifact_id";
 
     /**
      * Generates a new primary key
@@ -75,7 +77,6 @@ public final class DependencyDAO implements IDependencyDAO
         daoUtil.executeQuery( );
 
         int nKey = 1;
-
         if( daoUtil.next( ) )
         {
                 nKey = daoUtil.getInt( 1 ) + 1;
@@ -277,25 +278,50 @@ public final class DependencyDAO implements IDependencyDAO
     public Collection<Dependency> selectDependencyListByArtifactId( String strArtifactId, Plugin plugin )
     {
     	Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
-    	 DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_ARTIFACT_ID, plugin );
-         daoUtil.setString( 1, strArtifactId );
-         daoUtil.executeQuery(  );
+    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_ARTIFACT_ID, plugin );
+        daoUtil.setString( 1, strArtifactId );
+        daoUtil.executeQuery(  );
 
-         while ( daoUtil.next(  ) )
-         {
-             Dependency dependency = new Dependency(  );
+        while ( daoUtil.next(  ) )
+        {
+            Dependency dependency = new Dependency(  );
              
-             dependency.setId( daoUtil.getInt( 1 ) );
-             dependency.setGroupId( daoUtil.getString( 2 ) );
-             dependency.setArtifactId( daoUtil.getString( 3 ) );
-             dependency.setVersion( daoUtil.getString( 4 ) );
-             dependency.setType( daoUtil.getString( 5 ) );
-             dependency.setSiteId( daoUtil.getInt( 6 ) );
+            dependency.setId( daoUtil.getInt( 1 ) );
+            dependency.setGroupId( daoUtil.getString( 2 ) );
+            dependency.setArtifactId( daoUtil.getString( 3 ) );
+            dependency.setVersion( daoUtil.getString( 4 ) );
+            dependency.setType( daoUtil.getString( 5 ) );
+            dependency.setSiteId( daoUtil.getInt( 6 ) );
 
-             dependencyList.add( dependency );
-         }
+            dependencyList.add( dependency );
+        }
 
          daoUtil.free( );
-    	return dependencyList;
+         return dependencyList;
     }
+    
+    public Collection<Dependency> selectDependencysListWithoutDuplicates( Plugin plugin )
+    {
+    	Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_BY_UNIQUE_ARTIFACT_ID, plugin );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            Dependency dependency = new Dependency(  );
+            
+            dependency.setId( daoUtil.getInt( 1 ) );
+            dependency.setGroupId( daoUtil.getString( 2 ) );
+            dependency.setArtifactId( daoUtil.getString( 3 ) );
+            dependency.setVersion( daoUtil.getString( 4 ) );
+            dependency.setType( daoUtil.getString( 5 ) );
+            dependency.setSiteId( daoUtil.getInt( 6 ) );
+
+            dependencyList.add( dependency );
+        }
+
+        daoUtil.free( );
+        return dependencyList;
+    }
+    
 }

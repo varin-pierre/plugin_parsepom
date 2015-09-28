@@ -144,13 +144,23 @@ public final class DependencyHome
     	return _dao.selectSitesListByDependencyId( strArtifactId, idSitesList, _plugin );
     }
     
-    /*
+    /**
      * Load the list of dependency with ArtifactId
-     * @param strArtifactId he Artifact Id of the denpendency
+     * @param strArtifactId The Artifact Id of the dependency
+     * @return the collection which contains the data of all the dependencies matching with this Artifact Id
      */
     public static Collection<Dependency> getDependencysByArtifactId( String strArtifactId )
     {
     	return _dao.selectDependencyListByArtifactId(strArtifactId, _plugin);
+    }
+    
+    /**
+     * Load the list of dependency without duplicates Artifact Id
+     * @return the collection which contains the data of all the dependencies without duplicates Artifact Id
+     */
+    public static Collection<Dependency> getDependencysListWithoutDuplicates( )
+    {
+    	return _dao.selectDependencysListWithoutDuplicates( _plugin );
     }
 }
 

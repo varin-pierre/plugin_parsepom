@@ -116,6 +116,13 @@ public interface IDependencyDAO
      * @param plugin the Plugin
      * @return The collection which contains the data of all the dependency objects by site
      */
-	Collection<Dependency> selectDependencyListByArtifactId(String strArtifactId, Plugin _plugin);
+	Collection<Dependency> selectDependencyListByArtifactId(String strArtifactId, Plugin plugin);
+	
+	/**
+     * Load the data of all all the dependency objects without duplicates Artifact Id and returns them as a collection 
+     * @param plugin the Plugin
+     * @return The collection which contains the data of all the dependency object without duplicates Artifact Id
+     */
+	Collection<Dependency> selectDependencysListWithoutDuplicates( Plugin plugin );
 }
 

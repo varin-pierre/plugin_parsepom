@@ -75,6 +75,7 @@ public class DependencyXPage extends MVCApplication
     private static final String MARK_DEPENDENCY_LIST = "dependency_list";
     private static final String MARK_DEPENDENCY = "dependency";
     private static final String MARK_SITES_LIST_BY_DEPENDENCY = "sites_list_by_dependency";
+    private static final String MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES = "dependency_list_without_duplicates";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_DEPENDENCY = "parsepom.message.confirmRemoveDependency";
@@ -105,6 +106,7 @@ public class DependencyXPage extends MVCApplication
         _dependency = null;
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY_LIST, DependencyHome.getDependencysList(  ) );
+        model.put( MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES, DependencyHome.getDependencysListWithoutDuplicates(  ) );
 
         return getXPage( TEMPLATE_MANAGE_DEPENDENCYS, request.getLocale(  ), model );
     }

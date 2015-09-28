@@ -14,6 +14,7 @@
                 </tr>
             </thead>
             <tbody>
+            	<#assign c = 0>
             	<#assign d = 0>
             	<#assign l = 0>
             	<#assign m = 0>
@@ -27,6 +28,9 @@
                     <td>${depend.type}</td>
                 </tr>                
                 <#assign y = y + [ "${depend.artifactId}" ]>
+                <#if "${y[d]}" == "lutece-core">
+                	<#assign c = c + 1/>
+                </#if>
                 <#if "${y[d]?substring(0,6)}" == "plugin">
                 	<#assign p = p + 1/>
                 </#if>
@@ -42,9 +46,10 @@
    			</table>
    			<div class="panel-body">
 				<p>Nombre total de dépendances : ${d}</p>
-				<p>Nombre de plugins           : ${p}</p>
-				<p>Nombre de modules           : ${m}</p>
-				<p>Nombre de bibliothèques     : ${l}</p>
+				<p>Lutece core : ${c}</p>
+				<p>Nombre de plugins : ${p}</p>
+				<p>Nombre de modules : ${m}</p>
+				<p>Nombre de bibliothèques : ${l}</p>
 			</div>
   		</div>
   	</div>
