@@ -52,6 +52,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -182,8 +183,9 @@ public class ParseXPage extends MVCApplication
         	 extratInfoPom( p );
          }
 	}
-
-   
+//TODO delete after working
+    
+    List<String> listDep;
 	private void extratInfoPom( File pom )
 	{
 		// TODO Auto-generated method stub
@@ -196,22 +198,43 @@ public class ParseXPage extends MVCApplication
         StringBuffer strIdPlugins = new StringBuffer();
         listFiles.add( "Site name : " +  _site.getName());
         
+    	Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
+    	Boolean flag = false;
+    	listDep = new ArrayList<String>();
+    	_site.setIdPlugins("");
+    	SiteHome.create( _site );
+    	
         for ( Dependency d : lDep )
         {
         	listFiles.add("Type : " + d.getType());
         	listFiles.add("Groupeid : " + d.getGroupId());
         	listFiles.add("Version : " + d.getVersion());
         	listFiles.add("ArtifactId " + d.getArtifactId());
-        	
-        	DependencyHome.create( d );
+        	listFiles.add("Site Id " + _site.getId());
+        	dependencyList = DependencyHome.getDependencysByArtifactId( d.getArtifactId( ) );
+
+        	d.setSiteId( _site.getId( ) );
+        	if ( dependencyList.size( ) == 0 )
+        	{
+        		DependencyHome.create( d );
+        	}
+        	else
+        	{
+        		for ( Dependency elem : dependencyList )
+        		{
+        			if ( elem.getVersion().equals(d.getVersion()))
+        				flag = true;
+        		}
+        		if ( flag )
+            		DependencyHome.create( d );
+        	}        	
         	strIdPlugins.append(d.getId());
         	strIdPlugins.append(";");
         }
         _site.setIdPlugins(strIdPlugins.toString());
-        SiteHome.create( _site );
+        SiteHome.update( _site );
 	}
 
-	
 	/**
      * Directory filter
      */

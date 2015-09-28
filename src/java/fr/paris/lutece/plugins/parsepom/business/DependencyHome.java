@@ -143,5 +143,14 @@ public final class DependencyHome
     {
     	return _dao.selectSitesListByDependencyId( strArtifactId, idSitesList, _plugin );
     }
+    
+    /*
+     * Load the list of dependency with ArtifactId
+     * @param strArtifactId he Artifact Id of the denpendency
+     */
+    public static Collection<Dependency> getDependencysByArtifactId( String strArtifactId )
+    {
+    	return _dao.selectDependencyListByArtifactId(strArtifactId, _plugin);
+    }
 }
 

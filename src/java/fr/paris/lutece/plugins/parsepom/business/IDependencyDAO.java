@@ -109,5 +109,13 @@ public interface IDependencyDAO
      * @return The map which contains the name of all the site objects by dependency and the versions of this dependency by site
      */
     Map<String, String> selectSitesListByDependencyId( String strArtifactId, List<List<Integer>> idSitesList, Plugin plugin );
+
+    /**
+     * Load the data of all the dependency objects by artifactId and returns them as a collection
+     * @param strArtifactId The identifier of the dependency
+     * @param plugin the Plugin
+     * @return The collection which contains the data of all the dependency objects by site
+     */
+	Collection<Dependency> selectDependencyListByArtifactId(String strArtifactId, Plugin _plugin);
 }
 
