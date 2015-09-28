@@ -4,22 +4,21 @@
   			<div class="panel-heading">
      			<h3 class="panel-title">${dependency.artifactId}</h3>
    			</div>
-   			<ul class="list-group">
-   				<li class="list-group-item">groupId : ${dependency.groupId}</li>
-   				<li class="list-group-item">artifactId : ${dependency.artifactId}</li>
-   				<li class="list-group-item">version : ${dependency.version}</li>
-   				<li class="list-group-item">type : ${dependency.type}</li>
-   			</ul>
+   			<div class="panel-body">
+   				<p>groupId    : ${dependency.groupId}</p>
+   				<p>artifactId : ${dependency.artifactId}</p>
+   				<p>version    : ${dependency.version}</p>
+   				<p>type       : ${dependency.type}</p>
+   			</div>
    			<table class="table">
    				<thead>
                 <tr>
-                    <th>site</th>
-                    <th>version</th>
+                    <th>Site</th>
+                    <th>version de la dépendance</th>
                 </tr>
             </thead>
             <tbody>
-				<#assign keys = sites_list_by_dependency?keys>
-				<#list keys as key>
+				<#list sites_list_by_dependency?keys as key>
 				<tr>
 					<td>${key}</td>
 					<td>${sites_list_by_dependency[key]}</td> 

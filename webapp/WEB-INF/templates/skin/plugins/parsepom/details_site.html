@@ -19,7 +19,7 @@
             	<#assign m = 0>
             	<#assign p = 0>
             	<#assign y = []>
-            	<#list dependency_list_by_site as depend >
+            	<#list dependency_list_by_site as depend>
                 <tr>
                     <td>${depend.groupId}</td>
                     <td>${depend.artifactId}</td>
@@ -41,10 +41,10 @@
             </tbody>
    			</table>
    			<div class="panel-body">
-				<p>Nombre de dépendences (total) : ${d}</p>
-				<p>Nombre de plugins : ${p}</p>
-				<p>Nombre de modules : ${m}</p>
-				<p>Nombre de bibliothèques : ${l}</p>
+				<p>Nombre total de dépendances : ${d}</p>
+				<p>Nombre de plugins           : ${p}</p>
+				<p>Nombre de modules           : ${m}</p>
+				<p>Nombre de bibliothèques     : ${l}</p>
 			</div>
   		</div>
   	</div>
