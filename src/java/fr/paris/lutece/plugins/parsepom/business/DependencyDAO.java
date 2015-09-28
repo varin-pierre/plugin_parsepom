@@ -250,7 +250,6 @@ public final class DependencyDAO implements IDependencyDAO
     		
     		List<Integer> id = itr.next( );
     		Iterator<Integer> itr2 = id.iterator( );
-   	        System.out.println("-----------------rentre dedans--------------------");
    	     	
     		while ( itr2.hasNext( ) )
     		{
@@ -258,11 +257,6 @@ public final class DependencyDAO implements IDependencyDAO
     	        daoUtil.executeQuery(  );  	        
     	        while ( daoUtil.next( ) )
     	        {
-    	        	System.out.println("-------------------------------------");
-    	        	System.out.println( daoUtil.getString( 1 ) );
-    	        	System.out.println( daoUtil.getString( 2 ) );
-    	        	System.out.println( daoUtil.getString( 3 ) );
-    	        	System.out.println("-------------------------------------");
     	        	if (daoUtil.getString( 1 ).equals( strArtifactId ) )
     	        	{
     	        		String strDependencyVersion = daoUtil.getString( 2 );
@@ -275,6 +269,6 @@ public final class DependencyDAO implements IDependencyDAO
     	}
     	daoUtil.free( );
     	
-    	return null;
+    	return listSite;
     }
 }

@@ -18,12 +18,13 @@
                 </tr>
             </thead>
             <tbody>
-            	<#list sites_list_by_dependency?keys as site >
-            	<tr>
-            		<td>${site.strName}</td>
-            		<!--<td>${dependency.version}</td>-->
-            	</tr>
-            	</#list>
+				<#assign keys = sites_list_by_dependency?keys>
+				<#list keys as key>
+				<tr>
+					<td>${key}</td>
+					<td>${sites_list_by_dependency[key]}</td> 
+				<tr>
+				</#list>
             </tbody>
    			</table>
 
