@@ -124,5 +124,7 @@ public interface IDependencyDAO
      * @return The collection which contains the data of all the dependency object without duplicates Artifact Id
      */
 	Collection<Dependency> selectDependencysListWithoutDuplicates( Plugin plugin );
+	
+	int newPrimaryKey( Plugin plugin );
 }
 

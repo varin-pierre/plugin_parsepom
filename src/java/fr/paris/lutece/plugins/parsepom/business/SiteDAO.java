@@ -58,7 +58,8 @@ public final class SiteDAO implements ISiteDAO
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
     //private static final String SQL_QUERY_SELECTALL_BY_DEPENDENCY = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE id_plugins = ?";
     private static final String SQL_QUERY_UPDATE_PLUGIN_FIELD = "UPDATE parsepom_site SET id_plugins = ? WHERE id_site = ?";
-
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_site, name, id_plugins FROM parsepom_site WHERE name = ?";
+    
     /**
      * Generates a new primary key
      * @param plugin The Plugin
@@ -283,4 +284,31 @@ public final class SiteDAO implements ISiteDAO
         daoUtil.free( );
         return siteIdList;
     }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Site selectSitesWithName( String strName, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_NAME, plugin );
+        daoUtil.setString( 1 , strName );
+        daoUtil.executeQuery(  );
+
+        Site site = null;
+
+        if ( daoUtil.next( ) )
+        {
+            site = new Site(  );
+            
+            site.setId( daoUtil.getInt( 1 ) );
+            site.setName( daoUtil.getString( 2 ) );
+            site.setIdPlugins( daoUtil.getString( 3 ) );
+
+        }
+
+        daoUtil.free( );
+        return site;
+    }
+           
 }

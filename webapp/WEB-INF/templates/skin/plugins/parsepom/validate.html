@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+	<@messages infos=infos />
+	<@messages errors=errors />
+		<h1>VALIDATE</h1>
+		
+		<h2>Conflict</h2>
+		<form method="post"  action="jsp/site/Portal.jsp?page=parse">
+			<#list conflict! as con>
+				<ul>${con}</ul>
+			</#list>
+				<button name="action_validate" class="btn btn-success" type="submit">
+				 <span class="glyphicon glyphicon-ok"></span> 
+				 OK
+				 </button>
+		 		<button name="view_parse" class="btn btn-danger" type="submit">
+				 <span class="glyphicon glyphicon-ban-circle"></span> 
+					 Cancel
+			 	 </button>
+	 	 </form>
+		<h2>Output Parse</h2>
+			path	: ${parse}
+			<#list list as elem >
+				<ul>${elem}</ul> 
+			</#list>
+	</div>
+</body>
+</html>

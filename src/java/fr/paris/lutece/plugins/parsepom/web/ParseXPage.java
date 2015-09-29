@@ -53,6 +53,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +61,8 @@ import javax.sound.midi.MidiDevice.Info;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.xpath.operations.Bool;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.ui.Model;
 import org.xml.sax.InputSource;
 
@@ -74,7 +77,9 @@ public class ParseXPage extends MVCApplication
     // Templates
     private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/parse.html";
     private static final String TEMPLATE_TMP="/skin/plugins/parsepom/tmp.html";
-    
+    private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate.html";
+    private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
+
    
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
@@ -89,6 +94,7 @@ public class ParseXPage extends MVCApplication
     private static final String MARK_PARSE = "parse";
     private static final String MARK_SITE = "site";
     private static final String MARK_DEP = "dep";
+    private static final String MARK_SITE_LIST = "site_list";
 
     
     // Message
@@ -97,9 +103,13 @@ public class ParseXPage extends MVCApplication
     // Views
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_TMP = "tmp";
+    private static final String VIEW_VALIDATE = "validate";
+
 
     // Actions
     private static final String ACTION_PARSE = "parse";
+    private static final String ACTION_VALIDATE = "validate";
+    private static final String ACTION_CLEAN = "clean";
     
     // Infos
     // private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
@@ -116,9 +126,16 @@ public class ParseXPage extends MVCApplication
     
     // Dev zone
     // variables
+    private static int _nMaxDepth = 3;
     private Dependency _dependency;
     private String path;
     private Site _site;
+    private Collection<Site> _gobalSites;
+    private Collection<Dependency> _globalDep;
+    private List<String> _conflict;
+    
+    int maxIdSite;
+    int maxIdDep;
     
     @View( value = VIEW_TMP )
     public XPage getTmp( HttpServletRequest request )
@@ -127,6 +144,7 @@ public class ParseXPage extends MVCApplication
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PARSE, path);
     	model.put( "list", listFiles );
+    	model.put( "conflict", _conflict );
     	addInfo( "path to ", getLocale( request ) );
 
         return getXPage( TEMPLATE_TMP,request.getLocale(  ), model );
@@ -136,7 +154,15 @@ public class ParseXPage extends MVCApplication
     public XPage doParse( HttpServletRequest request )
     {		
     	listFiles = new ArrayList<String>();
+    	
+    	//TOOD Global for prevent error
+    	_gobalSites = new ArrayList<Site>();
+    	_globalDep = new ArrayList<Dependency>();
+    	_conflict = new ArrayList<String>();
 		int len;
+		
+		maxIdSite = SiteHome.getMaxId();
+		maxIdDep = DependencyHome.getMaxId();
 // TODO clear len
 		path = request.getParameter( "path" );
 		StringBuilder tmp = new StringBuilder( path );
@@ -151,88 +177,116 @@ public class ParseXPage extends MVCApplication
     	File dirs = new File( path );
     	if ( !dirs.isDirectory( ) )
     		return redirectView( request, VIEW_PARSE );
+    	parsePom(dirs.getName(), dirs);
+    	
     	listFiles.add("@action dirs name = " + dirs.getName());
     	listFiles.add("@action dirs path = " + dirs.getPath());
     	listFiles.add("@action dirs  = " + dirs);
-		openDir( dirs, filter );
+		openDir( dirs, filter, 0 );
 		
-		return redirectView( request, VIEW_TMP );
+		return redirectView( request, VIEW_VALIDATE );
     }
     
     List<String>listFiles;
     
-    private void openDir( File dirs, FileFilter filter )
+    private void openDir( File dirs, FileFilter filter, int depth )
     {
+		listFiles.add("=== openDir ===");
+		int i = depth;
     	listFiles.add("Dir Name = " + dirs.getName( ));
     	File[] site = dirs.listFiles(filter);
+    	if ( i > _nMaxDepth )
+    		return ;
     	for ( File d : site )
     	{
     		String name = d.getName();
     		parsePom(name, d );
-    		openDir( d, filter );
+			openDir( d, filter, i++ );
     	}
+		listFiles.add("=== /openDir ===");
+
     }
     
  
-    private void parsePom(String name, File fDir) {
+    private Boolean parsePom( String name, File fDir ) 
+    {
 		// TODO Auto-generated method stub
+    	listFiles.add("=== parsePom ===");
+    	listFiles.add("file name = " + fDir.getName( ) );
     	 FileFilter _pomFilter = new PomFilter(  );
          File[] pom = fDir.listFiles( _pomFilter );
+         if ( pom == null)
+        	 listFiles.add("parsePom pom == null");
+         int i = 0;
          for (File p : pom)
          {
-        	 extratInfoPom( p );
+        	extratInfoPom( p );
+        	maxIdSite++;
+        	i++;
          }
+         listFiles.add("i = " + i );
+         if ( i == 1 )
+         {
+         	listFiles.add("=== /parsePom ===");
+
+        	 return true;
+         }
+     	listFiles.add("=== /parsePom ===");
+
+         return false;
 	}
 //TODO delete after working
-    
-    List<String> listDep;
+   
 	private void extratInfoPom( File pom )
 	{
-		// TODO Auto-generated method stub
+		listFiles.add("=== extratInfoPom ===");
 		listFiles.add("extractInfoPom " + pom.getName());
 		PomHandler handler = new PomHandler(  );
         handler.parse( pom );
         List<Dependency> lDep = handler.getDependencies(  );
+        
+        
+        
         _site = new Site();
         _site = handler.getSite();
         StringBuffer strIdPlugins = new StringBuffer();
         listFiles.add( "Site name : " +  _site.getName());
         
-    	Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
-    	Boolean flag = false;
-    	listDep = new ArrayList<String>();
+    	Site _dbSite = new Site( );
     	_site.setIdPlugins("");
-    	SiteHome.create( _site );
+    	_dbSite = SiteHome.getSiteByName( _site.getName( ) );
     	
         for ( Dependency d : lDep )
         {
+        	listFiles.add("===> Site Id " + _site.getId());
+        	listFiles.add("ArtifactId " + d.getArtifactId());
         	listFiles.add("Type : " + d.getType());
         	listFiles.add("Groupeid : " + d.getGroupId());
         	listFiles.add("Version : " + d.getVersion());
-        	listFiles.add("ArtifactId " + d.getArtifactId());
-        	listFiles.add("Site Id " + _site.getId());
-        	dependencyList = DependencyHome.getDependencysByArtifactId( d.getArtifactId( ) );
+        	listFiles.add("MaxId = " + maxIdSite );
+        	d.setSiteId( maxIdSite );
+        	d.setId(maxIdDep);
+        	maxIdDep++;
 
-        	d.setSiteId( _site.getId( ) );
-        	if ( dependencyList.size( ) == 0 )
+      
+        	if (d.getType( ) == null)
         	{
-        		DependencyHome.create( d );
+        		d.setType( "NULL" );
+        		listFiles.add("type null = " + "artifactID = "+ d.getArtifactId() + "site = " + _site.getName() + "id site = " + _site.getId());
         	}
-        	else
-        	{
-        		for ( Dependency elem : dependencyList )
-        		{
-        			if ( elem.getVersion().equals(d.getVersion()))
-        				flag = true;
-        		}
-        		if ( flag )
-            		DependencyHome.create( d );
-        	}        	
+        	_globalDep.add( d );
         	strIdPlugins.append(d.getId());
         	strIdPlugins.append(";");
         }
         _site.setIdPlugins(strIdPlugins.toString());
-        SiteHome.update( _site );
+    	if (_dbSite != null)
+    	{
+    		_conflict.add( _site.getName( ) );
+    	}
+    	_gobalSites.add( _site );
+    	
+		listFiles.add("=== /extratInfoPom ===");
+
 	}
 
 	/**
@@ -259,6 +313,86 @@ public class ParseXPage extends MVCApplication
     	}
     }
     
+    @View( value = VIEW_VALIDATE)
+    public XPage getValidate( HttpServletRequest request )
+    {
+    	
+    	Map<String, Object> model = getModel(  );
+    	model.put( MARK_PARSE, path);
+    	model.put( "list", listFiles );
+    	model.put( "conflict", _conflict );
+    	addInfo( "path to ", getLocale( request ) );
+
+        return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
+    }
+	List<String> con;
+    @Action( ACTION_VALIDATE )
+    public XPage doValidate( HttpServletRequest request )
+    {		
+    	Iterator<Site> itSite=_gobalSites.iterator();
+    	Iterator<Dependency> itDep = _globalDep.iterator();
+    	con = new ArrayList<String>();
+    	String strTmp;
+    	int i = 0;
+    	
+    	while ( itSite.hasNext( ) )
+    	{
+    		Boolean update = false;
+    		Site _dbSite;
+    		Site siteTmp = itSite.next();
+        	
+        	if (_conflict.isEmpty())
+        	{
+        		SiteHome.create(siteTmp);
+        	}
+        	Iterator<String> its = _conflict.iterator();
+    		while (its.hasNext())
+    		{
+        		 strTmp = its.next();
+        		con.add("strtmp [" + i + "] = {" + strTmp + "}");
+        		i++;
+        		con.add("==> siteTmp name = {" + siteTmp.getName() + "} | strTmp = {"+ strTmp + "} |");
+        		if ( siteTmp.getName() == strTmp )
+        		{
+        			_dbSite = SiteHome.getSiteByName(strTmp);
+        			con.add("==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
+        			siteTmp.setId(_dbSite.getId( ) );
+        			con.add("==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
+        			update = true ;
+        			SiteHome.update(siteTmp);
+        			con.add("UPDATE ==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
+//        			TODO clean dependency after update
+        		}
+    		}
+    		if (!update )
+			{
+    			SiteHome.create(siteTmp);
+			}
+    		update = false;
+   
+    	}
+		
+    	while ( itDep.hasNext())
+    	{
+    		DependencyHome.create( itDep.next());
+    	}
+    	_site = null;
+        Map<String, Object> model = getModel(  );
+        model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
+        model.put( "con", con);
+
+    	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
+    }
+    
+    @Action( ACTION_CLEAN )
+    public XPage doClean( HttpServletRequest request )
+    {
+    	_gobalSites = null;
+    	_globalDep = null;
+    	//TODO change to redirectView
+        return getXPage( TEMPLATE_PARSE );
+    }
    
 }
+
 

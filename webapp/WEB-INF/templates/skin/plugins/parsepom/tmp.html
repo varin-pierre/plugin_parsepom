@@ -5,14 +5,19 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>Tmp</h1>
 	<div>
-	path	: ${parse}
-	<#list list as elem >
-
-		<ul>${elem}</ul> 
-	</#list>
-
+		<h1>Tmp</h1>
+		
+		<h2>Conflict</h2>
+			<#list conflict! as con>
+				<ul>${con}</ul>
+			</#list>
+				
+		<h2>Output Parse</h2>
+			path	: ${parse}
+			<#list list as elem >
+				<ul>${elem}</ul> 
+			</#list>
 	</div>
 </body>
 </html>

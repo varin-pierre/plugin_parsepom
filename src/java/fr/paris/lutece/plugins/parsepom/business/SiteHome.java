@@ -150,5 +150,23 @@ public final class SiteHome
    {
 	   return _dao.selectIdSitesListByDependency( _plugin );
    }
+   
+   /**
+    * Load site who match with strName and return site
+    * @return object site
+    */
+   public static Site getSiteByName( String strName )
+   {
+	   return _dao.selectSitesWithName( strName, _plugin );
+   }
+   
+   /**
+    * Load the max id_site in table
+    * @return max index + 1  
+    */
+   public static int getMaxId( )
+   {
+	   return _dao.newPrimaryKey( _plugin );
+   }
 }
 

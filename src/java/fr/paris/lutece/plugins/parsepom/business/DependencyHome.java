@@ -162,5 +162,10 @@ public final class DependencyHome
     {
     	return _dao.selectDependencysListWithoutDuplicates( _plugin );
     }
+    
+    public static int getMaxId( )
+    {
+    	return _dao.newPrimaryKey(  _plugin );
+    }
 }
 

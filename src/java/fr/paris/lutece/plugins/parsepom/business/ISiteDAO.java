@@ -114,5 +114,14 @@ public interface ISiteDAO
      * @return The bidimensional List of integers which contains the ids of all the dependency objects by site
      */
     public List<List<Integer>> selectIdSitesListByDependency( Plugin plugin );
+
+    /**
+     * Load the data of all the site objects and returns them as a collection
+     * @param plugin the Plugin
+     * @return The collection which contains the data of all the site with artifactId 
+     */
+	Site selectSitesWithName(String strName, Plugin plugin);
+
+	int newPrimaryKey(Plugin plugin);
 }
 
