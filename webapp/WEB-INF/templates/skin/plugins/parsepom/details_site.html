@@ -4,13 +4,13 @@
   			<div class="panel-heading">
      			<h3 class="panel-title">${site.name}</h3>
    			</div>
-   			<table class="table">
+   			<table id="myTableSite" class="table"> 
    				<thead>
                 <tr>
-                    <th>groupId</th>
-                    <th>artifactId</th>
-                    <th>version</th>
-                    <th>type</th>
+                    <th id="first">groupId</th>
+                    <th id="second">artifactId</th>
+                    <th id="third">version</th>
+                    <th id="fourth">type</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +18,7 @@
             	<#assign d = 0>
             	<#assign l = 0>
             	<#assign m = 0>
+            	<#assign o = 0>
             	<#assign p = 0>
             	<#assign y = []>
             	<#list dependency_list_by_site as depend>
@@ -26,20 +27,27 @@
                     <td>${depend.artifactId}</td>
                     <td>${depend.version}</td>
                     <td>${depend.type}</td>
-                </tr>                
+                </tr>
+                <#assign i = 0>
                 <#assign y = y + [ "${depend.artifactId}" ]>
-                <#if "${y[d]}" == "lutece-core">
-                	<#assign c = c + 1/>
-                </#if>
-                <#if "${y[d]?substring(0,6)}" == "plugin">
-                	<#assign p = p + 1/>
-                </#if>
-                <#if "${y[d]?substring(0,6)}" == "module">
-                	<#assign m = m + 1/>
-                </#if>
-                <#if "${y[d]?substring(0,7)}" == "library">
-                	<#assign l = l + 1/>
-                </#if>
+                <#assign len = "${depend.artifactId?length}"?number>
+                <#if len gte 6>
+                	<#if "${y[d]}" == "lutece-core">
+                		<#assign c = c + 1/>
+                	</#if>
+	                <#if "${y[d]?substring(0,6)}" == "plugin">
+	                	<#assign p = p + 1/>
+	                </#if>
+	                <#if "${y[d]?substring(0,6)}" == "module">
+	                	<#assign m = m + 1/>
+	                </#if>
+	                <#if "${y[d]?substring(0,7)}" == "library">
+	                	<#assign l = l + 1/>
+	                </#if>
+	            </#if>
+	            <#if "${y[d]?substring(0,3)}" != "lib" && "${y[d]?substring(0,3)}" != "mod" && "${y[d]?substring(0,3)}" != "plu" && "${y[d]?substring(0,3)}" != "lut">
+	             	<#assign o = o + 1/>
+	            </#if>
                 <#assign d = d + 1>
                 </#list>                
             </tbody>
@@ -50,6 +58,7 @@
 				<p>Nombre de plugins : ${p}</p>
 				<p>Nombre de modules : ${m}</p>
 				<p>Nombre de bibliothèques : ${l}</p>
+				<p>Autres (Spring, java, logs ... ) : ${o}</p>
 			</div>
   		</div>
   	</div>

@@ -5,16 +5,15 @@
      			<h3 class="panel-title">${dependency.artifactId}</h3>
    			</div>
    			<div class="panel-body">
-   				<p>groupId : ${dependency.groupId}</p>
-   				<p>artifactId : ${dependency.artifactId}</p>
-   				<p>version : ${dependency.version}</p>
-   				<p>type : ${dependency.type}</p>
+   				<p><em>Group Id</em> : ${dependency.groupId}</p>
+   				<p><em>Artifact Id</em> : ${dependency.artifactId}</p>
+   				<p><em>Type</em> : ${dependency.type}</p>
    			</div>
-   			<table class="table">
+   			<table id="myTableDependency" class="table">
    				<thead>
                 <tr>
-                    <th>Site</th>
-                    <th>version de la dépendance</th>
+                    <th id="first">Site</th>
+                    <th id="second">version de la dépendance</th>
                 </tr>
             </thead>
             <tbody>
