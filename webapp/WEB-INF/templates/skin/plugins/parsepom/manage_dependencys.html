@@ -74,9 +74,12 @@
 	  		<ul class="dropdown-menu">
 	  		<#list dependency_list_without_duplicates as dependency >
 	  			<#assign y = "${dependency.artifactId}">
-	  			<#if "${y?substring(0,6)}" == "plugin">
-	                <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
-	            </#if>
+	  			<#assign len = "${y?length}"?number>
+	  			<#if len gte 6>
+		  			<#if "${y?substring(0,6)}" == "plugin">
+		                <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
+		            </#if>
+		        </#if>
 	    	</#list>
 	  		</ul>
 		</div>
@@ -86,8 +89,11 @@
 	  		<ul class="dropdown-menu">
 	  		<#list dependency_list_without_duplicates as dependency >
 	  			<#assign y = "${dependency.artifactId}">
-	  			<#if "${y?substring(0,6)}" == "module">
-	                <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
+	  			<#assign len = "${y?length}"?number>
+	  			<#if len gte 6>
+	  				<#if "${y?substring(0,6)}" == "module">
+	               		<li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
+	            	</#if>
 	            </#if>
 	    	</#list>
 	  		</ul>
@@ -98,9 +104,24 @@
 	  		<ul class="dropdown-menu">
 	  		<#list dependency_list_without_duplicates as dependency >
 	  			<#assign y = "${dependency.artifactId}">
-	  			<#if "${y?substring(0,7)}" == "library">
-	               <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
+	  			<#assign len = "${y?length}"?number>
+                <#if len gte 6>
+	  				<#if "${y?substring(0,7)}" == "library">
+	            	   <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
+	            	</#if>
 	            </#if>
+	    	</#list>
+	  		</ul>
+		</div>
+		<div class="dropdown align">
+	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece others list
+	  		<span class="caret"></span></button>
+	  		<ul class="dropdown-menu">
+	  		<#list dependency_list_without_duplicates as dependency >
+	  			<#assign y = "${dependency.artifactId}">
+	  				<#if "${y?substring(0,3)}" != "lib" && "${y?substring(0,3)}" != "mod" && "${y?substring(0,3)}" != "plu" && "${y?substring(0,3)}" != "lut">
+	            	   <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
+	            	</#if>
 	    	</#list>
 	  		</ul>
 		</div>
