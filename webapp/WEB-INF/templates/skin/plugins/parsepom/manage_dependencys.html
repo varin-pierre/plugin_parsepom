@@ -60,7 +60,16 @@
 		        </#list>
 		    </table>
 		</div>
-		
+		<@messages errors=errors />
+		<br />
+		<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=dependency">
+  			<div class="form-group">
+    			<label for="dependencyName">Rechercher :</label>
+    			<input type="search" class="form-control" id="dependencyName" name="dependencyName" placeholder='Artifact Id'>
+ 			</div>
+  			<button name="action_searchDependency" type="submit" class="btn btn-info">Submit</button>
+		</form>
+		<br /><br />
 	    <div class="dropdown align">
 		  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece core
 		  		<span class="caret"></span></button>

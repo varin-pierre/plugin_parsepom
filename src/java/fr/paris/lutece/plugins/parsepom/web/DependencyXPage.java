@@ -43,6 +43,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
@@ -70,6 +71,7 @@ public class DependencyXPage extends MVCApplication
     private static final String PARAMETER_ID_DEPENDENCY="id";
     private static final String PARAM_ACTION = "action";
     private static final String PARAM_PAGE = "page";
+    private static final String PARAMETER_NAME_DEPENDENCY = "dependencyName";
     
     // Markers
     private static final String MARK_DEPENDENCY_LIST = "dependency_list";
@@ -91,11 +93,15 @@ public class DependencyXPage extends MVCApplication
     private static final String ACTION_MODIFY_DEPENDENCY= "modifyDependency";
     private static final String ACTION_REMOVE_DEPENDENCY = "removeDependency";
     private static final String ACTION_CONFIRM_REMOVE_DEPENDENCY = "confirmRemoveDependency";
+    private static final String ACTION_SEARCH_DEPENDENCY = "searchDependency";
 
     // Infos
     private static final String INFO_DEPENDENCY_CREATED = "parsepom.info.dependency.created";
     private static final String INFO_DEPENDENCY_UPDATED = "parsepom.info.dependency.updated";
     private static final String INFO_DEPENDENCY_REMOVED = "parsepom.info.dependency.removed";
+    
+    // Errors
+    private static final String ERROR_DEPENDENCY_NOT_FOUND = "parsepom.error.dependency.notFound";
     
     // Session variable to store working values
     private Dependency _dependency;
@@ -271,5 +277,38 @@ public class DependencyXPage extends MVCApplication
         model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
+    }
+    
+    /**
+     * Handles the removal form of a dependency
+     *
+     * @param request The Http request
+     * @return the jsp URL to display the form to manage dependencys
+     */
+    @Action( ACTION_SEARCH_DEPENDENCY )
+    public XPage doSearchDependency( HttpServletRequest request )
+    {
+    	String strName = request.getParameter( PARAMETER_NAME_DEPENDENCY ).toLowerCase( );        
+        Collection<Dependency> list = DependencyHome.getDependencysListWithoutDuplicates(  );
+        
+        for (Dependency depend : list)
+        {
+        	if ( depend.getArtifactId( ).equals( strName ) )
+        	{
+        		_dependency = depend;
+        		
+        		String strArtifactId = _dependency.getArtifactId( );
+                List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
+                 
+                Map<String, Object> model = getModel(  );
+                model.put( MARK_DEPENDENCY, _dependency );
+                model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
+                
+                return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
+        	}
+        }
+        addError( ERROR_DEPENDENCY_NOT_FOUND, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
     }
 }
