@@ -333,61 +333,101 @@ public class ParseXPage extends MVCApplication
     public XPage doValidate( HttpServletRequest request )
     {		
     	Iterator<Site> itSite=_gobalSites.iterator();
-    	Iterator<Dependency> itDep = _globalDep.iterator();
+    	Iterator<Dependency> itDep;
+    	Iterator<String> itConflict;
     	con = new ArrayList<String>();
     	String strTmp;
     	Dependency depTmp ;
     	
+    	int len2 = _globalDep.size();
+    	con.add( "avant  len2 = " + len2);
+
+    		// read list Site
 	    	while ( itSite.hasNext( ) )
 	    	{
 	    		Boolean update = false;
 	    		Site _dbSite;
-	    		Site siteTmp = itSite.next();
+	    		Site currentSite = itSite.next();
 	        	
-	        	if ( !_conflict.isEmpty())
+	        	if ( !_conflict.isEmpty( ) )
 	        	{
-	//        		SiteHome.create(siteTmp);
-	        		
-		        	Iterator<String> its = _conflict.iterator( );
-		    		while (its.hasNext( ) )
+	        		// reset iterator conflict
+	        		itConflict = _conflict.iterator( );
+		        	
+		        	// Read list conflict
+		    		while (itConflict.hasNext( ) )
 		    		{
-//		    	    	Reset Iterator for dependency
-
-		    			 itDep = _globalDep.iterator();
-		        		 strTmp = its.next();
-	//	        		con.add("strtmp [" + i + "] = {" + strTmp + "}");
-		        		con.add("==> siteTmp name = {" + siteTmp.getName() + "} | strTmp = {"+ strTmp + "} |");
-		        		if ( siteTmp.getName( ) == strTmp )
+		    		 	// 	Reset Iterator for dependency
+		    			itDep = _globalDep.iterator();
+		        		strTmp = itConflict.next();
+		        		con.add("==> currentSite name = {" + currentSite.getName() + "} | strTmp = {"+ strTmp + "} |");
+		        		if ( currentSite.getName( ) == strTmp )
 		        		{
-		        			
+		        			// find in base the previous Site
 		        			_dbSite = SiteHome.getSiteByName( strTmp );
+        					Collection <Dependency> cDep = DependencyHome.getDependencysListBySiteId( _dbSite.getId());
+        					
+        					// read list Dependency
 		        			while ( itDep.hasNext( ) )
 		        			{
 		        				depTmp = itDep.next( );
-		        				con.add("==> depTmp id = {" + depTmp.getSiteId( ) + "} | siteTmp = {"+ siteTmp.getId( ) + "} |");
-		        				if ( depTmp.getSiteId( ) == siteTmp.getId( ) )
+
+		        				con.add("==> depTmp id = {" + depTmp.getSiteId( ) + "} | currentSite = {"+ currentSite.getId( ) + "} |");
+		        				// if dep link to current Site
+		        				if ( depTmp.getSiteId( ) == currentSite.getId( ) )
 		        				{
-		        					depTmp.setSiteId( _dbSite.getId( ) );
-		        					con.add("if ok ==> depTmp id = {" + depTmp.getSiteId( ) +"} |");
+		        					Boolean updateDep = false;
+		        					int sizeOfcDep = cDep.size();
+		        					con.add( " size of cDep = " + 		  sizeOfcDep); 
+		        					for ( Dependency elem : cDep)
+		        					{
+		        						con.add("elem = " + elem.getArtifactId() + " | dep = " + depTmp.getArtifactId());
+		        						if ( elem.getArtifactId( ).equals(depTmp.getArtifactId( ) ) )
+		        						{
+		        							con.add("For if ok ==> depTmp id = {" + depTmp.getSiteId( ) +"} |");
+		        							String strOld =  String.valueOf(depTmp.getId());
+		        							String strNew = String.valueOf( elem.getId());
+		        							int len = strOld.length();
+		        							StringBuilder updateIdPlugin = new StringBuilder( currentSite.getIdPlugins( ) );
+		        							int start = updateIdPlugin.indexOf( strOld ); 
+		        							if ( start != -1 )
+		        								updateIdPlugin.replace(start, start + len, strNew);
+
+		        							updateDep = true;
+		        							depTmp.setId(elem.getId());
+		        							depTmp.setSiteId(_dbSite.getId()); // may be useless 
+
+
+		        							currentSite.setIdPlugins( updateIdPlugin.toString() );
+
+		        							//currentSite.setIdPlugins( tmp );
+		        							con.add(  "strplugin = " + currentSite.getIdPlugins() + " old = " + strOld + " new = " + strNew);
+		        							DependencyHome.update(depTmp);
+		        							con.add("!=> depTmp site id = {" + depTmp.getSiteId( ) +"} |");
+		        								con.add(" remove");
+		        						}
+		        					}
+		        					if ( !updateDep )
+		        					{
+		        						depTmp.setSiteId( _dbSite.getId( ) );
+		        						con.add("!update ==> depTmp site id = {" + depTmp.getSiteId( ) +"} |");
+		        						
+		        					}
+		        					else
+		        						itDep.remove();
 		        				}
 		        			}
-		        			cleanDependency( _dbSite );
-
-	//	        			con.add("==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
-		        			siteTmp.setId( _dbSite.getId( ) );
+		        			currentSite.setId( _dbSite.getId( ) );
+//		        			cleanDependency( _dbSite );
 		        			
 		        			update = true ;
-		        			SiteHome.update( siteTmp );
-	//	        			con.add("UPDATE ==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
-		//        			TODO clean dependency after update
+		        			SiteHome.update( currentSite );
 		        		}
 		    		}
 	        	}
 	    		if ( !update )
 				{
-	    			SiteHome.create( siteTmp );
-	    			
-	    			
+	    			SiteHome.create( currentSite );
 				}
 	    		update = false;
 	    		
@@ -396,6 +436,8 @@ public class ParseXPage extends MVCApplication
 	    	
 //	    	Reset Iterator for dependency
 	    	itDep = _globalDep.iterator();
+	    	 len2 = _globalDep.size();
+	    	con.add( " len2 = " + len2);
     	while ( itDep.hasNext( ) )
     	{
     		DependencyHome.create( itDep.next( ) );
@@ -410,7 +452,6 @@ public class ParseXPage extends MVCApplication
     
     private void cleanDependency( Site site ) 
     {
-//    	con = new ArrayList<String>();
 		con.add("==> siteTmp = " + site.getName());
 		con.add("==> idplugin = " + site.getIdPlugins());
     	if (site.getIdPlugins().isEmpty())
@@ -427,7 +468,6 @@ public class ParseXPage extends MVCApplication
     	con.add("table [i]  = " + table[i] );
     	while ( i < len )
 		{
-//    		depTmp = DependencyHome.getDependencysByArtifactId( table[i]);  
     		DependencyHome.remove( Integer.parseInt( table[i] ) );    
 			SiteHome.removeDependencyFromSite(Integer.parseInt( table[i] ), site.getId( ));
 			con.add("table [i]  = " + table[i] + " | site id = " + site.getId( ) );
@@ -447,5 +487,3 @@ public class ParseXPage extends MVCApplication
     }
    
 }
-
-
