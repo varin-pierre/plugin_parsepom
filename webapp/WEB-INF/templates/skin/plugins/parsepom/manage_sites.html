@@ -49,6 +49,16 @@
 	    </table>
     </div>
     
+    <@messages errors=errors />
+	<br />
+	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+  		<div class="form-group">
+    		<label for="siteName">Rechercher :</label>
+    		<input type="search" class="form-control" id="siteName" name="siteName" placeholder='Site Name'>
+ 		</div>
+  		<button name="action_searchSite" type="submit" class="btn btn-info">Submit</button>
+	</form>
+    <br /><br />
     <div class="dropdown">
   		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece site list
   		<span class="caret"></span></button>
