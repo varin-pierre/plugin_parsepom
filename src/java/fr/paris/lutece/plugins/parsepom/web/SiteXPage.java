@@ -68,6 +68,7 @@ public class SiteXPage extends MVCApplication
     private static final String PARAMETER_ID_SITE="id";
     private static final String PARAM_ACTION = "action";
     private static final String PARAM_PAGE = "page";
+    private static final String PARAMETER_NAME_DEPENDENCY = "siteName";
     
     // Markers
     private static final String MARK_SITE_LIST = "site_list";
@@ -88,11 +89,15 @@ public class SiteXPage extends MVCApplication
     private static final String ACTION_MODIFY_SITE= "modifySite";
     private static final String ACTION_REMOVE_SITE = "removeSite";
     private static final String ACTION_CONFIRM_REMOVE_SITE = "confirmRemoveSite";
+    private static final String ACTION_SEARCH_SITE = "searchSite";
 
     // Infos
     private static final String INFO_SITE_CREATED = "parsepom.info.site.created";
     private static final String INFO_SITE_UPDATED = "parsepom.info.site.updated";
     private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
+    
+    // Errors
+    private static final String ERROR_SITE_NOT_FOUND = "parsepom.error.site.notFound";
     
     // Session variable to store working values
     private Site _site;
@@ -229,10 +234,10 @@ public class SiteXPage extends MVCApplication
     }
     
     /**
-     * Returns the form to get info about a site
+     * Returns the infos about a site
      *
      * @param request The Http request
-     * @return The HTML form to get info
+     * @return The HTML page to display infos
      */
     @View( VIEW_DETAILS_SITE )
     public XPage getDetailsSite( HttpServletRequest request )
@@ -249,5 +254,33 @@ public class SiteXPage extends MVCApplication
         model.put( MARK_DEPENDENCY_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
+    }
+    
+    /**
+     * Returns the infos about a site
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     */
+    @Action( ACTION_SEARCH_SITE )
+    public XPage doSearchSite( HttpServletRequest request )
+    {
+        String strName = request.getParameter( PARAMETER_NAME_DEPENDENCY ).toLowerCase( ) ;
+        Site site = SiteHome.getSiteByName( strName );
+
+        if ( site != null )
+        {
+        	_site = site;
+        	int nId = _site.getId( );
+        
+        	Map<String, Object> model = getModel(  );
+        	model.put( MARK_SITE, _site );
+        	model.put( MARK_DEPENDENCY_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
+        
+        	return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
+        }
+        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_SITES );
     }
 }
