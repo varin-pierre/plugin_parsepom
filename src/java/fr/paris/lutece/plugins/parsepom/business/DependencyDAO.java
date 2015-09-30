@@ -323,5 +323,4 @@ public final class DependencyDAO implements IDependencyDAO
         daoUtil.free( );
         return dependencyList;
     }
-    
 }
