@@ -5,7 +5,7 @@
 <div class="row" >
     <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
 
-		<div class="hidden">
+		<div >
 		        <@messages infos=infos />
 		
 		        <form method="post"  action="jsp/site/Portal.jsp?page=dependency">
@@ -109,7 +109,7 @@
 	  		<#list dependency_list_without_duplicates as dependency >
 	  			<#assign y = "${dependency.artifactId}">
 	  			<#assign len = "${y?length}"?number>
-                <#if len gte 6>
+                <#if len gte 7>
 	  				<#if "${y?substring(0,7)}" == "library">
 	            	   <li><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${dependency.id}">${dependency.artifactId}</a></li>
 	            	</#if>
