@@ -5,7 +5,7 @@
 <div class="row" >
     <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
 
-		<div >
+		<div class="hidden">
 		        <@messages infos=infos />
 		
 		        <form method="post"  action="jsp/site/Portal.jsp?page=dependency">
@@ -64,14 +64,14 @@
 		<br />
 		<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=dependency">
   			<div class="form-group">
-    			<label for="dependencyName">Rechercher :</label>
-    			<input type="search" class="form-control" id="dependencyName" name="dependencyName" placeholder='Artifact Id'>
+    			<label for="dependencyName">#i18n{parsepom.manage_dependencys.labelResearch} :</label>
+    			<input type="search" class="form-control" id="dependencyName" name="dependencyName" placeholder="#i18n{parsepom.manage_dependencys.placeholder}">
  			</div>
-  			<button name="action_searchDependency" type="submit" class="btn btn-info">Submit</button>
+  			<button name="action_searchDependency" type="submit" class="btn btn-info">#i18n{parsepom.manage_dependencys.buttonSubmit}</button>
 		</form>
 		<br /><br />
 	    <div class="dropdown align">
-		  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece core
+		  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_dependencys.buttonCore}
 		  		<span class="caret"></span></button>
 		  		<ul class="dropdown-menu">
 		  		<#list dependency_list_without_duplicates as dependency >
@@ -82,7 +82,7 @@
 		  		</ul>
 			</div>
 		    <div class="dropdown align">
-		  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece plugins list
+		  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_dependencys.buttonPlugins}
 		  		<span class="caret"></span></button>
 		  		<ul class="dropdown-menu">
 		  		<#list dependency_list_without_duplicates as dependency >
@@ -97,7 +97,7 @@
 		  		</ul>
 			</div>
 		<div class="dropdown align">
-	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece modules list
+	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_dependencys.buttonModules}
 	  		<span class="caret"></span></button>
 	  		<ul class="dropdown-menu">
 	  		<#list dependency_list_without_duplicates as dependency >
@@ -112,7 +112,7 @@
 	  		</ul>
 		</div>
 		<div class="dropdown align">
-	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece libraries list
+	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_dependencys.buttonLibraries}
 	  		<span class="caret"></span></button>
 	  		<ul class="dropdown-menu">
 	  		<#list dependency_list_without_duplicates as dependency >
@@ -127,7 +127,7 @@
 	  		</ul>
 		</div>
 		<div class="dropdown align">
-	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Lutece others list
+	  		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_dependencys.buttonOthers}
 	  		<span class="caret"></span></button>
 	  		<ul class="dropdown-menu">
 	  		<#list dependency_list_without_duplicates as dependency >
