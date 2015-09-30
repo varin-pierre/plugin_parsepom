@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.parsepom.web;
  
 
 import fr.paris.lutece.portal.web.xpages.XPage;
+import ucar.nc2.util.xml.Parse;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
@@ -254,6 +255,7 @@ public class ParseXPage extends MVCApplication
         
     	Site _dbSite = new Site( );
     	_site.setIdPlugins("");
+    	_site.setId( maxIdSite );
     	_dbSite = SiteHome.getSiteByName( _site.getName( ) );
     	
         for ( Dependency d : lDep )
@@ -325,6 +327,7 @@ public class ParseXPage extends MVCApplication
 
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
     }
+    
 	List<String> con;
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
@@ -333,58 +336,108 @@ public class ParseXPage extends MVCApplication
     	Iterator<Dependency> itDep = _globalDep.iterator();
     	con = new ArrayList<String>();
     	String strTmp;
-    	int i = 0;
+    	Dependency depTmp ;
     	
-    	while ( itSite.hasNext( ) )
+	    	while ( itSite.hasNext( ) )
+	    	{
+	    		Boolean update = false;
+	    		Site _dbSite;
+	    		Site siteTmp = itSite.next();
+	        	
+	        	if ( !_conflict.isEmpty())
+	        	{
+	//        		SiteHome.create(siteTmp);
+	        		
+		        	Iterator<String> its = _conflict.iterator( );
+		    		while (its.hasNext( ) )
+		    		{
+//		    	    	Reset Iterator for dependency
+
+		    			 itDep = _globalDep.iterator();
+		        		 strTmp = its.next();
+	//	        		con.add("strtmp [" + i + "] = {" + strTmp + "}");
+		        		con.add("==> siteTmp name = {" + siteTmp.getName() + "} | strTmp = {"+ strTmp + "} |");
+		        		if ( siteTmp.getName( ) == strTmp )
+		        		{
+		        			
+		        			_dbSite = SiteHome.getSiteByName( strTmp );
+		        			while ( itDep.hasNext( ) )
+		        			{
+		        				depTmp = itDep.next( );
+		        				con.add("==> depTmp id = {" + depTmp.getSiteId( ) + "} | siteTmp = {"+ siteTmp.getId( ) + "} |");
+		        				if ( depTmp.getSiteId( ) == siteTmp.getId( ) )
+		        				{
+		        					depTmp.setSiteId( _dbSite.getId( ) );
+		        					con.add("if ok ==> depTmp id = {" + depTmp.getSiteId( ) +"} |");
+		        				}
+		        			}
+		        			cleanDependency( _dbSite );
+
+	//	        			con.add("==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
+		        			siteTmp.setId( _dbSite.getId( ) );
+		        			
+		        			update = true ;
+		        			SiteHome.update( siteTmp );
+	//	        			con.add("UPDATE ==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
+		//        			TODO clean dependency after update
+		        		}
+		    		}
+	        	}
+	    		if ( !update )
+				{
+	    			SiteHome.create( siteTmp );
+	    			
+	    			
+				}
+	    		update = false;
+	    		
+	   
+	    	}
+	    	
+//	    	Reset Iterator for dependency
+	    	itDep = _globalDep.iterator();
+    	while ( itDep.hasNext( ) )
     	{
-    		Boolean update = false;
-    		Site _dbSite;
-    		Site siteTmp = itSite.next();
-        	
-        	if (_conflict.isEmpty())
-        	{
-        		SiteHome.create(siteTmp);
-        	}
-        	Iterator<String> its = _conflict.iterator();
-    		while (its.hasNext())
-    		{
-        		 strTmp = its.next();
-        		con.add("strtmp [" + i + "] = {" + strTmp + "}");
-        		i++;
-        		con.add("==> siteTmp name = {" + siteTmp.getName() + "} | strTmp = {"+ strTmp + "} |");
-        		if ( siteTmp.getName() == strTmp )
-        		{
-        			_dbSite = SiteHome.getSiteByName(strTmp);
-        			con.add("==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
-        			siteTmp.setId(_dbSite.getId( ) );
-        			con.add("==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
-        			update = true ;
-        			SiteHome.update(siteTmp);
-        			con.add("UPDATE ==> db id = " +_dbSite.getId( ) + "id = "+ siteTmp.getId());
-//        			TODO clean dependency after update
-        		}
-    		}
-    		if (!update )
-			{
-    			SiteHome.create(siteTmp);
-			}
-    		update = false;
-   
-    	}
-		
-    	while ( itDep.hasNext())
-    	{
-    		DependencyHome.create( itDep.next());
+    		DependencyHome.create( itDep.next( ) );
     	}
     	_site = null;
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-        model.put( "con", con);
+        model.put( "con", con );
 
     	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
     
-    @Action( ACTION_CLEAN )
+    private void cleanDependency( Site site ) 
+    {
+//    	con = new ArrayList<String>();
+		con.add("==> siteTmp = " + site.getName());
+		con.add("==> idplugin = " + site.getIdPlugins());
+    	if (site.getIdPlugins().isEmpty())
+		{
+			con.add("idplugin is empty");
+			return ;
+		}
+    	String[] table ;
+    	String strSiteId = site.getIdPlugins( );
+    	table = strSiteId.split(";");
+    	int i = 0;
+    	int len = table.length;
+    	con.add("len  = " + len );
+    	con.add("table [i]  = " + table[i] );
+    	while ( i < len )
+		{
+//    		depTmp = DependencyHome.getDependencysByArtifactId( table[i]);  
+    		DependencyHome.remove( Integer.parseInt( table[i] ) );    
+			SiteHome.removeDependencyFromSite(Integer.parseInt( table[i] ), site.getId( ));
+			con.add("table [i]  = " + table[i] + " | site id = " + site.getId( ) );
+			con.add("apres remove = " + site.getIdPlugins());
+    		i++;
+		}
+    
+	}
+
+	@Action( ACTION_CLEAN )
     public XPage doClean( HttpServletRequest request )
     {
     	_gobalSites = null;
