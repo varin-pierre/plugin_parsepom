@@ -254,10 +254,10 @@ public class DependencyXPage extends MVCApplication
     }
     
     /**
-     * Returns the form to get info about a dependency
+     * Returns infos about a dependency
      *
      * @param request The Http request
-     * @return The HTML form to get info
+     * @return The HTML page to display infos
      */
     @View( VIEW_DETAILS_DEPENDENCY )
     public XPage getDetailsDependency( HttpServletRequest request )
@@ -280,10 +280,10 @@ public class DependencyXPage extends MVCApplication
     }
     
     /**
-     * Handles the removal form of a dependency
+     * Return Infos about dependency
      *
      * @param request The Http request
-     * @return the jsp URL to display the form to manage dependencys
+     * @return the HTML page to display infos
      */
     @Action( ACTION_SEARCH_DEPENDENCY )
     public XPage doSearchDependency( HttpServletRequest request )
