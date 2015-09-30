@@ -97,7 +97,7 @@ public class SiteXPage extends MVCApplication
     private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
     
     // Errors
-    private static final String ERROR_DEPENDENCY_NOT_FOUND = "parsepom.error.site.notFound";
+    private static final String ERROR_SITE_NOT_FOUND = "parsepom.error.site.notFound";
     
     // Session variable to store working values
     private Site _site;
@@ -279,7 +279,7 @@ public class SiteXPage extends MVCApplication
         
         	return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
         }
-        addError( ERROR_DEPENDENCY_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
     }
