@@ -41,6 +41,8 @@
 	                <#if "${y[d]?substring(0,6)}" == "module">
 	                	<#assign m = m + 1/>
 	                </#if>
+	            </#if>
+	            <#if len gte 7>
 	                <#if "${y[d]?substring(0,7)}" == "library">
 	                	<#assign l = l + 1/>
 	                </#if>

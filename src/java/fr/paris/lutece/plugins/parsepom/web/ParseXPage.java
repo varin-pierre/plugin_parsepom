@@ -121,8 +121,7 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
     {
-
-        return getXPage( TEMPLATE_PARSE );
+        return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
     
     // Dev zone

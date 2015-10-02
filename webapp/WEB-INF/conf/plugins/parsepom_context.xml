@@ -8,5 +8,6 @@
     <bean id="parsepom.dependencyRest"  class="fr.paris.lutece.plugins.parsepom.web.rs.DependencyRest" />
 
     <bean id="parsepom.siteDAO"  class="fr.paris.lutece.plugins.parsepom.business.SiteDAO" />  
-    <bean id="parsepom.dependencyDAO"  class="fr.paris.lutece.plugins.parsepom.business.DependencyDAO" />  
+    <bean id="parsepom.dependencyDAO"  class="fr.paris.lutece.plugins.parsepom.business.DependencyDAO" />
+    
 </beans>
