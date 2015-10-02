@@ -349,82 +349,11 @@ public class ParseXPage extends MVCApplication
 			{
     			String strConflict = itConflict.next( );
         		itSite =_globaleSites.iterator( );
-//        		conflictSite( SiteHome.getSiteByName(strConflict)) ;
-        		while ( itSite.hasNext( ) )
-        		{
-        			con.add( "=== === Site === ===" );
-        			con.add( "len itSite = " + _globaleSites.size());
-        			Boolean bUpadeteSite = false;
-        			StringBuilder strIdPluginNew = new StringBuilder();
-        			Site currentSite = itSite.next( );
-        			con.add( "while itSite avant if strConflict { " + strConflict + " } | { " + currentSite.getName( ) + " } currentSiteName " );
-        			if ( strConflict.equals( currentSite.getName( ) ) )
-        			{
-        				con.add( "ap if strConflict { " + strConflict + " } | { " + currentSite.getName( ) + " } currentSiteName " );
-        				Site siteDB = SiteHome.getSiteByName( strConflict );
-        				Collection<Dependency> coldepDB = DependencyHome.getDependencysListBySiteId( siteDB.getId( ) );
-        				itDep = _globalDep.iterator( );
-        				int	idSiteDB = siteDB.getId( );
-        				int idSiteCur = currentSite.getId( );
-        				
-        				while ( itDep.hasNext( ) )
-        				{
-        					con.add( "=== === Dep === ===" );
-        					con.add( "len itDep = " + _globalDep.size());
-        					Boolean bUpdate = false;
-        					Dependency currentDep = itDep.next( );
-        					Iterator<Dependency> itColDepDB = coldepDB.iterator();
-        					con.add( "Name { " + currentDep.getArtifactId() + " }" );
-        					con.add( "idSiteCur { " + idSiteCur + " } | { " + currentDep.getSiteId( ) + " } currentSiteID" );
-        					if ( idSiteCur == currentDep.getSiteId( ) )
-        					{
-        						while ( itColDepDB.hasNext( ) )
-//        						for ( Dependency elem : coldepDB )
-        						{
-        							Dependency elem = itColDepDB.next( );
-    								con.add( "elem.getArtifactId { " + elem.getArtifactId( ) + " } | { " + currentDep.getArtifactId( ) + " } currentDep.getArtifactId" );
-
-        							if ( elem.getArtifactId( ).equals( currentDep.getArtifactId( ) ) )
-        							{
-        								updateDependency(currentDep, elem.getId( ), idSiteDB);
-        	        					strIdPluginNew.append( currentDep.getId( ) + ";" );
-        	        					con.add( "strIdPluginNew { " + strIdPluginNew + " } ");
-        	        					bUpdate = true;
-        	        					itColDepDB.remove( );
-        	        				     con.add(" remove col");
-        	        					con.add( "len col = " + coldepDB.size());
-        	        					break;
-//        	        					itDep.remove();
-        							}
-        							if (bUpdate)
-        								break;
-        						}
-        						// see too put remove in for and delete update
-        						if ( bUpdate )
-        						{
-        							 con.add(" remove dep");
-            						itDep.remove();
-            						bUpdate = false;
-        						}
-        						/*
-        						 *   	See if all token not eat
-        						 */
-//        						updateDependency( currentDep, ( DependencyHome.getMaxId() - 1 ), idSiteDB);
-//        						strIdPluginNew.append( currentDep.getId( ) + ";" );
-        					}
-        				}
-        				updateSite( currentSite, siteDB.getId( ), strConflict, strIdPluginNew.toString( ) );
-//        				bUpadeteSite = true;
-        				con.add(" remove Site");
-        				itSite.remove();
-        			}
-//        			if ( bUpadeteSite )
-//            		{
-//            			itSite.remove();
-//            			bUpadeteSite = false;
-//            		}
-
-        		}
+        		conflictSite( SiteHome.getSiteByName(strConflict)) ;
+        		
+        		itConflict.remove();
+        		
+        		
         		
 			} 
     		   	
@@ -481,9 +410,10 @@ public class ParseXPage extends MVCApplication
     			bFind = true;
     		}
     	}
-//    	strIdPluginNew = conflicDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
+    	strIdPluginNew = conflicDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
     	con.add( " NAME SITE  { " + currentSite.getName() +" } ");
 		updateSite(currentSite, conflict.getId( ), conflict.getName( ), strIdPluginNew.toString( ) );
+		itSite.remove();
 
     }
     
@@ -491,12 +421,12 @@ public class ParseXPage extends MVCApplication
     {
     	Iterator<Dependency> itDep = _globalDep.iterator( );
     	Iterator<Dependency> itColDepDB;
-    	Collection<Dependency> listDepTmp;
+//    	Collection<Dependency> listDepTmp;
     	Dependency currentDep = new Dependency();
     	Collection<Dependency> coldepDB = DependencyHome.getDependencysListBySiteId( siteDb );
     	Boolean bFind = false;
-    	StringBuilder strIdplugin = new StringBuilder();
-    	listDepTmp = listTmpDepBySiteId( siteTmp );
+    	strIdPluginNew = new StringBuilder();
+//    	listDepTmp = listTmpDepBySiteId( siteTmp );
     	while ( itDep.hasNext( ) )
     	{
     		currentDep = itDep.next();
@@ -508,8 +438,8 @@ public class ParseXPage extends MVCApplication
     			
     			if ( currentDB.getArtifactId( ).equals( currentDep.getArtifactId( ) ) )
     			{
-    				listDepTmp.add( currentDB );
-    				strIdplugin.append( currentDB.getId( ) );
+//    				listDepTmp.add( currentDB );
+    				strIdPluginNew.append( currentDB.getId( ) + ";" );
     				bFind = true;
     				itColDepDB.remove();
     				break;
@@ -522,6 +452,7 @@ public class ParseXPage extends MVCApplication
     		}
     		
     	}
+    	// Create new Dependency if are more dependencies than before
     	itDep = _globalDep.iterator( );
     	while ( itDep.hasNext( ) )
     	{
@@ -529,15 +460,15 @@ public class ParseXPage extends MVCApplication
     		if ( currentDep.getSiteId( ) == siteTmp )
     		{
     			createDependency( currentDep , siteDb );
-    			strIdplugin.append( currentDep.getId( ) );
+    			strIdPluginNew.append( currentDep.getId( ) + ";" );
     			itDep.remove( );
     		}
     	}
 		return strIdPluginNew;
 	}
 
-	private Collection<Dependency> listTmpDepBySiteId(int siteTmp) {
-		// TODO Auto-generated method stub
+	private Collection<Dependency> listTmpDepBySiteId(int siteTmp) 
+	{
     	Iterator<Dependency> itDep = _globalDep.iterator( );
 
         Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
@@ -555,7 +486,6 @@ public class ParseXPage extends MVCApplication
 
 	private void createSite( Site site )
     {
-		// TODO Auto-generated method stub
 		SiteHome.create( site );
 	}
 
@@ -575,13 +505,6 @@ public class ParseXPage extends MVCApplication
 		SiteHome.update( upSite );
 	}
 	
-	private void updateDependency( Dependency current, int dbId, int siteId  )
-    {
-    	current.setId( dbId );
-    	current.setSiteId( siteId );
-    	
-    	DependencyHome.update( current );
-    }
 	
 	private String replaceDepInIdPlugins(  Dependency old, Dependency next, Site site )
     {
@@ -597,8 +520,26 @@ public class ParseXPage extends MVCApplication
 		return updateIdPlugin.toString();
     }
     
-    
-    
+
+	@Action( ACTION_CLEAN )
+    public XPage doClean( HttpServletRequest request )
+    {
+    	_globaleSites = null;
+    	_globalDep = null;
+    	//TODO change to redirectView
+        return getXPage( TEMPLATE_PARSE );
+    }
+   
+// DEPRECIATE
+	
+	private void updateDependency( Dependency current, int dbId, int siteId  )
+    {
+    	current.setId( dbId );
+    	current.setSiteId( siteId );
+    	
+    	DependencyHome.update( current );
+    }
+	
     private void cleanDependency( Site site ) 
     {
 		con.add("==> siteTmp = " + site.getName());
@@ -625,173 +566,5 @@ public class ParseXPage extends MVCApplication
 		}
     
 	}
-
-	@Action( ACTION_CLEAN )
-    public XPage doClean( HttpServletRequest request )
-    {
-    	_globaleSites = null;
-    	_globalDep = null;
-    	//TODO change to redirectView
-        return getXPage( TEMPLATE_PARSE );
-    }
-   
-}
-
-//itSite =_globaleSites.iterator( );
-//while ( itSite.hasNext( ) )
-//	createSite( itSite.next( ) );
-//itDep = _globalDep.iterator( );
-//while ( itDep.hasNext( ) )
-//	createDependency( itDep.next( ) );    	
-
-/*
-int len2 = _globalDep.size();
-con.add( "avant  len2 = " + len2);
-
-	// read list Site
-	while ( itSite.hasNext( ) )
-	{
-		Boolean update = false;
-		Site _dbSite;
-		Site currentSite = itSite.next();
-    	
-    	if ( !_conflict.isEmpty( ) )
-    	{
-    		// reset iterator conflict
-    		itConflict = _conflict.iterator( );
-        	
-        	// Read list conflict
-    		while (itConflict.hasNext( ) )
-    		{
-    		 	// 	Reset Iterator for dependency
-    			itDep = _globalDep.iterator();
-        		strTmp = itConflict.next();
-        		con.add("==> currentSite name = {" + currentSite.getName() + "} | strTmp = {"+ strTmp + "} |");
-        		if ( currentSite.getName( ) == strTmp )
-        		{
-        			// find in base the previous Site
-        			_dbSite = SiteHome.getSiteByName( strTmp );
-					Collection <Dependency> cDep = DependencyHome.getDependencysListBySiteId( _dbSite.getId());
-					
-					// read list Dependency
-        			while ( itDep.hasNext( ) )
-        			{
-        				depTmp = itDep.next( );
-
-        				con.add("==> depTmp id = {" + depTmp.getSiteId( ) + "} | currentSite = {"+ currentSite.getId( ) + "} |");
-        				// if dep link to current Site
-        				if ( depTmp.getSiteId( ) == currentSite.getId( ) )
-        				{
-        					Boolean updateDep = false;
-        					int sizeOfcDep = cDep.size();
-        					con.add( " size of cDep = " + 		  sizeOfcDep); 
-        					for ( Dependency elem : cDep)
-        					{
-        						con.add("elem = " + elem.getArtifactId() + " | dep = " + depTmp.getArtifactId());
-        						if ( elem.getArtifactId( ).equals(depTmp.getArtifactId( ) ) )
-        						{
-//        							updateDependency( Dependency current, Dependency db );
-        							con.add("For if ok ==> depTmp id = {" + depTmp.getSiteId( ) +"} |");
-//        							
-        							currentSite.setIdPlugins( replaceDepInIdPlugins( depTmp, elem, currentSite ) );
-        							updateDep = true;
-        							updateDependency( depTmp, elem.getId( ), _dbSite.getId( ) );
-//	        							depTmp.setId(elem.getId());
-//        							depTmp.setSiteId( _dbSite.getId( ) ); // may be useless 
-
-
-        							// V1
-        							String strOld =  String.valueOf(depTmp.getId());
-//        							String strNew = String.valueOf( elem.getId());
-//        							int len = strOld.length();
-//        							StringBuilder updateIdPlugin = new StringBuilder( currentSite.getIdPlugins( ) );
-//        							int start = updateIdPlugin.indexOf( strOld ); 
-//        							if ( start != -1 )
-//        								updateIdPlugin.replace(start, start + len, strNew);
-//        							currentSite.setIdPlugins( updateIdPlugin.toString() );
-        							
-        							// V2
-        							
-        							
-        							
-        							
-        							//currentSite.setIdPlugins( tmp );
-//        							DependencyHome.update(depTmp);
-        							con.add("!=> depTmp site id = {" + depTmp.getSiteId( ) +"} |");
-        								con.add(" remove");
-        						}
-        					}
-        					if ( !updateDep )
-        					{
-        						depTmp.setSiteId( _dbSite.getId( ) );
-        						con.add("!update ==> depTmp site id = {" + depTmp.getSiteId( ) +"} |");
-        						
-        					}
-        					else
-        						itDep.remove();
-        				}
-        			}
-        			currentSite.setId( _dbSite.getId( ) );
-//        			cleanDependency( _dbSite );
-        			
-        			update = true ;
-        			SiteHome.update( currentSite );
-        		}
-    		}
-    	}
-		if ( !update )
-		{
-			int idSite = currentSite.getId( );
-			SiteHome.create( currentSite );
-			
-			Site tmp = SiteHome.findByPrimaryKey( SiteHome.getMaxId() -1 );
-			int newIdSite =  tmp.getId();
-			listidSiteCreate.add( String.valueOf( idSite ) ); 
-			listidSiteCreate.add(String.valueOf( newIdSite ) );
-
-			con.add("idSite = " + idSite + " | newIdSite = " + newIdSite + " > " + String.valueOf( newIdSite ) );
-			
-		}
-		update = false;
-		
-
-	}
 	
-//	Reset Iterator for dependency
-	itDep = _globalDep.iterator();
-	 len2 = _globalDep.size();
-	con.add( " len2 = " + len2);
-
-	if( !listidSiteCreate.isEmpty( ) )
-	{
-		Iterator<String> it = listidSiteCreate.iterator();
-		while ( it.hasNext( ) )
-		{
-			String idSiteOld = it.next();
-			String idSiteNew = it.next();
-			while ( itDep.hasNext( ) )
-	    	{
-				
-	    		Dependency currentDep = itDep.next( );
-	    		if ( currentDep.getSiteId() == Integer.parseInt( idSiteOld ) ) 
-    			{
-	    			
-    			
-    			con.add(" lidsite old = " + idSiteOld + "idsite New = " + idSiteNew );
-    			updateDependency(currentDep, currentDep.getId( ), Integer.parseInt(idSiteNew) );
-    			DependencyHome.create( currentDep );
-    			Site site = SiteHome.findByPrimaryKey( Integer.parseInt(idSiteNew ) ) ;
-    			replaceDepInIdPlugins(currentDep, DependencyHome.findByPrimaryKey( DependencyHome.getMaxId() - 1), site);
-    			SiteHome.update(site);
-    			}
-	    	}
-		}
-	}
-	else
-	{
-		while ( itDep.hasNext( ) )
-		{
-			DependencyHome.create(  itDep.next( ) );
-		}
-	}
-*/
+}
