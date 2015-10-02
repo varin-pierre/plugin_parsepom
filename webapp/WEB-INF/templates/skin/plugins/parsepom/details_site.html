@@ -4,6 +4,45 @@
   			<div class="panel-heading">
      			<h3 class="panel-title">${site.name}</h3>
    			</div>
+   			<div class="panel-body">
+   				<#assign c = 0>
+            	<#assign d = 0>
+            	<#assign l = 0>
+            	<#assign m = 0>
+            	<#assign o = 0>
+            	<#assign p = 0>
+            	<#assign y = []>
+            	<#list dependency_list_by_site as depend>
+	                <#assign y = y + [ "${depend.artifactId}" ]>
+	                <#assign len = "${depend.artifactId?length}"?number>
+	                <#if len gte 6>
+	                	<#if "${y[d]}" == "lutece-core">
+	                		<#assign c = c + 1/>
+	                	</#if>
+		                <#if "${y[d]?substring(0,6)}" == "plugin">
+		                	<#assign p = p + 1/>
+		                </#if>
+		                <#if "${y[d]?substring(0,6)}" == "module">
+		                	<#assign m = m + 1/>
+		                </#if>
+		            </#if>
+		            <#if len gte 7>
+		                <#if "${y[d]?substring(0,7)}" == "library">
+		                	<#assign l = l + 1/>
+		                </#if>
+		            </#if>
+		            <#if "${y[d]?substring(0,3)}" != "lib" && "${y[d]?substring(0,3)}" != "mod" && "${y[d]?substring(0,3)}" != "plu" && "${y[d]?substring(0,3)}" != "lut">
+		             	<#assign o = o + 1/>
+		            </#if>
+	                <#assign d = d + 1>
+                </#list>        
+				<p>#i18n{parsepom.details_dependencys.fieldNbTotalDependency} : ${d}</p>
+				<p>#i18n{parsepom.details_dependencys.fieldNbCore} : ${c}</p>
+				<p>#i18n{parsepom.details_dependencys.fieldNbPlugins} : ${p}</p>
+				<p>#i18n{parsepom.details_dependencys.fieldNbModules} : ${m}</p>
+				<p>#i18n{parsepom.details_dependencys.fieldNbLibraries} : ${l}</p>
+				<p>#i18n{parsepom.details_dependencys.fieldNbOthers} : ${o}</p>
+			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>
                 <tr>
@@ -14,13 +53,6 @@
                 </tr>
             </thead>
             <tbody>
-            	<#assign c = 0>
-            	<#assign d = 0>
-            	<#assign l = 0>
-            	<#assign m = 0>
-            	<#assign o = 0>
-            	<#assign p = 0>
-            	<#assign y = []>
             	<#list dependency_list_by_site as depend>
                 <tr>
                     <td>${depend.groupId}</td>
@@ -28,40 +60,10 @@
                     <td>${depend.version}</td>
                     <td>${depend.type}</td>
                 </tr>
-                <#assign i = 0>
-                <#assign y = y + [ "${depend.artifactId}" ]>
-                <#assign len = "${depend.artifactId?length}"?number>
-                <#if len gte 6>
-                	<#if "${y[d]}" == "lutece-core">
-                		<#assign c = c + 1/>
-                	</#if>
-	                <#if "${y[d]?substring(0,6)}" == "plugin">
-	                	<#assign p = p + 1/>
-	                </#if>
-	                <#if "${y[d]?substring(0,6)}" == "module">
-	                	<#assign m = m + 1/>
-	                </#if>
-	            </#if>
-	            <#if len gte 7>
-	                <#if "${y[d]?substring(0,7)}" == "library">
-	                	<#assign l = l + 1/>
-	                </#if>
-	            </#if>
-	            <#if "${y[d]?substring(0,3)}" != "lib" && "${y[d]?substring(0,3)}" != "mod" && "${y[d]?substring(0,3)}" != "plu" && "${y[d]?substring(0,3)}" != "lut">
-	             	<#assign o = o + 1/>
-	            </#if>
-                <#assign d = d + 1>
-                </#list>                
+                </#list>                      
             </tbody>
    			</table>
-   			<div class="panel-body">
-				<p>#i18n{parsepom.details_dependencys.fieldNbTotalDependency} : ${d}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbCore} : ${c}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbPlugins} : ${p}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbModules} : ${m}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbLibraries} : ${l}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbOthers} : ${o}</p>
-			</div>
+   			
   		</div>
   		<br />
   		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-info" role="button">#i18n{portal.util.labelBack}</a>
