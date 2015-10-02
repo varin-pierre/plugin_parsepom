@@ -24,6 +24,8 @@ $(document).ready(function() {
 	$( '#fourth' ).click( function( ) {
 		handleHeaderClick( '#fourth' );
 	})
+	
+	switchDebug( );
 })
 
 function handleHeaderClick( hdr ) {
@@ -42,4 +44,20 @@ function handleHeaderClick( hdr ) {
         $(hdr).addClass('sortUp');
         $(concat).removeClass('fa-sort').addClass('fa-sort-asc');
     }
+};
+
+function switchDebug( ) {
+	$("#debug").css('cursor', 'pointer');
+	$("#debug").next().hide();
+	$("#debug").children('.switch').text('[ + ] ');
+	$("#debug").click(function() {
+		//$(this).next().next().slideToggle(1000);
+		if ($(this).next().is(":hidden")) {
+			$(this).next().slideDown("slow");
+			$(this).children('.switch').text('[ - ] ');
+		} else {
+			$(this).next().slideUp("slow");
+			$(this).children('.switch').text('[ + ] ');
+		}
+	})
 };
