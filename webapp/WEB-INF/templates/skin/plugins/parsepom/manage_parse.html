@@ -5,20 +5,17 @@
 
 	<@messages infos=infos />
 	<div>
-		<h1>Parse Pom</h1>
+		<h1>#i18n{parsepom.manage_parse.title}</h1>
 		<form method="post"  action="jsp/site/Portal.jsp?page=parse">
 		
 			<div>
-				<p>past path to your directory where all your site are : </p>
+				<p>#i18n{parsepom.manage_parse.pastPath}</p>
 				
-					<label for="Path">Path : </label><input class="form-control" type="text" id="path" name="path" placeholder="/home/user/site"/>		
-							<div><p>
-							</p>
-							</div>	
+					<label for="Path">#i18n{parsepom.manage_parse.path} : </label><input class="form-control" type="text" id="path" name="path" placeholder="/home/user/site"/>
 			 		<div class=".col-md-6 .col-md-offset-2">
 				 		<button name="action_parse" class="btn btn-block btn-lg btn-success" type="submit">
 						 <span class="glyphicon glyphicon-plus"></span> 
-							 GO Parse
+							 #i18n{parsepom.manage_parse.go}
 						 </button>
 			 		</div>
 			 	

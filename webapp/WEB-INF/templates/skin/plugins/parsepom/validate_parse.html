@@ -6,45 +6,72 @@
 </head>
 <body>
 	<div>
-	<@messages infos=infos />
 	<@messages errors=errors />
-		<h1>VALIDATE</h1>
-		<h2>New</h2>
-		<#list all! as a>
-			<#assign doublon = 0>
-			<#list conflict! as con>
-				<#if "${con}" == "${a.name}">
-					<#assign doublon = 1>
-				</#if>
+		<div class="row">
+  			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  				<div class="panel panel-info">
+  					<div class="panel-heading">
+     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleNew}</h3>
+   					</div>
+ 	 				<ul class="list-group">
+ 	 					<#assign doublon = 0>
+	 	 				<#list all! as a>
+	 	 				<#assign doublon = 0>
+							<#list conflict! as con>
+								<#if "${con}" == "${a.name}">
+									<#assign doublon = 1>
+								</#if>
+							</#list>
+							<#if doublon == 0 >
+								<li class="list-group-item">${a.name}</li>
+							</#if>
+						</#list>
+						<#if doublon == 1 >
+							<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
+						</#if>
+  					</ul>
+  				</div>
+  				<div class="panel panel-danger">
+  					<div class="panel-heading">
+     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleConflict}</h3>
+   					</div>
+ 	 				<ul class="list-group">
+ 	 					<#if conflict?has_content >
+							<#list conflict! as con>
+								<li class="list-group-item">${con}</li>
+							</#list>
+						<#else>
+							<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
+						</#if>
+  					</ul>
+  				</div>
+  			</div>
+		</div>
+		<br />
+		<#if conflict?has_content >
+			<p><font color="red">#i18n{parsepom.validate_parse.warning} : 
+			<#list conflict as con>
+				[${con}]
 			</#list>
-			<#if doublon == 0 >
-				<li>${a.name}</li>
-			</#if>
-		</#list>
-		<h2>Conflict</h2>
-		<form method="post"  action="jsp/site/Portal.jsp?page=parse">
-			
-			<#if conflict?has_content >
-				<#list conflict! as con>
-					<li>${con}</li>
-				</#list>
-				<#else>
-					<li>none</li>
-			</#if>
-				<button name="action_validate" class="btn btn-success" type="submit">
-				 <span class="glyphicon glyphicon-ok"></span> 
-				 OK
-				 </button>
-		 		<button name="action_clean" class="btn btn-danger" type="submit">
-				 <span class="glyphicon glyphicon-ban-circle"></span> 
-					 Cancel
-			 	 </button>
+			#i18n{parsepom.validate_parse.warningMessage} !</font></p>
+		</#if>
+		<form method="post"  action="jsp/site/Portal.jsp?page=parse">	
+			<button name="action_validate" class="btn btn-success" type="submit">
+				<span class="glyphicon glyphicon-ok"></span> 
+				#i18n{parsepom.validate_parse.validate}
+			</button>
+		 	<button name="action_clean" class="btn btn-danger" type="submit">
+				<span class="glyphicon glyphicon-ban-circle"></span> 
+				#i18n{parsepom.validate_parse.cancel}
+			</button>
 	 	 </form>
-		<h2>Output Parse</h2>
-			path	: ${parse}
+		<h2 id="debug"><span class="switch"></span><span class="slideTitle">Output Parse</span></h2>
+		<div>
+			path : ${parse!}
 			<#list list as elem >
 				<ul>${elem}</ul> 
 			</#list>
+		</div>
 	</div>
 </body>
 </html>

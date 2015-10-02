@@ -81,8 +81,7 @@ public class ParseXPage extends MVCApplication
     private static final String TEMPLATE_TMP="/skin/plugins/parsepom/tmp.html";
     private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
     private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
-
-   
+ 
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
     
@@ -122,8 +121,7 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
     {
-
-        return getXPage( TEMPLATE_PARSE );
+        return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
     
     // Dev zone
