@@ -53,6 +53,7 @@
 			<#list conflict as con>
 				[${con}]
 			</#list>
+<<<<<<< HEAD:webapp/WEB-INF/templates/skin/plugins/parsepom/validate.html
 			will be overwritten !</font></p>
 		</#if>
 		<form method="post"  action="jsp/site/Portal.jsp?page=parse">	
@@ -64,6 +65,30 @@
 				<span class="glyphicon glyphicon-ban-circle"></span> 
 				Cancel
 			</button>
+=======
+			<#if doublon == 0 >
+				<li>${a.name}</li>
+			</#if>
+		</#list>
+		<h2>Conflict</h2>
+		<form method="post"  action="jsp/site/Portal.jsp?page=parse">
+			
+			<#if conflict?has_content >
+				<#list conflict! as con>
+					<li>${con}</li>
+				</#list>
+				<#else>
+					<li>none</li>
+			</#if>
+				<button name="action_validate" class="btn btn-success" type="submit">
+				 <span class="glyphicon glyphicon-ok"></span> 
+				 OK
+				 </button>
+		 		<button name="action_clean" class="btn btn-danger" type="submit">
+				 <span class="glyphicon glyphicon-ban-circle"></span> 
+					 Cancel
+			 	 </button>
+>>>>>>> master:webapp/WEB-INF/templates/skin/plugins/parsepom/validate_parse.html
 	 	 </form>
 		<h2 id="debug"><span class="switch"></span><span class="slideTitle">Output Parse</span></h2>
 		<div>
