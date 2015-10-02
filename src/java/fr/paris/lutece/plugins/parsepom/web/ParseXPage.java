@@ -41,6 +41,7 @@ import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
+import fr.paris.lutece.plugins.parsepom.business.SiteDAO;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.services.PomHandler;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -131,7 +132,7 @@ public class ParseXPage extends MVCApplication
     private Dependency _dependency;
     private String path;
     private Site _site;
-    private Collection<Site> _gobalSites;
+    private Collection<Site> _globaleSites;
     private Collection<Dependency> _globalDep;
     private List<String> _conflict;
     
@@ -157,13 +158,17 @@ public class ParseXPage extends MVCApplication
     	listFiles = new ArrayList<String>();
     	
     	//TOOD Global for prevent error
-    	_gobalSites = new ArrayList<Site>();
+    	_globaleSites = new ArrayList<Site>();
     	_globalDep = new ArrayList<Dependency>();
     	_conflict = new ArrayList<String>();
 		int len;
-		
+		/* V1 maxId */
 		maxIdSite = SiteHome.getMaxId();
 		maxIdDep = DependencyHome.getMaxId();
+
+		// V2 init at 1 for each new parse
+//		maxIdSite = 1;
+//		maxIdDep = 1;
 // TODO clear len
 		path = request.getParameter( "path" );
 		StringBuilder tmp = new StringBuilder( path );
@@ -281,11 +286,11 @@ public class ParseXPage extends MVCApplication
         	strIdPlugins.append(";");
         }
         _site.setIdPlugins(strIdPlugins.toString());
-    	if (_dbSite != null)
+    	if ( _dbSite != null )
     	{
     		_conflict.add( _site.getName( ) );
     	}
-    	_gobalSites.add( _site );
+    	_globaleSites.add( _site );
     	
 		listFiles.add("=== /extratInfoPom ===");
 
@@ -323,6 +328,7 @@ public class ParseXPage extends MVCApplication
     	model.put( MARK_PARSE, path);
     	model.put( "list", listFiles );
     	model.put( "conflict", _conflict );
+    	model.put( "all", _globaleSites );
     	addInfo( "path to ", getLocale( request ) );
 
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
@@ -332,13 +338,115 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
     {		
-    	Iterator<Site> itSite=_gobalSites.iterator();
+    	Iterator<Site> itSite;
     	Iterator<Dependency> itDep;
     	Iterator<String> itConflict;
     	con = new ArrayList<String>();
-    	String strTmp;
-    	Dependency depTmp ;
     	
+    	if ( !_conflict.isEmpty( ) )
+    	{
+    		con.add( "len confilct = " + _conflict.size());
+    		itConflict = _conflict.iterator( );
+    		while ( itConflict.hasNext( ) )
+			{
+    			String strConflict = itConflict.next( );
+        		itSite =_globaleSites.iterator( );
+        		while ( itSite.hasNext( ) )
+        		{
+        			con.add( "=== === Site === ===" );
+        			con.add( "len itSite = " + _globaleSites.size());
+        			Boolean bUpadeteSite = false;
+        			StringBuilder strIdPluginNew = new StringBuilder();
+        			Site currentSite = itSite.next( );
+        			con.add( "while itSite avant if strConflict { " + strConflict + " } | { " + currentSite.getName( ) + " } currentSiteName " );
+        			if ( strConflict.equals( currentSite.getName( ) ) )
+        			{
+        				con.add( "ap if strConflict { " + strConflict + " } | { " + currentSite.getName( ) + " } currentSiteName " );
+        				Site siteDB = SiteHome.getSiteByName( strConflict );
+        				Collection<Dependency> coldepDB = DependencyHome.getDependencysListBySiteId( siteDB.getId( ) );
+        				itDep = _globalDep.iterator( );
+        				int	idSiteDB = siteDB.getId( );
+        				int idSiteCur = currentSite.getId( );
+        				
+        				while ( itDep.hasNext( ) )
+        				{
+        					con.add( "=== === Dep === ===" );
+        					con.add( "len itDep = " + _globalDep.size());
+        					Boolean bUpdate = false;
+        					Dependency currentDep = itDep.next( );
+        					Iterator<Dependency> itColDepDB = coldepDB.iterator();
+        					con.add( "Name { " + currentDep.getArtifactId() + " }" );
+        					con.add( "idSiteCur { " + idSiteCur + " } | { " + currentDep.getSiteId( ) + " } currentSiteID" );
+        					if ( idSiteCur == currentDep.getSiteId( ) )
+        					{
+        						while ( itColDepDB.hasNext( ) )
+//        						for ( Dependency elem : coldepDB )
+        						{
+        							Dependency elem = itColDepDB.next( );
+    								con.add( "elem.getArtifactId { " + elem.getArtifactId( ) + " } | { " + currentDep.getArtifactId( ) + " } currentDep.getArtifactId" );
+
+        							if ( elem.getArtifactId( ).equals( currentDep.getArtifactId( ) ) )
+        							{
+        								updateDependency(currentDep, elem.getId( ), idSiteDB);
+        	        					strIdPluginNew.append( currentDep.getId( ) + ";" );
+        	        					con.add( "strIdPluginNew { " + strIdPluginNew + " } ");
+        	        					bUpdate = true;
+        	        					itColDepDB.remove( );
+        	        				     con.add(" remove col");
+        	        					con.add( "len col = " + coldepDB.size());
+        	        					break;
+//        	        					itDep.remove();
+        							}
+        							if (bUpdate)
+        								break;
+        						}
+        						// see too put remove in for and delete update
+        						if ( bUpdate )
+        						{
+        							 con.add(" remove dep");
+            						itDep.remove();
+            						bUpdate = false;
+        						}
+        						/*
+        						 *   	See if all token not eat
+        						 */
+//        						updateDependency( currentDep, ( DependencyHome.getMaxId() - 1 ), idSiteDB);
+//        						strIdPluginNew.append( currentDep.getId( ) + ";" );
+        					}
+        				}
+        				updateSite( currentSite, siteDB.getId( ), strConflict, strIdPluginNew.toString( ) );
+//        				bUpadeteSite = true;
+        				con.add(" remove Site");
+        				itSite.remove();
+        			}
+//        			if ( bUpadeteSite )
+//            		{
+//            			itSite.remove();
+//            			bUpadeteSite = false;
+//            		}
+
+        		}
+        		
+			} 
+    		   	
+    	}
+    	
+		itSite =_globaleSites.iterator( );
+		while ( itSite.hasNext( ) )
+			createSite( itSite.next( ) );
+		itDep = _globalDep.iterator( );
+		while ( itDep.hasNext( ) )
+			createDependency( itDep.next( ) );    	
+	
+    	
+//    	itSite =_globaleSites.iterator( );
+//		while ( itSite.hasNext( ) )
+//			createSite( itSite.next( ) );
+//		itDep = _globalDep.iterator( );
+//		while ( itDep.hasNext( ) )
+//			createDependency( itDep.next( ) );    	
+    	
+    	/*
     	int len2 = _globalDep.size();
     	con.add( "avant  len2 = " + len2);
 
@@ -384,25 +492,33 @@ public class ParseXPage extends MVCApplication
 		        						con.add("elem = " + elem.getArtifactId() + " | dep = " + depTmp.getArtifactId());
 		        						if ( elem.getArtifactId( ).equals(depTmp.getArtifactId( ) ) )
 		        						{
+//		        							updateDependency( Dependency current, Dependency db );
 		        							con.add("For if ok ==> depTmp id = {" + depTmp.getSiteId( ) +"} |");
-		        							String strOld =  String.valueOf(depTmp.getId());
-		        							String strNew = String.valueOf( elem.getId());
-		        							int len = strOld.length();
-		        							StringBuilder updateIdPlugin = new StringBuilder( currentSite.getIdPlugins( ) );
-		        							int start = updateIdPlugin.indexOf( strOld ); 
-		        							if ( start != -1 )
-		        								updateIdPlugin.replace(start, start + len, strNew);
-
+//		        							
+		        							currentSite.setIdPlugins( replaceDepInIdPlugins( depTmp, elem, currentSite ) );
 		        							updateDep = true;
-		        							depTmp.setId(elem.getId());
-		        							depTmp.setSiteId(_dbSite.getId()); // may be useless 
+		        							updateDependency( depTmp, elem.getId( ), _dbSite.getId( ) );
+// 		        							depTmp.setId(elem.getId());
+//		        							depTmp.setSiteId( _dbSite.getId( ) ); // may be useless 
 
 
-		        							currentSite.setIdPlugins( updateIdPlugin.toString() );
-
+		        							// V1
+		        							String strOld =  String.valueOf(depTmp.getId());
+//		        							String strNew = String.valueOf( elem.getId());
+//		        							int len = strOld.length();
+//		        							StringBuilder updateIdPlugin = new StringBuilder( currentSite.getIdPlugins( ) );
+//		        							int start = updateIdPlugin.indexOf( strOld ); 
+//		        							if ( start != -1 )
+//		        								updateIdPlugin.replace(start, start + len, strNew);
+//		        							currentSite.setIdPlugins( updateIdPlugin.toString() );
+		        							
+		        							// V2
+		        							
+		        							
+		        							
+		        							
 		        							//currentSite.setIdPlugins( tmp );
-		        							con.add(  "strplugin = " + currentSite.getIdPlugins() + " old = " + strOld + " new = " + strNew);
-		        							DependencyHome.update(depTmp);
+//		        							DependencyHome.update(depTmp);
 		        							con.add("!=> depTmp site id = {" + depTmp.getSiteId( ) +"} |");
 		        								con.add(" remove");
 		        						}
@@ -427,7 +543,16 @@ public class ParseXPage extends MVCApplication
 	        	}
 	    		if ( !update )
 				{
+	    			int idSite = currentSite.getId( );
 	    			SiteHome.create( currentSite );
+	    			
+					Site tmp = SiteHome.findByPrimaryKey( SiteHome.getMaxId() -1 );
+	    			int newIdSite =  tmp.getId();
+	    			listidSiteCreate.add( String.valueOf( idSite ) ); 
+					listidSiteCreate.add(String.valueOf( newIdSite ) );
+
+	    			con.add("idSite = " + idSite + " | newIdSite = " + newIdSite + " > " + String.valueOf( newIdSite ) );
+	    			
 				}
 	    		update = false;
 	    		
@@ -438,10 +563,40 @@ public class ParseXPage extends MVCApplication
 	    	itDep = _globalDep.iterator();
 	    	 len2 = _globalDep.size();
 	    	con.add( " len2 = " + len2);
-    	while ( itDep.hasNext( ) )
-    	{
-    		DependencyHome.create( itDep.next( ) );
-    	}
+    	
+    		if( !listidSiteCreate.isEmpty( ) )
+    		{
+    			Iterator<String> it = listidSiteCreate.iterator();
+    			while ( it.hasNext( ) )
+	    		{
+    				String idSiteOld = it.next();
+    				String idSiteNew = it.next();
+    				while ( itDep.hasNext( ) )
+	    	    	{
+    					
+	    	    		Dependency currentDep = itDep.next( );
+	    	    		if ( currentDep.getSiteId() == Integer.parseInt( idSiteOld ) ) 
+    	    			{
+	    	    			
+    	    			
+		    			con.add(" lidsite old = " + idSiteOld + "idsite New = " + idSiteNew );
+		    			updateDependency(currentDep, currentDep.getId( ), Integer.parseInt(idSiteNew) );
+		    			DependencyHome.create( currentDep );
+		    			Site site = SiteHome.findByPrimaryKey( Integer.parseInt(idSiteNew ) ) ;
+		    			replaceDepInIdPlugins(currentDep, DependencyHome.findByPrimaryKey( DependencyHome.getMaxId() - 1), site);
+		    			SiteHome.update(site);
+    	    			}
+	    	    	}
+	    		}
+    		}
+    		else
+    		{
+    			while ( itDep.hasNext( ) )
+    			{
+    				DependencyHome.create(  itDep.next( ) );
+    			}
+    		}
+    	*/
     	_site = null;
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
@@ -449,6 +604,51 @@ public class ParseXPage extends MVCApplication
 
     	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
+    
+    private void createSite(Site site )
+    {
+		// TODO Auto-generated method stub
+		SiteHome.create( site );
+	}
+
+	private void createDependency( Dependency dependency )
+    {
+		// TODO Auto-generated method stub
+		DependencyHome.create( dependency );
+	}
+
+	private void updateSite( Site upSite, int siteId, String strName, String strIdPlugins )
+	{
+		upSite.setId( siteId );
+		upSite.setName( strName );
+		upSite.setIdPlugins( strIdPlugins );
+		
+		SiteHome.update( upSite );
+	}
+	
+	private void updateDependency( Dependency current, int dbId, int siteId  )
+    {
+    	current.setId( dbId );
+    	current.setSiteId( siteId );
+    	
+    	DependencyHome.update( current );
+    }
+	
+	private String replaceDepInIdPlugins(  Dependency old, Dependency next, Site site )
+    {
+    	String strOld =  String.valueOf(old.getId());
+		String strNew = String.valueOf( next.getId());
+		int len = strOld.length();
+		StringBuilder updateIdPlugin = new StringBuilder( site.getIdPlugins( ) );
+		int start = updateIdPlugin.indexOf( strOld ); 
+		
+		if ( start != -1 )
+			updateIdPlugin.replace(start, start + len, strNew);
+		
+		return updateIdPlugin.toString();
+    }
+    
+    
     
     private void cleanDependency( Site site ) 
     {
@@ -480,7 +680,7 @@ public class ParseXPage extends MVCApplication
 	@Action( ACTION_CLEAN )
     public XPage doClean( HttpServletRequest request )
     {
-    	_gobalSites = null;
+    	_globaleSites = null;
     	_globalDep = null;
     	//TODO change to redirectView
         return getXPage( TEMPLATE_PARSE );

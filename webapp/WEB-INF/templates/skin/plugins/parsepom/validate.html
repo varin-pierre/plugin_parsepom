@@ -9,12 +9,28 @@
 	<@messages infos=infos />
 	<@messages errors=errors />
 		<h1>VALIDATE</h1>
-		
+		<h2>New</h2>
+		<#list all! as a>
+			<#assign doublon = 0>
+			<#list conflict! as con>
+				<#if "${con}" == "${a.name}">
+					<#assign doublon = 1>
+				</#if>
+			</#list>
+			<#if doublon == 0 >
+				<li>${a.name}</li>
+			</#if>
+		</#list>
 		<h2>Conflict</h2>
 		<form method="post"  action="jsp/site/Portal.jsp?page=parse">
-			<#list conflict! as con>
-				<ul>${con}</ul>
-			</#list>
+			
+			<#if conflict?has_content >
+				<#list conflict! as con>
+					<li>${con}</li>
+				</#list>
+				<#else>
+					<li>none</li>
+			</#if>
 				<button name="action_validate" class="btn btn-success" type="submit">
 				 <span class="glyphicon glyphicon-ok"></span> 
 				 OK
