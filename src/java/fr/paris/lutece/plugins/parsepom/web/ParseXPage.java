@@ -435,6 +435,7 @@ public class ParseXPage extends MVCApplication
 		itSite =_globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
 		{
+			String stridPlugin;
 			
 			Site currentSite =  itSite.next( );
 			int nidSiteOrigin = currentSite.getId( );
@@ -444,7 +445,14 @@ public class ParseXPage extends MVCApplication
 			{
 				Dependency currentDep = itDep.next( );
 				if ( currentDep.getSiteId( ) == nidSiteOrigin )
+				{
+					Dependency tmp = new Dependency ( ); 
+					tmp = currentDep;
 					createDependency(  currentDep,  currentSite.getId( ) );
+					stridPlugin = replaceDepInIdPlugins( tmp, currentDep, currentSite );
+					currentSite.setIdPlugins( stridPlugin );
+					SiteHome.update( currentSite );
+				}
 			}
 				    	
 		
@@ -484,18 +492,47 @@ public class ParseXPage extends MVCApplication
     private StringBuilder conflicDependency( int siteTmp, int siteDb, StringBuilder strIdPluginNew )
     {
     	Iterator<Dependency> itDep = _globalDep.iterator( );
+    	Iterator<Dependency> itColDepDB;
     	Collection<Dependency> listDepTmp;
     	Dependency currentDep = new Dependency();
     	Collection<Dependency> coldepDB = DependencyHome.getDependencysListBySiteId( siteDb );
-    	
+    	Boolean bFind = false;
+    	StringBuilder strIdplugin = new StringBuilder();
     	listDepTmp = listTmpDepBySiteId( siteTmp );
     	while ( itDep.hasNext( ) )
     	{
     		currentDep = itDep.next();
-        	Iterator<Dependency> itColDepDB = coldepDB.iterator();
+        	itColDepDB = coldepDB.iterator();
+        	
     		while ( itColDepDB.hasNext( ) )
     		{
+    			Dependency currentDB = itColDepDB.next();
     			
+    			if ( currentDB.getArtifactId( ).equals( currentDep.getArtifactId( ) ) )
+    			{
+    				listDepTmp.add( currentDB );
+    				strIdplugin.append( currentDB.getId( ) );
+    				bFind = true;
+    				itColDepDB.remove();
+    				break;
+    			}
+    		}
+    		if ( bFind )
+    		{
+    			itDep.remove();
+    			bFind = false;
+    		}
+    		
+    	}
+    	itDep = _globalDep.iterator( );
+    	while ( itDep.hasNext( ) )
+    	{
+    		currentDep = itDep.next();
+    		if ( currentDep.getSiteId( ) == siteTmp )
+    		{
+    			createDependency( currentDep , siteDb );
+    			strIdplugin.append( currentDep.getId( ) );
+    			itDep.remove( );
     		}
     	}
 		return strIdPluginNew;
