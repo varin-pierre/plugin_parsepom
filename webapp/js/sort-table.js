@@ -51,7 +51,6 @@ function switchDebug( ) {
 	$("#debug").next().hide();
 	$("#debug").children('.switch').text('[ + ] ');
 	$("#debug").click(function() {
-		//$(this).next().next().slideToggle(1000);
 		if ($(this).next().is(":hidden")) {
 			$(this).next().slideDown("slow");
 			$(this).children('.switch').text('[ - ] ');

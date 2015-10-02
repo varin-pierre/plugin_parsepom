@@ -77,12 +77,11 @@ import org.xml.sax.InputSource;
 public class ParseXPage extends MVCApplication
 {
     // Templates
-    private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/parse.html";
+    private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/manage_parse.html";
     private static final String TEMPLATE_TMP="/skin/plugins/parsepom/tmp.html";
-    private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate.html";
+    private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
     private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
-
-   
+ 
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
     
