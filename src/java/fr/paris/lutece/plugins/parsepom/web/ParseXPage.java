@@ -107,7 +107,6 @@ public class ParseXPage extends MVCApplication
     private String path;
     int maxIdSite;
     int maxIdDep;
-    List<String>listFiles;
 
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
@@ -118,8 +117,6 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_PARSE )
     public XPage doParse( HttpServletRequest request )
     {		
-    	listFiles = new ArrayList<String>();
-
     	_globaleSites = new ArrayList<Site>();
     	_globalDep = new ArrayList<Dependency>();
     	_conflict = new ArrayList<String>();
@@ -128,18 +125,15 @@ public class ParseXPage extends MVCApplication
 		
 		path = request.getParameter( "path" );
 		
-		FileFilter filter = new DirFilter ();
+		FileFilter filter = new DirFilter ( );
     	File dirs = new File( path );
     	if ( !dirs.isDirectory( ) )
     	{
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
     		return redirectView( request, VIEW_PARSE );
     	}
-    	parsePom(dirs.getName(), dirs);
+    	parsePom(dirs.getName( ), dirs);
     	
-    	listFiles.add("@action dirs name = " + dirs.getName());
-    	listFiles.add("@action dirs path = " + dirs.getPath());
-    	listFiles.add("@action dirs  = " + dirs);
 		openDir( dirs, filter, 0 );
 		return redirectView( request, VIEW_VALIDATE );
     }
@@ -150,9 +144,7 @@ public class ParseXPage extends MVCApplication
      */
 	private void openDir( File dirs, FileFilter filter, int depth )
     {
-		listFiles.add("=== openDir ===");
 		int i = depth;
-    	listFiles.add("Dir Name = " + dirs.getName( ));
     	File[] site = dirs.listFiles(filter);
     	if ( i > _nMaxDepth )
     		return ;
@@ -162,7 +154,6 @@ public class ParseXPage extends MVCApplication
     		parsePom(name, d );
 			openDir( d, filter, i++ );
     	}
-		listFiles.add("=== /openDir ===");
     }
     
 	/*
@@ -170,12 +161,8 @@ public class ParseXPage extends MVCApplication
 	 */
 	private Boolean parsePom( String name, File fDir ) 
     {
-    	listFiles.add("=== parsePom ===");
-    	listFiles.add("file name = " + fDir.getName( ) );
     	 FileFilter _pomFilter = new PomFilter(  );
          File[] pom = fDir.listFiles( _pomFilter );
-         if ( pom == null)
-        	 listFiles.add("parsePom pom == null");
          int i = 0;
          for (File p : pom)
          {
@@ -183,14 +170,10 @@ public class ParseXPage extends MVCApplication
         	maxIdSite++;
         	i++;
          }
-         listFiles.add("i = " + i );
          if ( i == 1 )
          {
-         	listFiles.add("=== /parsePom ===");
-
         	 return true;
          }
-     	listFiles.add("=== /parsePom ===");
 
          return false;
 	}
@@ -198,18 +181,13 @@ public class ParseXPage extends MVCApplication
 	private void extratInfoPom( File pom )
 	{
 		Site site;
-		listFiles.add("=== extratInfoPom ===");
-		listFiles.add("extractInfoPom " + pom.getName());
 		PomHandler handler = new PomHandler(  );
         handler.parse( pom );
         List<Dependency> lDep = handler.getDependencies(  );
         
-        
-        
         site = new Site();
         site = handler.getSite();
         StringBuffer strIdPlugins = new StringBuffer();
-        listFiles.add( "Site name : " +  site.getName());
         
     	Site _dbSite = new Site( );
     	site.setIdPlugins("");
@@ -218,21 +196,13 @@ public class ParseXPage extends MVCApplication
     	
         for ( Dependency d : lDep )
         {
-        	listFiles.add("===> Site Id " + site.getId());
-        	listFiles.add("ArtifactId " + d.getArtifactId());
-        	listFiles.add("Type : " + d.getType());
-        	listFiles.add("Groupeid : " + d.getGroupId());
-        	listFiles.add("Version : " + d.getVersion());
-        	listFiles.add("MaxId = " + maxIdSite );
         	d.setSiteId( maxIdSite );
         	d.setId(maxIdDep);
         	maxIdDep++;
-
       
         	if (d.getType( ) == null)
         	{
         		d.setType( "NULL" );
-        		listFiles.add("type null = " + "artifactID = "+ d.getArtifactId() + "site = " + site.getName() + "id site = " + site.getId());
         	}
         	_globalDep.add( d );
         	strIdPlugins.append(d.getId());
@@ -245,7 +215,6 @@ public class ParseXPage extends MVCApplication
     	}
     	_globaleSites.add( site );
     	
-		listFiles.add("=== /extratInfoPom ===");
 
 	}
 
@@ -279,7 +248,6 @@ public class ParseXPage extends MVCApplication
     	
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PARSE, path);
-    	model.put( "list", listFiles );
     	model.put( "conflict", _conflict );
     	model.put( "all", _globaleSites );
     	addInfo( "path to ", getLocale( request ) );
@@ -293,11 +261,9 @@ public class ParseXPage extends MVCApplication
     {		
     	Iterator<Site> itSite;
     	Iterator<String> itConflict;
-    	con = new ArrayList<String>( );
     	
     	if ( !_conflict.isEmpty( ) )
     	{
-    		con.add( "len confilct = " + _conflict.size( ) );
     		itConflict = _conflict.iterator( );
     		while ( itConflict.hasNext( ) )
 			{
@@ -318,7 +284,6 @@ public class ParseXPage extends MVCApplication
 		}
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-        model.put( "con", con );
 
     	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
@@ -343,7 +308,6 @@ public class ParseXPage extends MVCApplication
     		}
     	}
     	strIdPluginNew = conflicDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
-    	con.add( " NAME SITE  { " + currentSite.getName() +" } ");
 		updateSite(currentSite, conflict.getId( ), conflict.getName( ), strIdPluginNew.toString( ) );
 		itSite.remove();
 
