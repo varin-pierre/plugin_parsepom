@@ -35,38 +35,32 @@
 package fr.paris.lutece.plugins.parsepom.web;
  
 
-import fr.paris.lutece.portal.web.xpages.XPage;
-import ucar.nc2.util.xml.Parse;
-import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
-import fr.paris.lutece.plugins.parsepom.business.Dependency;
-import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
-import fr.paris.lutece.plugins.parsepom.business.Site;
-import fr.paris.lutece.plugins.parsepom.business.SiteDAO;
-import fr.paris.lutece.plugins.parsepom.business.SiteHome;
-import fr.paris.lutece.plugins.parsepom.services.PomHandler;
-import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
-import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-
-import java.util.List;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.sound.midi.MidiDevice.Info;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.swing.JFrame;
 
-import org.apache.xpath.operations.Bool;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.ui.Model;
-import org.xml.sax.InputSource;
+import fr.paris.lutece.plugins.parsepom.business.Dependency;
+import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
+import fr.paris.lutece.plugins.parsepom.business.Site;
+import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.services.FileChooser;
+import fr.paris.lutece.plugins.parsepom.services.PomHandler;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
+import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
+import fr.paris.lutece.portal.web.xpages.XPage;
+import ucar.nc2.dataset.conv.COARDSConvention;
 
 
 /**
@@ -80,6 +74,7 @@ public class ParseXPage extends MVCApplication
     private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/manage_parse.html";
     private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
     private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
+    private static final String TEMPLATE_CHOOSE="/skin/plugins/parsepom/choose.html";
  
     
     // Markers
@@ -89,12 +84,16 @@ public class ParseXPage extends MVCApplication
     // Views
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_VALIDATE = "validate";
+    private static final String VIEW_CHOOSE = "choose";
+
 
 
     // Actions
     private static final String ACTION_PARSE = "parse";
     private static final String ACTION_VALIDATE = "validate";
     private static final String ACTION_CLEAN = "clean";
+    private static final String ACTION_CHOOSE = "choose";
+    
     
     // Infos
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
@@ -114,6 +113,44 @@ public class ParseXPage extends MVCApplication
         return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
    
+    @View( value = VIEW_CHOOSE)
+    public XPage getChoose( HttpServletRequest request )
+    {
+    	
+    	return getXPage( TEMPLATE_CHOOSE, request.getLocale() );
+    }
+    
+    @Action( ACTION_CHOOSE )
+    public XPage doChoose( HttpServletRequest request )
+    {		
+    	
+    	JFrame frame = new JFrame("PATH");
+    	FileChooser panel = new FileChooser();
+	    frame.addWindowListener(
+    	      new WindowAdapter() {
+    	        public void windowClosing(WindowEvent e)
+    	        {
+    	        	return ;
+    	        }
+    	        public void windowStateChanged(WindowEvent e) {
+    	        	windowClosing( e );
+    	        }
+    	      }
+    	      
+    	      );
+	    frame.getContentPane().add(panel,"Center");
+	    frame.setSize(panel.getPreferredSize());
+	    frame.setVisible(true);
+	    path = panel.getPath();
+	    
+    	path = request.getParameter("path");
+    	Map<String, Object> model = getModel(  );
+    	model.put( MARK_PARSE, path);
+    	
+    	return getXPage( TEMPLATE_CHOOSE, request.getLocale(), model );
+
+    }
+    
     @Action( ACTION_PARSE )
     public XPage doParse( HttpServletRequest request )
     {		
