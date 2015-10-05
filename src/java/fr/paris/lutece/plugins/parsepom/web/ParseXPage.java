@@ -52,8 +52,10 @@ import java.util.List;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -245,10 +247,22 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_VALIDATE)
     public XPage getValidate( HttpServletRequest request )
     {
+    	Iterator<String> itConflict;
+    	Collection<Site> listSiteConflict = new ArrayList<>( );
     	
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PARSE, path);
-    	model.put( "conflict", _conflict );
+    	if ( !_conflict.isEmpty( ) )
+    	{
+    		itConflict = _conflict.iterator( );
+    		while ( itConflict.hasNext( ) )
+			{      		
+        		listSiteConflict.add( SiteHome.getSiteByName( itConflict.next( ) ) ) ;
+        		
+        		itConflict.remove();
+			} 
+    	}
+    	model.put( "conflict", listSiteConflict );
     	model.put( "all", _globaleSites );
     	addInfo( "path to ", getLocale( request ) );
 
@@ -267,10 +281,9 @@ public class ParseXPage extends MVCApplication
     		itConflict = _conflict.iterator( );
     		while ( itConflict.hasNext( ) )
 			{
-    			itSite =_globaleSites.iterator( );
     			String strConflict = itConflict.next( );
         		
-        		conflictSite( SiteHome.getSiteByName(strConflict)) ;
+        		conflictSite( SiteHome.getSiteByName(strConflict) ) ;
         		
         		itConflict.remove();
 			} 
@@ -278,8 +291,10 @@ public class ParseXPage extends MVCApplication
     	itSite =_globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
 		{
-
-			createSite( itSite.next( ) );
+			String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance( ).getTime( ));
+			Site currentSite = itSite.next( );
+			currentSite.setLastUpdate( timeStamp );
+			createSite( currentSite );
 			itSite.remove( );
 		}
         Map<String, Object> model = getModel(  );
@@ -308,7 +323,7 @@ public class ParseXPage extends MVCApplication
     		}
     	}
     	strIdPluginNew = conflicDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
-		updateSite(currentSite, conflict.getId( ), conflict.getName( ), strIdPluginNew.toString( ) );
+		updateSite(currentSite, conflict.getId( ), conflict.getName( ), strIdPluginNew.toString( ), conflict.getLastUpdate( ) );
 		itSite.remove();
 
     }
@@ -392,11 +407,12 @@ public class ParseXPage extends MVCApplication
     /*
      * Update Site
      */
-    private void updateSite( Site upSite, int siteId, String strName, String strIdPlugins )
+    private void updateSite( Site upSite, int siteId, String strName, String strIdPlugins, String strLastUpdate )
 	{
 		upSite.setId( siteId );
 		upSite.setName( strName );
 		upSite.setIdPlugins( strIdPlugins );
+		upSite.setLastUpdate( strLastUpdate );
 		
 		SiteHome.update( upSite );
 	}

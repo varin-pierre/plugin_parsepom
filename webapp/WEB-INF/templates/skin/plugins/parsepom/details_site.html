@@ -3,6 +3,7 @@
   		<div class="panel panel-primary">
   			<div class="panel-heading">
      			<h3 class="panel-title">${site.name}</h3>
+     			<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
    			</div>
    			<div class="panel-body">
    				<#assign c = 0>
@@ -36,20 +37,20 @@
 		            </#if>
 	                <#assign d = d + 1>
                 </#list>        
-				<p>#i18n{parsepom.details_dependencys.fieldNbTotalDependency} : ${d}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbCore} : ${c}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbPlugins} : ${p}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbModules} : ${m}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbLibraries} : ${l}</p>
-				<p>#i18n{parsepom.details_dependencys.fieldNbOthers} : ${o}</p>
+				<p>- #i18n{parsepom.details_site.fieldNbTotalDependency} : ${d}</p>
+				<p>- #i18n{parsepom.details_site.fieldNbCore} : ${c}</p>
+				<p>- #i18n{parsepom.details_site.fieldNbPlugins} : ${p}</p>
+				<p>- #i18n{parsepom.details_site.fieldNbModules} : ${m}</p>
+				<p>- #i18n{parsepom.details_site.fieldNbLibraries} : ${l}</p>
+				<p>- #i18n{parsepom.details_site.fieldNbOthers} : ${o}</p>
 			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>
                 <tr>
-                    <th id="first">#i18n{parsepom.details_dependencys.columnGroupId}</th>
-                    <th id="second">#i18n{parsepom.details_dependencys.columnArtifactId}</th>
-                    <th id="third">#i18n{parsepom.details_dependencys.columnVersion}</th>
-                    <th id="fourth">#i18n{parsepom.details_dependencys.columnType}</th>
+                    <th id="first">#i18n{parsepom.details_site.columnGroupId}</th>
+                    <th id="second">#i18n{parsepom.details_site.columnArtifactId}</th>
+                    <th id="third">#i18n{parsepom.details_site.columnVersion}</th>
+                    <th id="fourth">#i18n{parsepom.details_site.columnType}</th>
                 </tr>
             </thead>
             <tbody>

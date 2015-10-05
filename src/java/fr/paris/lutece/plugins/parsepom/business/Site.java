@@ -51,6 +51,9 @@ public class Site
     
     @Size( max = 20000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
     private String _strIdPlugins;
+    
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.LastUpdate.size}" )
+    private String _strLastUpdate;
 
     /**
      * Returns the Id
@@ -104,5 +107,23 @@ public class Site
     public void setIdPlugins( String strIdPlugins )
     {
         _strIdPlugins = strIdPlugins;
+    }
+    
+    /**
+     * Returns the LastUpdate
+     * @return The LastUpdate
+     */
+    public String getLastUpdate( )
+    {
+        return _strLastUpdate;
+    }
+
+    /**
+     * Sets the LastUpdate
+     * @param strLastUpdate The LastUpdate
+     */ 
+    public void setLastUpdate( String strLastUpdate )
+    {
+        _strLastUpdate = strLastUpdate;
     }
 }
