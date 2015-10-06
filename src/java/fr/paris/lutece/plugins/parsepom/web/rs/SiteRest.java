@@ -70,6 +70,7 @@ public class SiteRest
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_ID_PLUGINS = "id_plugins";
+    private static final String KEY_LAST_UPDATE = "last_update";
     
     @GET
     @Path( Constants.ALL_PATH )
@@ -246,7 +247,8 @@ public class SiteRest
     public Response createSite(
     @FormParam( KEY_ID ) String id,
     @FormParam( KEY_NAME ) String name, 
-    @FormParam( KEY_ID_PLUGINS ) String id_plugins, 
+    @FormParam( KEY_ID_PLUGINS ) String id_plugins,
+    @FormParam( KEY_LAST_UPDATE ) String last_update, 
     @HeaderParam(HttpHeaders.ACCEPT) String accept, @QueryParam( Constants.FORMAT_QUERY ) String format) throws IOException
     {
         if( id != null )
@@ -259,6 +261,7 @@ public class SiteRest
             {
                 site.setName( name );
                 site.setIdPlugins( id_plugins );
+                site.setLastUpdate( last_update );
                 SiteHome.update( site );
             }
         }
@@ -268,6 +271,7 @@ public class SiteRest
             
             site.setName( name );
             site.setIdPlugins( id_plugins );
+            site.setLastUpdate( last_update );
             SiteHome.create( site );
         }
         return getSites(accept, format);
@@ -284,6 +288,7 @@ public class SiteRest
         XmlUtil.addElement( sbXML, KEY_ID , site.getId( ) );
         XmlUtil.addElement( sbXML, KEY_NAME , site.getName( ) );
         XmlUtil.addElement( sbXML, KEY_ID_PLUGINS , site.getIdPlugins( ) );
+        XmlUtil.addElement( sbXML, KEY_LAST_UPDATE , site.getLastUpdate( ) );
         XmlUtil.endElement( sbXML, KEY_SITE );
     }
     
@@ -298,6 +303,7 @@ public class SiteRest
         jsonSite.accumulate( KEY_ID , site.getId( ) );
         jsonSite.accumulate( KEY_NAME, site.getName( ) );
         jsonSite.accumulate( KEY_ID_PLUGINS, site.getIdPlugins( ) );
+        jsonSite.accumulate( KEY_LAST_UPDATE, site.getLastUpdate( ) );
         json.accumulate( KEY_SITE, jsonSite );
     }
 }
