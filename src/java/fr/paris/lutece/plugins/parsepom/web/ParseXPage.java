@@ -110,6 +110,7 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
     {
+    	
         return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
    
@@ -124,30 +125,11 @@ public class ParseXPage extends MVCApplication
     public XPage doChoose( HttpServletRequest request )
     {		
     	
-    	JFrame frame = new JFrame("PATH");
-    	FileChooser panel = new FileChooser();
-	    frame.addWindowListener(
-    	      new WindowAdapter() {
-    	        public void windowClosing(WindowEvent e)
-    	        {
-    	        	return ;
-    	        }
-    	        public void windowStateChanged(WindowEvent e) {
-    	        	windowClosing( e );
-    	        }
-    	      }
-    	      
-    	      );
-	    frame.getContentPane().add(panel,"Center");
-	    frame.setSize(panel.getPreferredSize());
-	    frame.setVisible(true);
-	    path = panel.getPath();
-	    
-    	path = request.getParameter("path");
+    	path = FileChooser.chooserDir();
     	Map<String, Object> model = getModel(  );
-    	model.put( MARK_PARSE, path);
-    	
-    	return getXPage( TEMPLATE_CHOOSE, request.getLocale(), model );
+    	model.put( "path", path);
+    	    	
+    	return getXPage( TEMPLATE_PARSE, request.getLocale(), model );
 
     }
     
