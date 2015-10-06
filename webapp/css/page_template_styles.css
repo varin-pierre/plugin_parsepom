@@ -22,3 +22,10 @@ img.thumblist-large{width:128px;height:128px;}
 .avatar-huge{width:128px;height:128px;}
 
 .align{display:inline-block;}
+
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+  }

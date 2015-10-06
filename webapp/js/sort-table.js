@@ -26,6 +26,7 @@ $(document).ready(function() {
 	})
 	
 	switchDebug( );
+	autoComplete( );
 })
 
 function handleHeaderClick( hdr ) {
@@ -60,3 +61,32 @@ function switchDebug( ) {
 		}
 	})
 };
+
+function autoComplete(  ) {
+	var listSite = [];
+	var listDependency = [];
+	function availableTags ( ) {
+		$.getJSON("rest/parsepom/site/s?format=json", function(data) {
+		    $.map(data.sites.site, function (value) {
+		    	listSite.push(value.name);
+	        });
+		});
+	};
+	function availableTags2 ( ) {
+	$.getJSON("rest/parsepom/dependency/s?format=json", function(data) {
+	    $.map(data.dependencys.dependency, function (value) {
+	    	listDependency.push(value.artifact_id);
+        });
+	});
+	};
+	availableTags();
+	availableTags2();
+	$( "#siteName" ).autocomplete({
+	  source: listSite,
+	  minLength: 2,
+	});
+	$( "#dependencyName" ).autocomplete({
+	  source: listDependency,
+	  minLength: 2,
+	});
+}
