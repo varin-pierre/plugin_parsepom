@@ -212,7 +212,7 @@ public class ParseXPage extends MVCApplication
     	Site _dbSite = new Site( );
     	site.setIdPlugins( "" );
     	site.setId( maxIdSite );
-    	_dbSite = SiteHome.getSiteByName( site.getName( ) );
+    	_dbSite = SiteHome.getSiteByName( site.getArtifactId( ) );
     	
         for ( Dependency d : lDep )
         {
@@ -231,7 +231,7 @@ public class ParseXPage extends MVCApplication
         site.setIdPlugins(strIdPlugins.toString());
     	if ( _dbSite != null )
     	{
-    		_conflict.add( site.getName( ) );
+    		_conflict.add( site.getArtifactId( ) );
     	}
     	_globaleSites.add( site );
     	
@@ -276,8 +276,6 @@ public class ParseXPage extends MVCApplication
     		while ( itConflict.hasNext( ) )
 			{      		
         		listSiteConflict.add( SiteHome.getSiteByName( itConflict.next( ) ) ) ;
-        		
-//        		itConflict.remove( );
 			}
     	}
     	model.put( "conflict", listSiteConflict );
@@ -317,7 +315,7 @@ public class ParseXPage extends MVCApplication
 			Site currentSite = itSite.next( );
 			currentSite.setLastUpdate( timeStamp );
 			createSite( currentSite );
-			debug.add("create Site : " + currentSite.getId( ) + " Name = " + currentSite.getName());
+			debug.add("create Site : " + currentSite.getId( ) + " Name = " + currentSite.getArtifactId());
 			itSite.remove( );
 		}
         Map<String, Object> model = getModel(  );
