@@ -18,12 +18,12 @@
 	 	 				<#list all! as a>
 	 	 				<#assign doublon = 0>
 							<#list conflict! as con>
-								<#if "${con.name}" == "${a.name}">
+								<#if "${con.artifactId}" == "${a.artifactId}">
 									<#assign doublon = 1>
 								</#if>
 							</#list>
 							<#if doublon == 0 >
-								<li class="list-group-item">${a.name}</li>
+								<li class="list-group-item">${a.artifactId}</li>
 							</#if>
 						</#list>
 						<#if doublon == 1 >
@@ -38,7 +38,7 @@
  	 				<ul class="list-group">
  	 					<#if conflict?has_content >
 							<#list conflict! as con>
-								<li class="list-group-item">${con.name} - <font size="2">#i18n{parsepom.validate_parse.lastUpdate} : <em>${con.lastUpdate}</em></font></li>
+								<li class="list-group-item">${con.artifactId} - <font size="2">#i18n{parsepom.validate_parse.lastUpdate} : <em>${con.lastUpdate}</em></font></li>
 							</#list>
 						<#else>
 							<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
@@ -51,7 +51,7 @@
 		<#if conflict?has_content >
 			<p><font color="red">#i18n{parsepom.validate_parse.warning} : 
 			<#list conflict as con>
-				[${con.name}]
+				[${con.artifactId}]
 			</#list>
 			#i18n{parsepom.validate_parse.warningMessage} !</font></p>
 		</#if>

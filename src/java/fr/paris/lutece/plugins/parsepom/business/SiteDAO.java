@@ -53,7 +53,7 @@ public final class SiteDAO implements ISiteDAO
     private static final String SQL_QUERY_SELECT = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE id_site = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, artifact_id, name, version, id_plugins, last_update ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM parsepom_site WHERE id_site = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, artifact_id = ? name = ?, version = ?, id_plugins = ?, last_update = ? WHERE id_site = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, artifact_id = ?, name = ?, version = ?, id_plugins = ?, last_update = ? WHERE id_site = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
     private static final String SQL_QUERY_UPDATE_PLUGIN_FIELD = "UPDATE parsepom_site SET id_plugins = ? WHERE id_site = ?";
