@@ -64,15 +64,15 @@ public class PomHandler extends DefaultHandler
         }
         catch ( ParserConfigurationException e )
         {
-        	 AppLogService.error( e.getMessage() , e );
+        	 AppLogService.error( e.getMessage( ) , e );
         }
         catch ( SAXException e )
         {
-        	 AppLogService.error( e.getMessage() , e );
+        	 AppLogService.error( e.getMessage( ) , e );
         }
         catch ( IOException e )
         {
-        	 AppLogService.error( e.getMessage() , e );
+        	 AppLogService.error( e.getMessage( ) , e );
         }
     }
 
@@ -134,9 +134,17 @@ public class PomHandler extends DefaultHandler
     	{
     		_nInsideParent = false;
     	}
-    	if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	else if ( "name".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
     	{
     		_site.setName( getBodyText(  ) );
+    	}
+    	else if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	{
+    		_site.setArtifactId( getBodyText(  ) );
+    	}
+    	else if ( "version".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	{
+    		_site.setVersion( getBodyText( ) );
     	}
     	if ( "dependency".equals( rawName ) )
         {
