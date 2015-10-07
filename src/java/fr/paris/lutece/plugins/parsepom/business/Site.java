@@ -49,9 +49,15 @@ public class Site
     @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
     
+    @NotEmpty( message = "#i18n{parsepom.validation.site.Version.notEmpty}" )
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.Version.size}" )
+    private String _strVersion;
+ 
+    @NotEmpty( message = "#i18n{parsepom.validation.site.IdPlugins.notEmpty}" )
     @Size( max = 20000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
     private String _strIdPlugins;
     
+    @NotEmpty( message = "#i18n{parsepom.validation.site.LastUpdate.notEmpty}" )
     @Size( max = 50 , message = "#i18n{parsepom.validation.site.LastUpdate.size}" )
     private String _strLastUpdate;
 
@@ -89,6 +95,24 @@ public class Site
     public void setName( String strName )
     {
         _strName = strName;
+    }
+    
+    /**
+     * Returns the Version
+     * @return The Version
+     */
+    public String getVersion( )
+    {
+        return _strVersion;
+    }
+
+    /**
+     * Sets the Version
+     * @param strName The Version
+     */ 
+    public void setVersion( String strVersion )
+    {
+        _strVersion = strVersion;
     }
     
     /**
