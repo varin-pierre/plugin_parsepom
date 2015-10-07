@@ -152,12 +152,12 @@ public final class SiteHome
    }
    
    /**
-    * Load site who match with strName and return site
+    * Load site who match with strArtifactId and return site
     * @return object site
     */
-   public static Site getSiteByName( String strName )
+   public static Site getSiteByName( String strArtifactId )
    {
-	   return _dao.selectSitesWithName( strName, _plugin );
+	   return _dao.selectSiteByArtifactId( strArtifactId, _plugin );
    }
    
    /**

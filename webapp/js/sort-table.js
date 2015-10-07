@@ -81,11 +81,11 @@ function autoComplete(  ) {
 	};
 	availableTags();
 	availableTags2();
-	$( "#siteName" ).autocomplete({
+	$( "#siteArtifactId" ).autocomplete({
 	  source: listSite,
 	  minLength: 2,
 	});
-	$( "#dependencyName" ).autocomplete({
+	$( "#dependencyArtifactId" ).autocomplete({
 	  source: listDependency,
 	  minLength: 2,
 	});

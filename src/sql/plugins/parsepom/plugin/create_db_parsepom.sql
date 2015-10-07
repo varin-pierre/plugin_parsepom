@@ -6,8 +6,12 @@
 DROP TABLE IF EXISTS parsepom_site;
 CREATE TABLE parsepom_site (
 id_site int(6) NOT NULL,
+<<<<<<< HEAD
 artifact_id varchar(50) NOT NULL default '',
 name varchar(50) NOT NULL default '',
+=======
+name varchar(255) NOT NULL default '',
+>>>>>>> hugues
 version varchar(50) NOT NULL default '',
 id_plugins varchar(20000) NOT NULL default '',
 last_update varchar(50) NOT NULL default '',

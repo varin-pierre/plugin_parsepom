@@ -45,13 +45,23 @@ public class Site
     // Variables declarations 
     private int _nId;
     
+    @NotEmpty( message = "#i18n{parsepom.validation.site.ArtifactId.notEmpty}" )
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.ArtifactId.size}" ) 
+    private String _strArtifactId;
+    
     @NotEmpty( message = "#i18n{parsepom.validation.site.Name.notEmpty}" )
-    @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
     
+    @NotEmpty( message = "#i18n{parsepom.validation.site.Version.notEmpty}" )
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.Version.size}" )
+    private String _strVersion;
+ 
+    @NotEmpty( message = "#i18n{parsepom.validation.site.IdPlugins.notEmpty}" )
     @Size( max = 20000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
     private String _strIdPlugins;
     
+    @NotEmpty( message = "#i18n{parsepom.validation.site.LastUpdate.notEmpty}" )
     @Size( max = 50 , message = "#i18n{parsepom.validation.site.LastUpdate.size}" )
     private String _strLastUpdate;
 
@@ -74,6 +84,24 @@ public class Site
     }
 
     /**
+     * Returns the ArtifactId
+     * @return The ArtifactId
+     */
+    public String getArtifactId( )
+    {
+        return _strArtifactId;
+    }
+
+    /**
+     * Sets the ArtifactId
+     * @param strArtifactId The ArtifactId
+     */ 
+    public void setArtifactId( String strArtifactId )
+    {
+        _strArtifactId = strArtifactId;
+    }
+    
+    /**
      * Returns the Name
      * @return The Name
      */
@@ -89,6 +117,24 @@ public class Site
     public void setName( String strName )
     {
         _strName = strName;
+    }
+    
+    /**
+     * Returns the Version
+     * @return The Version
+     */
+    public String getVersion( )
+    {
+        return _strVersion;
+    }
+
+    /**
+     * Sets the Version
+     * @param strVersion The Version
+     */ 
+    public void setVersion( String strVersion )
+    {
+        _strVersion = strVersion;
     }
     
     /**

@@ -71,7 +71,7 @@ public class DependencyXPage extends MVCApplication
     private static final String PARAMETER_ID_DEPENDENCY="id";
     private static final String PARAM_ACTION = "action";
     private static final String PARAM_PAGE = "page";
-    private static final String PARAMETER_NAME_DEPENDENCY = "dependencyName";
+    private static final String PARAMETER_ARTIFACT_ID_DEPENDENCY = "dependencyArtifactId";
     
     // Markers
     private static final String MARK_DEPENDENCY_LIST = "dependency_list";
@@ -288,7 +288,7 @@ public class DependencyXPage extends MVCApplication
     @Action( ACTION_SEARCH_DEPENDENCY )
     public XPage doSearchDependency( HttpServletRequest request )
     {
-    	String strName = request.getParameter( PARAMETER_NAME_DEPENDENCY ).toLowerCase( );        
+    	String strName = request.getParameter( PARAMETER_ARTIFACT_ID_DEPENDENCY ).toLowerCase( );        
         Collection<Dependency> list = DependencyHome.getDependencysListWithoutDuplicates(  );
         
         for (Dependency depend : list)
