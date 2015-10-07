@@ -68,7 +68,7 @@ public class SiteXPage extends MVCApplication
     private static final String PARAMETER_ID_SITE="id";
     private static final String PARAM_ACTION = "action";
     private static final String PARAM_PAGE = "page";
-    private static final String PARAMETER_NAME_DEPENDENCY = "siteName";
+    private static final String PARAMETER_ARTIFACT_ID_DEPENDENCY = "siteArtifactId";
     
     // Markers
     private static final String MARK_SITE_LIST = "site_list";
@@ -265,8 +265,8 @@ public class SiteXPage extends MVCApplication
     @Action( ACTION_SEARCH_SITE )
     public XPage doSearchSite( HttpServletRequest request )
     {
-        String strName = request.getParameter( PARAMETER_NAME_DEPENDENCY ).toLowerCase( ) ;
-        Site site = SiteHome.getSiteByName( strName );
+        String strArtifactId = request.getParameter( PARAMETER_ARTIFACT_ID_DEPENDENCY ).toLowerCase( ) ;
+        Site site = SiteHome.getSiteByName( strArtifactId );
 
         if ( site != null )
         {

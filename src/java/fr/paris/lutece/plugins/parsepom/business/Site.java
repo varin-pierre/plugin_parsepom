@@ -45,8 +45,12 @@ public class Site
     // Variables declarations 
     private int _nId;
     
+    @NotEmpty( message = "#i18n{parsepom.validation.site.ArtifactId.notEmpty}" )
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.ArtifactId.size}" ) 
+    private String _strArtifactId;
+    
     @NotEmpty( message = "#i18n{parsepom.validation.site.Name.notEmpty}" )
-    @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
+    @Size( max = 50 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
     
     @NotEmpty( message = "#i18n{parsepom.validation.site.Version.notEmpty}" )
@@ -80,6 +84,24 @@ public class Site
     }
 
     /**
+     * Returns the ArtifactId
+     * @return The ArtifactId
+     */
+    public String getArtifactId( )
+    {
+        return _strArtifactId;
+    }
+
+    /**
+     * Sets the ArtifactId
+     * @param strArtifactId The ArtifactId
+     */ 
+    public void setArtifactId( String strArtifactId )
+    {
+        _strArtifactId = strArtifactId;
+    }
+    
+    /**
      * Returns the Name
      * @return The Name
      */
@@ -108,7 +130,7 @@ public class Site
 
     /**
      * Sets the Version
-     * @param strName The Version
+     * @param strVersion The Version
      */ 
     public void setVersion( String strVersion )
     {

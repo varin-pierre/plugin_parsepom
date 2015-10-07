@@ -346,7 +346,7 @@ public class ParseXPage extends MVCApplication
     		}
     	}
     	strIdPluginNew = conflicDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
-		updateSite( currentSite, conflict.getId( ), conflict.getName( ), conflict.getVersion( ), strIdPluginNew.toString( ), conflict.getLastUpdate( ) );
+		updateSite( currentSite, conflict.getId( ), conflict.getArtifactId( ), conflict.getName( ), conflict.getVersion( ), strIdPluginNew.toString( ), conflict.getLastUpdate( ) );
 		debug.add( "confilct befor remove size = " + _globaleSites.size( ) );
 		itSite.remove( );
 		debug.add( "confilct after remove size = " + _globaleSites.size( ) );
@@ -438,9 +438,10 @@ public class ParseXPage extends MVCApplication
     /*
      * Update Site
      */
-    private void updateSite( Site upSite, int siteId, String strName, String version, String strIdPlugins, String strLastUpdate )
+    private void updateSite( Site upSite, int siteId, String strArtifactId, String strName, String version, String strIdPlugins, String strLastUpdate )
 	{
 		upSite.setId( siteId );
+		upSite.setArtifactId( strArtifactId );
 		upSite.setName( strName );
 		upSite.setVersion( version );
 		upSite.setIdPlugins( strIdPlugins );
