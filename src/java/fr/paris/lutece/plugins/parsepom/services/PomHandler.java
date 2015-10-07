@@ -28,6 +28,7 @@ public class PomHandler extends DefaultHandler
     private StringBuffer _sbBodyText = new StringBuffer(  );
     private String _strVersion;
     private boolean _nInsideParent;
+    private boolean _nInsideRepositories;
     private Site _site;
 
     /**
@@ -86,6 +87,11 @@ public class PomHandler extends DefaultHandler
     @Override
     public void startElement( String uri, String localName, String rawName, Attributes attributes )
     {
+    	if ( "repositories".equals( rawName ) )
+    	{
+    		_nInsideRepositories = true;
+    	}
+    	
     	if ( "parent".equals( rawName ) )
     	{
     		_nInsideParent = true;
@@ -134,15 +140,15 @@ public class PomHandler extends DefaultHandler
     	{
     		_nInsideParent = false;
     	}
-    	else if ( "name".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	if ( "name".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories )
     	{
     		_site.setName( getBodyText(  ) );
     	}
-    	else if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories  )
     	{
     		_site.setArtifactId( getBodyText(  ) );
     	}
-    	else if ( "version".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+    	if ( "version".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories  )
     	{
     		_site.setVersion( getBodyText( ) );
     	}
