@@ -68,7 +68,7 @@ function autoComplete(  ) {
 	function availableTags ( ) {
 		$.getJSON("rest/parsepom/site/s?format=json", function(data) {
 		    $.map(data.sites.site, function (value) {
-		    	listSite.push(value.name);
+		    	listSite.push(value.artifact_id);
 	        });
 		});
 	};
