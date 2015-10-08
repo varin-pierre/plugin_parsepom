@@ -36,6 +36,8 @@
 package fr.paris.lutece.plugins.parsepom.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -102,13 +104,13 @@ public interface IDependencyDAO
     Collection<Dependency> selectDependencysListBySiteId( int nSId, Plugin plugin );
     
     /**
-     * Load the name of all the site objects by dependency and load the versions of this dependency by site and returns them as a map
+     * Load the artifact Id and the name of all the site objects by dependency and load the versions of this dependency by site and returns them as a map
      * @param strArtifactId The Artifact Id of the site
      * @param idSitesList The double list of the Dependency ids by site
      * @param plugin the Plugin
-     * @return The map which contains the name of all the site objects by dependency and the versions of this dependency by site
+     * @return The map which contains the artifactId and the name of all the site objects by dependency and the versions of this dependency by site
      */
-    Map<String, String> selectSitesListByDependencyId( String strArtifactId, List<List<Integer>> idSitesList, Plugin plugin );
+    Map<String, ArrayList<String>> selectSitesListByDependencyId( String strArtifactId, List<List<Integer>> idSitesList, Plugin plugin );
 
     /**
      * Load the data of all the dependency objects by artifactId and returns them as a collection
