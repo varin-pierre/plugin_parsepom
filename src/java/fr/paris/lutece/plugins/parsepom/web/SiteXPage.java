@@ -42,6 +42,8 @@ import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
+
+import java.util.Collection;
 import java.util.Map;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
@@ -60,6 +62,7 @@ public class SiteXPage extends MVCApplication
     private static final String TEMPLATE_CREATE_SITE="/skin/plugins/parsepom/create_site.html";
     private static final String TEMPLATE_MODIFY_SITE="/skin/plugins/parsepom/modify_site.html";
     private static final String TEMPLATE_DETAILS_SITE="/skin/plugins/parsepom/details_site.html";
+    private static final String TEMPLATE_LIST_SITES="/skin/plugins/parsepom/list_sites.html";
     
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
@@ -68,12 +71,14 @@ public class SiteXPage extends MVCApplication
     private static final String PARAMETER_ID_SITE="id";
     private static final String PARAM_ACTION = "action";
     private static final String PARAM_PAGE = "page";
-    private static final String PARAMETER_ARTIFACT_ID_DEPENDENCY = "siteArtifactId";
+    private static final String PARAMETER_ARTIFACT_ID_SITE = "siteArtifactId";
+    private static final String PARAMETER_VERSION_SITE = "siteVersion";
     
     // Markers
     private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_SITE = "site";
     private static final String MARK_DEPENDENCY_LIST_BY_SITE = "dependency_list_by_site";
+    private static final String MARK_SITE_LIST_BY_VERSION = "site_list_by_version";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
@@ -89,7 +94,8 @@ public class SiteXPage extends MVCApplication
     private static final String ACTION_MODIFY_SITE= "modifySite";
     private static final String ACTION_REMOVE_SITE = "removeSite";
     private static final String ACTION_CONFIRM_REMOVE_SITE = "confirmRemoveSite";
-    private static final String ACTION_SEARCH_SITE = "searchSite";
+    private static final String ACTION_SEARCH_SITE_BY_ARTIFACT_ID = "searchSiteByArtifactId";
+    private static final String ACTION_SEARCH_SITE_BY_VERSION = "searchSiteByVersion";
 
     // Infos
     private static final String INFO_SITE_CREATED = "parsepom.info.site.created";
@@ -257,16 +263,16 @@ public class SiteXPage extends MVCApplication
     }
     
     /**
-     * Returns the infos about a site
+     * Returns the infos about a site ranked by artifactId
      *
      * @param request The Http request
      * @return The HTML page to display infos
      */
-    @Action( ACTION_SEARCH_SITE )
-    public XPage doSearchSite( HttpServletRequest request )
+    @Action( ACTION_SEARCH_SITE_BY_ARTIFACT_ID )
+    public XPage doSearchArtifactId( HttpServletRequest request )
     {
-        String strArtifactId = request.getParameter( PARAMETER_ARTIFACT_ID_DEPENDENCY ).toLowerCase( ) ;
-        Site site = SiteHome.getSiteByName( strArtifactId );
+        String strArtifactId = request.getParameter( PARAMETER_ARTIFACT_ID_SITE ).toLowerCase( ) ;
+        Site site = SiteHome.getSiteByArtifactId( strArtifactId );
 
         if ( site != null )
         {
@@ -278,6 +284,30 @@ public class SiteXPage extends MVCApplication
         	model.put( MARK_DEPENDENCY_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
         
         	return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
+        }
+        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_SITES );
+    }
+    
+    /**
+     * Returns the infos about a site ranked by version
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     */
+    @Action( ACTION_SEARCH_SITE_BY_VERSION )
+    public XPage doSearchVersion( HttpServletRequest request )
+    {
+        String strVersion = request.getParameter( PARAMETER_VERSION_SITE ).toLowerCase( ) ;
+        Collection<Site> siteList = SiteHome.getSitesListByVersion( strVersion );
+
+        if ( !siteList.isEmpty( ) )
+        { 
+        	Map<String, Object> model = getModel(  );
+        	model.put( MARK_SITE_LIST_BY_VERSION, siteList );
+        
+        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
         }
         addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
 

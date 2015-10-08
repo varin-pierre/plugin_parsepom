@@ -1,7 +1,6 @@
 <#include "parsepom_tabs.html" />
 <@tabs tab="site" />
 
-<br />
 <div class="row" >
     <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
 
@@ -50,20 +49,29 @@
     </div>
     
     <@messages errors=errors />
-	<br />
+	
+	<br /><br />
 	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
   		<div class="form-group">
     		<label for="siteArtifactId">#i18n{parsepom.manage_sites.labelResearch} :</label>
-    		<input type="search" class="form-control" id="siteArtifactId" name="siteArtifactId" placeholder="#i18n{parsepom.manage_sites.placeholder}">
+    		<input type="search" class="form-control" id="siteArtifactId" name="siteArtifactId" placeholder="#i18n{parsepom.manage_sites.placeholderArtifactId}">
  		</div>
-  		<button name="action_searchSite" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
+  		<button name="action_searchSiteByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
+	</form>
+	<br />
+	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+  		<div class="form-group">
+    		<label for="siteVersion">#i18n{parsepom.manage_sites.labelResearch} :</label>
+    		<input type="search" class="form-control" id="siteVersion" name="siteVersion" placeholder="#i18n{parsepom.manage_sites.placeholderVersion}">
+ 		</div>
+  		<button name="action_searchSiteByVersion" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
 	</form>
     <br /><br />
     <div class="dropdown">
   		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_sites.buttonSites}
   		<span class="caret"></span></button>
   		<ul class="dropdown-menu">
-  		<li class="dropdown-header">#i18n{parsepom.manage_sites.keyResearch}</li>
+  		<li class="dropdown-header"><u>#i18n{parsepom.manage_sites.keyResearch}</u></li>
   		<#list site_list as site >
     		<li><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId} (${site.name})</a></li>	
     	</#list>

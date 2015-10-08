@@ -212,7 +212,7 @@ public class ParseXPage extends MVCApplication
     	Site _dbSite = new Site( );
     	site.setIdPlugins( "" );
     	site.setId( maxIdSite );
-    	_dbSite = SiteHome.getSiteByName( site.getArtifactId( ) );
+    	_dbSite = SiteHome.getSiteByArtifactId( site.getArtifactId( ) );
     	
         for ( Dependency d : lDep )
         {
@@ -292,7 +292,7 @@ public class ParseXPage extends MVCApplication
     		itConflict = _conflict.iterator( );
     		while ( itConflict.hasNext( ) )
 			{      		
-        		listSiteConflict.add( SiteHome.getSiteByName( itConflict.next( ) ) ) ;
+        		listSiteConflict.add( SiteHome.getSiteByArtifactId( itConflict.next( ) ) ) ;
 			}
     	}
     	model.put( "conflict", listSiteConflict );
@@ -318,7 +318,7 @@ public class ParseXPage extends MVCApplication
 			{
     			String strConflict = itConflict.next( );
     			debug.add( "strCnfilct = " + strConflict );
-        		conflictSite( SiteHome.getSiteByName( strConflict) ) ;
+        		conflictSite( SiteHome.getSiteByArtifactId( strConflict) ) ;
         		
         		itConflict.remove( );
         		

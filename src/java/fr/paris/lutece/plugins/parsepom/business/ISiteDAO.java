@@ -121,6 +121,13 @@ public interface ISiteDAO
      * @return The site which contains the data of the site matching the strArtifactId 
      */
 	Site selectSiteByArtifactId(String strArtifactId, Plugin plugin);
+	
+	/**
+     * Load the data of the site object matching the strVersion and return it as an object
+     * @param plugin the Plugin
+     * @return The site which contains the data of the site matching the strVersion 
+     */
+	Collection<Site> selectSitesListByVersion(String strVersion, Plugin plugin);
 
 	int newPrimaryKey(Plugin plugin);
 }

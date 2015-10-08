@@ -155,9 +155,18 @@ public final class SiteHome
     * Load site who match with strArtifactId and return site
     * @return object site
     */
-   public static Site getSiteByName( String strArtifactId )
+   public static Site getSiteByArtifactId( String strArtifactId )
    {
 	   return _dao.selectSiteByArtifactId( strArtifactId, _plugin );
+   }
+   
+   /**
+    * Load site who match with strVersion and return a sites list
+    * @return object site
+    */
+   public static Collection<Site> getSitesListByVersion( String strVersion )
+   {
+	   return _dao.selectSitesListByVersion( strVersion, _plugin );
    }
    
    /**
