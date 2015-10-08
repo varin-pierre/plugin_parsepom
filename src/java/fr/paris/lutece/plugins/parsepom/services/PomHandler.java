@@ -23,15 +23,15 @@ public class PomHandler extends DefaultHandler
 {
     private static SAXParserFactory _saxFactory;
     private ArrayList<Dependency> _listDependencies = new ArrayList<Dependency>(  );
+    private StringBuffer _sbBodyText = new StringBuffer(  );
     private Dependency _currentDependency;
     private boolean _nInsideDependency;
     private boolean _nInsideParent;
     private boolean _nInsideRepositories;
     private boolean _nInsideProfiles;
-    private StringBuffer _sbBodyText = new StringBuffer(  );
     private String _strVersion;
-   
     private Site _site;
+    
 
     /**
      * @return the dependencies attribute of the Bootstrap object
@@ -103,15 +103,19 @@ public class PomHandler extends DefaultHandler
     	{
     		_nInsideParent = true;
     	}
+    	
         if ( "dependency".equals( rawName ) )
         {
             _currentDependency = new Dependency(  );
             _nInsideDependency = true;
         }
-        if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories && !_nInsideProfiles )
+        
+        if ( "project".equals( rawName ) )
         {
         	_site = new Site( );
+
         }
+        
     }
 
     /**
