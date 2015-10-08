@@ -229,6 +229,23 @@ public class ParseXPage extends MVCApplication
         	strIdPlugins.append(";");
         }
         site.setIdPlugins(strIdPlugins.toString());
+        if ( site.getName() == null ) 
+		{
+        	site.setName( "null");
+		}
+        if ( site.getVersion() == null )
+        {
+        	site.setVersion( "null" );
+        }
+        if ( site.getArtifactId( ) == null )
+        {
+        	site.setArtifactId( "null" );
+        }
+        if ( site.getLastUpdate() == null)
+        {
+        	site.setLastUpdate( "null " );
+        }
+        
     	if ( _dbSite != null )
     	{
     		_conflict.add( site.getArtifactId( ) );

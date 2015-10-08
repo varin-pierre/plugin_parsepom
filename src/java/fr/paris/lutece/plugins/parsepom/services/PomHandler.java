@@ -25,10 +25,12 @@ public class PomHandler extends DefaultHandler
     private ArrayList<Dependency> _listDependencies = new ArrayList<Dependency>(  );
     private Dependency _currentDependency;
     private boolean _nInsideDependency;
-    private StringBuffer _sbBodyText = new StringBuffer(  );
-    private String _strVersion;
     private boolean _nInsideParent;
     private boolean _nInsideRepositories;
+    private boolean _nInsideProfiles;
+    private StringBuffer _sbBodyText = new StringBuffer(  );
+    private String _strVersion;
+   
     private Site _site;
 
     /**
@@ -87,6 +89,11 @@ public class PomHandler extends DefaultHandler
     @Override
     public void startElement( String uri, String localName, String rawName, Attributes attributes )
     {
+    	if ( "profiles".equals( rawName ) )
+    	{
+    		_nInsideProfiles = true;
+    	}
+    	
     	if ( "repositories".equals( rawName ) )
     	{
     		_nInsideRepositories = true;
@@ -101,7 +108,7 @@ public class PomHandler extends DefaultHandler
             _currentDependency = new Dependency(  );
             _nInsideDependency = true;
         }
-        if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent )
+        if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories && !_nInsideProfiles )
         {
         	_site = new Site( );
         }
@@ -140,15 +147,19 @@ public class PomHandler extends DefaultHandler
     	{
     		_nInsideParent = false;
     	}
-    	if ( "name".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories )
+    	if ( "profiles".equals( rawName ) )
+    	{
+    		_nInsideProfiles = false;
+    	}
+    	if ( "name".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories && !_nInsideProfiles )
     	{
     		_site.setName( getBodyText(  ) );
     	}
-    	if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories  )
+    	if ( "artifactId".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories  && !_nInsideProfiles )
     	{
     		_site.setArtifactId( getBodyText(  ) );
     	}
-    	if ( "version".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories  )
+    	if ( "version".equals( rawName ) && !_nInsideDependency && !_nInsideParent && !_nInsideRepositories  && !_nInsideProfiles )
     	{
     		_site.setVersion( getBodyText( ) );
     	}
