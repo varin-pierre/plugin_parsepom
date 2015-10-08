@@ -207,6 +207,8 @@ public class ParseXPage extends MVCApplication
         
         site = new Site();
         site = handler.getSite();
+        if ( site == null )
+        	return;
         StringBuffer strIdPlugins = new StringBuffer();
         
     	Site _dbSite = new Site( );
@@ -250,7 +252,7 @@ public class ParseXPage extends MVCApplication
     	{
     		_conflict.add( site.getArtifactId( ) );
     	}
-    	_globaleSites.add( site );
+		_globaleSites.add( site );
     	
 
 	}
