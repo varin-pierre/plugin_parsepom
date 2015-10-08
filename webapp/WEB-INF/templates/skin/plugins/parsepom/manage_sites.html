@@ -63,8 +63,9 @@
   		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#i18n{parsepom.manage_sites.buttonSites}
   		<span class="caret"></span></button>
   		<ul class="dropdown-menu">
+  		<li class="dropdown-header">#i18n{parsepom.manage_sites.keyResearch}</li>
   		<#list site_list as site >
-    		<li><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId}</a></li>	
+    		<li><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId} (${site.name})</a></li>	
     	</#list>
   		</ul>
 	</div>

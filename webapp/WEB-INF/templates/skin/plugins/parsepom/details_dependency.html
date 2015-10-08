@@ -21,8 +21,18 @@
             <tbody>
 				<#list sites_list_by_dependency?keys as key>
 				<tr>
-					<td>${key}</td>
-					<td>${sites_list_by_dependency[key]}</td> 
+					<td>
+						<#assign i = 0>
+						<#list sites_list_by_dependency[key] as k>
+							<#if i == 0>
+								${k}
+							<#else>
+								<font size="2">(${k})</font>
+							</#if>
+							<#assign i = i + 1>
+						</#list>
+					</td>
+					<td>${key}</td>				 
 				<tr>
 				</#list>
             </tbody>
