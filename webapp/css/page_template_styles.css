@@ -28,4 +28,10 @@ img.thumblist-large{width:128px;height:128px;}
     overflow-y: auto;
     /* prevent horizontal scrollbar */
     overflow-x: hidden;
-  }
+ }
+ 
+#hover_tr:hover { background:#EEEEEE; }
+
+td a { display:block;color:black; }
+
+td a:hover { text-decoration: none;color:black; }

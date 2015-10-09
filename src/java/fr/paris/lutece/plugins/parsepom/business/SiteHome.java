@@ -152,17 +152,26 @@ public final class SiteHome
    }
    
    /**
-    * Load site who match with strArtifactId and return site
-    * @return object site
+    * Load sites who match with strArtifactId and return site
+    * @return collection site
     */
-   public static Site getSiteByArtifactId( String strArtifactId )
+   public static Collection<Site> getSitesListByArtifactId( String strArtifactId )
    {
-	   return _dao.selectSiteByArtifactId( strArtifactId, _plugin );
+	   return _dao.selectSitesListByArtifactId( strArtifactId, _plugin );
    }
    
    /**
-    * Load site who match with strVersion and return a sites list
-    * @return object site
+    * Load sites who match with strName and return a sites list
+    * @return collection site
+    */
+   public static Collection<Site> getSitesListByName( String strName )
+   {
+	   return _dao.selectSitesListByName( strName, _plugin );
+   }
+   
+   /**
+    * Load sites who match with strVersion and return a sites list
+    * @return collection site
     */
    public static Collection<Site> getSitesListByVersion( String strVersion )
    {
