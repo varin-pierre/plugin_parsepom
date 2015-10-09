@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.parsepom.web;
  
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
+import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
@@ -63,6 +64,7 @@ public class DependencyXPage extends MVCApplication
     private static final String TEMPLATE_CREATE_DEPENDENCY="/skin/plugins/parsepom/create_dependency.html";
     private static final String TEMPLATE_MODIFY_DEPENDENCY="/skin/plugins/parsepom/modify_dependency.html";
     private static final String TEMPLATE_DETAILS_DEPENDENCY="/skin/plugins/parsepom/details_dependency.html";
+    private static final String TEMPLATE_LIST_DEPENDENCYS="/skin/plugins/parsepom/list_dependencys.html";
     
     // JSP
     private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
@@ -93,7 +95,8 @@ public class DependencyXPage extends MVCApplication
     private static final String ACTION_MODIFY_DEPENDENCY= "modifyDependency";
     private static final String ACTION_REMOVE_DEPENDENCY = "removeDependency";
     private static final String ACTION_CONFIRM_REMOVE_DEPENDENCY = "confirmRemoveDependency";
-    private static final String ACTION_SEARCH_DEPENDENCY = "searchDependency";
+    private static final String ACTION_SEARCH_ALL_DEPENDENCYS = "searchAllDependencys";
+    private static final String ACTION_SEARCH_DEPENDENCY_BY_ARTIFACT_ID = "searchDependencyByArtifactId";
 
     // Infos
     private static final String INFO_DEPENDENCY_CREATED = "parsepom.info.dependency.created";
@@ -280,13 +283,36 @@ public class DependencyXPage extends MVCApplication
     }
     
     /**
+     * Returns the infos about all sites
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     */
+    @Action( ACTION_SEARCH_ALL_DEPENDENCYS )
+    public XPage doSearchAllSites( HttpServletRequest request )
+    {
+        Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates(  );
+
+        if ( !dependencyList.isEmpty( ) )
+        {
+        	Map<String, Object> model = getModel(  );
+        	model.put( MARK_DEPENDENCY_LIST, dependencyList );
+        
+        	return getXPage( TEMPLATE_LIST_DEPENDENCYS, request.getLocale(  ), model );
+        }
+        addError( ERROR_DEPENDENCY_NOT_FOUND, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
+    }
+    
+    /**
      * Return Infos about dependency
      *
      * @param request The Http request
      * @return the HTML page to display infos
      */
-    @Action( ACTION_SEARCH_DEPENDENCY )
-    public XPage doSearchDependency( HttpServletRequest request )
+    @Action( ACTION_SEARCH_DEPENDENCY_BY_ARTIFACT_ID )
+    public XPage doSearchDependencyByArtifactId( HttpServletRequest request )
     {
     	String strName = request.getParameter( PARAMETER_ARTIFACT_ID_DEPENDENCY ).toLowerCase( );        
         Collection<Dependency> list = DependencyHome.getDependencysListWithoutDuplicates(  );
