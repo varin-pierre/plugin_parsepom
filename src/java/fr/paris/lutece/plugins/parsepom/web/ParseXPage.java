@@ -37,6 +37,12 @@ package fr.paris.lutece.plugins.parsepom.web;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,7 +103,7 @@ public class ParseXPage extends MVCApplication
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
     
     // Session variable to store working values
-    private static int _nMaxDepth = 5;
+    private  int _nMaxDepth = 0;
     private Collection<Site> _globaleSites;
     private Collection<Dependency> _globalDep;
     private List<String> _conflict;
@@ -135,14 +141,14 @@ public class ParseXPage extends MVCApplication
     }
     
     @Action( ACTION_PARSE )
-    public XPage doParse( HttpServletRequest request )
+    public XPage doParse( HttpServletRequest request ) throws IOException
     {		
     	_globaleSites = new ArrayList<Site>();
     	_globalDep = new ArrayList<Dependency>();
     	_conflict = new ArrayList<String>();
 		maxIdSite = SiteHome.getMaxId( );
 		maxIdDep = DependencyHome.getMaxId( );
-		
+		_nMaxDepth = 0;
 		path = request.getParameter( "path" );
 		
 		FileFilter filter = new DirFilter ( );
@@ -152,9 +158,8 @@ public class ParseXPage extends MVCApplication
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
     		return redirectView( request, VIEW_PARSE );
     	}
-    	parsePom(dirs.getName( ), dirs);
     	
-		openDir( dirs, filter, 0 );
+		openDir( dirs, filter );
 		return redirectView( request, VIEW_VALIDATE );
     }
     
@@ -162,54 +167,49 @@ public class ParseXPage extends MVCApplication
      * open all directory in recurcive mode 
      * stop recursive at value of _nMaxDepth 
      */
-	private void openDir( File dirs, FileFilter filter, int depth )
+	private void openDir( File dirs, FileFilter filter ) throws IOException
     {
-		int i = depth;
-    	File[] site = dirs.listFiles(filter);
-    	if ( i > _nMaxDepth )
-    		return ;
-    	for ( File d : site )
-    	{
-    		String name = d.getName();
-    		parsePom(name, d );
-			openDir( d, filter, i++ );
-    	}
-    }
-    
-	/*
-	 * @return Boolean with status 
-	 */
-	private Boolean parsePom( String name, File fDir ) 
-    {
-    	 FileFilter _pomFilter = new PomFilter(  );
-         File[] pom = fDir.listFiles( _pomFilter );
-         int i = 0;
-         for (File p : pom)
-         {
-        	extratInfoPom( p );
+		FileFilter _pomFilter = new PomFilter(  );
+		File[] pom = dirs.listFiles( _pomFilter );
+		if ( ( pom.length ) == 1 )
+		{
+			extratInfoPom( pom[0]);
         	maxIdSite++;
-        	i++;
-         }
-         if ( i == 1 )
-         {
-        	 return true;
-         }
+		}
+		else
+		{
+			File[] site = dirs.listFiles(filter);
+	    	for ( File d : site )
+    			openDir( d, filter );
+		}
+    }
 
-         return false;
+	private String formatDate( String date )
+	{
+		date = date.replaceAll("-", "/");
+		date = date.replace('T', ' ');
+		date = date.replace('Z', ' ');
+		
+		return date;
 	}
-   
-	private void extratInfoPom( File pom )
+	
+	private void extratInfoPom( File pom ) throws IOException
 	{
 		Site site;
 		PomHandler handler = new PomHandler(  );
         handler.parse( pom );
         List<Dependency> lDep = handler.getDependencies(  );
+     
+        Path p = pom.toPath();
+	    BasicFileAttributes view
+	       = Files.getFileAttributeView(p, BasicFileAttributeView.class)
+	              .readAttributes();
         
-        site = new Site();
-        site = handler.getSite();
+        site = new Site( );
+        site = handler.getSite( );
         if ( site == null )
         	return;
-        StringBuffer strIdPlugins = new StringBuffer();
+        StringBuffer strIdPlugins = new StringBuffer( );
         
     	Site _dbSite = new Site( );
     	site.setIdPlugins( "" );
@@ -231,6 +231,9 @@ public class ParseXPage extends MVCApplication
         	strIdPlugins.append(";");
         }
         site.setIdPlugins(strIdPlugins.toString());
+        String date =  view.creationTime().toString();
+        date = formatDate(date);
+        site.setLastUpdate( date );
         if ( site.getName() == null ) 
 		{
         	site.setName( "null");
@@ -332,7 +335,7 @@ public class ParseXPage extends MVCApplication
 		{
 			String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance( ).getTime( ) );
 			Site currentSite = itSite.next( );
-			currentSite.setLastUpdate( timeStamp );
+//			currentSite.setLastUpdate( timeStamp );
 			createSite( currentSite );
 			debug.add("create Site : " + currentSite.getId( ) + " Name = " + currentSite.getArtifactId());
 			itSite.remove( );
@@ -340,6 +343,8 @@ public class ParseXPage extends MVCApplication
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
         model.put("debug", debug) ;
+    	model.put( "depth", _nMaxDepth );
+
     	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
     
@@ -462,7 +467,7 @@ public class ParseXPage extends MVCApplication
 		upSite.setName( strName );
 		upSite.setVersion( version );
 		upSite.setIdPlugins( strIdPlugins );
-		upSite.setLastUpdate( strLastUpdate );
+//		upSite.setLastUpdate( strLastUpdate );
 		
 		SiteHome.update( upSite );
 	}
