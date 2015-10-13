@@ -1,0 +1,42 @@
+<div class="row">
+  	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-warning" role="button">#i18n{portal.util.labelBack}</a>
+  		<br /><br />
+  		<div class="panel panel-primary">
+  			<div class="panel-heading">
+     			<h3 class="panel-title">List sites</h3>
+   			</div>
+   			<table id="myTableSite" class="table"> 
+   				<thead>
+                <tr>
+                    <th id="first">#i18n{parsepom.list_sites.columnArtifactId}</th>
+                    <th id="second">#i18n{parsepom.list_sites.columnName}</th>
+                    <th id="third">#i18n{parsepom.list_sites.columnVersion}</th>
+                    <th id="fourth">#i18n{parsepom.list_sites.columnLastUpdate}</th>
+                </tr>
+            </thead>
+            <tbody>
+            	<#if site_list??>
+            		<#assign selected_sites = site_list>
+            	<#elseif site_list_by_artifact_id??>
+            		<#assign selected_sites = site_list_by_artifact_id>
+            	<#elseif site_list_by_name??>
+            		<#assign selected_sites = site_list_by_name>
+            	<#elseif site_list_by_version??>
+            		<#assign selected_sites = site_list_by_version>
+            	</#if>
+            	<#list selected_sites! as site>
+                <tr id="hover_tr">
+                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.name}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.version}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.lastUpdate}</a></td>
+                </tr>
+                </#list>                      
+            </tbody>
+   			</table>
+   			
+  		</div>
+  		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-warning" role="button">#i18n{portal.util.labelBack}</a>
+  	</div>
+</div>

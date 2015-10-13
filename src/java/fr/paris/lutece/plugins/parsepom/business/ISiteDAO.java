@@ -116,11 +116,25 @@ public interface ISiteDAO
     public List<List<Integer>> selectIdSitesListByDependency( Plugin plugin );
 
     /**
-     * Load the data of the site object matching the strArtifactId and return it as an object
+     * Load the data of all the sites object matching the strArtifactId and return them as an collection
      * @param plugin the Plugin
      * @return The site which contains the data of the site matching the strArtifactId 
      */
-	Site selectSiteByArtifactId(String strArtifactId, Plugin plugin);
+    Collection<Site> selectSitesListByArtifactId( String strArtifactId, Plugin plugin );
+	
+    /**
+     * Load the data of all the sites object matching the strName and return them as an collection
+     * @param plugin the Plugin
+     * @return The site which contains the data of the site matching the strName 
+     */
+	Collection<Site> selectSitesListByName( String strName, Plugin plugin );
+    
+	/**
+     * Load the data of all the sites object matching the strVersion and return them as an collection
+     * @param plugin the Plugin
+     * @return The site which contains the data of the site matching the strVersion 
+     */
+	Collection<Site> selectSitesListByVersion( String strVersion, Plugin plugin );
 
 	int newPrimaryKey(Plugin plugin);
 }

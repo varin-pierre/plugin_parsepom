@@ -2,6 +2,14 @@
  * 
  */
 $(document).ready(function() {
+	$('#datepicker').datepicker();
+	$('#buttonpicker').click(function ()
+	{
+	    $('#datepicker').datepicker('show');
+	});
+
+	
+	
 	$( '#myTableSite th' ).append( " <i class=\"fa fa-fw fa-sort\">" );
 	$( '#myTableDependency th' ).append( " <i class=\"fa fa-fw fa-sort\">" );
 	
@@ -27,6 +35,8 @@ $(document).ready(function() {
 	
 	switchDebug( );
 	autoComplete( );
+	
+    
 })
 
 function handleHeaderClick( hdr ) {
@@ -63,30 +73,36 @@ function switchDebug( ) {
 };
 
 function autoComplete(  ) {
-	var listSite = [];
+	var listArtifactId = [];
+	var listName = [];
+	var listVersion = [];
+	
 	var listDependency = [];
 	function availableTags ( ) {
 		$.getJSON("rest/parsepom/site/s?format=json", function(data) {
 		    $.map(data.sites.site, function (value) {
-		    	listSite.push(value.artifact_id);
+		    	listArtifactId.push(value.artifact_id);
+		    	listName.push(value.name);
+		    	listVersion.push(value.version);
 	        });
 		});
+		$.getJSON("rest/parsepom/dependency/s?format=json", function(data) {
+		    $.map(data.dependencys.dependency, function (value) {
+		    	listDependency.push(value.artifact_id);
+		    });
+		});
 	};
-	function availableTags2 ( ) {
-	$.getJSON("rest/parsepom/dependency/s?format=json", function(data) {
-	    $.map(data.dependencys.dependency, function (value) {
-	    	listDependency.push(value.artifact_id);
-        });
-	});
-	};
-	availableTags();
-	availableTags2();
+	availableTags( );
 	$( "#siteArtifactId" ).autocomplete({
-	  source: listSite,
-	  minLength: 2,
+	  source: listArtifactId,
+	});
+	$( "#siteName" ).autocomplete({
+	  source: listName,
+	});
+	$( "#siteVersion" ).autocomplete({
+	  source: listVersion,
 	});
 	$( "#dependencyArtifactId" ).autocomplete({
 	  source: listDependency,
-	  minLength: 2,
 	});
 }

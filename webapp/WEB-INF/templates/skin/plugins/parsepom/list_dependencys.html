@@ -1,0 +1,32 @@
+<div class="row">
+  	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  		<a href="jsp/site/Portal.jsp?page=dependency" class="btn btn-warning" role="button">#i18n{portal.util.labelBack}</a>
+  		<br /><br />
+  		<div class="panel panel-primary">
+  			<div class="panel-heading">
+     			<h3 class="panel-title">#i18n{parsepom.list_dependencys.title}</h3>
+   			</div>
+   			<table id="myTableSite" class="table"> 
+   				<thead>
+                <tr>
+                    <th id="first">#i18n{parsepom.list_dependencys.columnGroupId}</th>
+                    <th id="second">#i18n{parsepom.list_dependencys.columnArtifactId}</th>
+                    <th id="third">#i18n{parsepom.list_dependencys.columnType}</th>
+                </tr>
+            </thead>
+            <tbody>
+            	
+            	<#list dependency_list! as depend>
+                <tr id="hover_tr">
+                	<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
+                </tr>
+                </#list>                      
+            </tbody>
+   			</table>
+   			
+  		</div>
+  		<a href="jsp/site/Portal.jsp?page=dependency" class="btn btn-warning" role="button">#i18n{portal.util.labelBack}</a>
+  	</div>
+</div>
