@@ -81,7 +81,15 @@
  		</div>
   		<button name="action_searchSiteByVersion" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
 	</form>
-    
+	<br />
+    <form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+        <div class='form-group' id='datetimepicker1'>
+           	<label for="siteLastUpdate">#i18n{parsepom.manage_sites.labelResearch} :</label>
+            <input type='search' class="form-control" id="datepicker" name="siteLastUpdate" placeholder="#i18n{parsepom.manage_sites.placeholderLastUpdate}"/>
+        </div>
+        <button type="button" id="buttonpicker" class="btn btn-info"><span class="glyphicon glyphicon-calendar"></span></button>
+        <button name="action_searchSiteByLastUpdate" type="submit" id="submit" class="btn btn-success"><span class="glyphicon glyphicon-calendar"></span></button>
+    </form>
     </div>
     
     <div>

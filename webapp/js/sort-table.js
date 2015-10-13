@@ -2,6 +2,14 @@
  * 
  */
 $(document).ready(function() {
+	$('#datepicker').datepicker();
+	$('#buttonpicker').click(function ()
+	{
+	    $('#datepicker').datepicker('show');
+	});
+
+	
+	
 	$( '#myTableSite th' ).append( " <i class=\"fa fa-fw fa-sort\">" );
 	$( '#myTableDependency th' ).append( " <i class=\"fa fa-fw fa-sort\">" );
 	
@@ -27,6 +35,8 @@ $(document).ready(function() {
 	
 	switchDebug( );
 	autoComplete( );
+	
+    
 })
 
 function handleHeaderClick( hdr ) {
