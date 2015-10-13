@@ -77,25 +77,25 @@ function autoComplete(  ) {
 	}
 	
 	function availableTags ( ) {
-		$.getJSON("rest/parsepom/site/s?format=json", function(data) {
-			if (isArray(data.sites.site))
+		$.getJSON("rest/parsepom/site/s?format=json", function( data ) {
+			if ( isArray( data.sites.site ) )
 				data = data.sites.site;
 			else
 				data = data.sites;
-			$.map(data, function (value) {
-			    listSiteArtifactId.push(value.artifact_id);
-			    listSiteName.push(value.name);
-			    listSiteVersion.push(value.version);
-			    listSiteLastUpdate.push(value.last_update);
+			$.map(data, function ( value ) {
+			    listSiteArtifactId.push( value.artifact_id );
+			    listSiteName.push( value.name );
+			    listSiteVersion.push( value.version );
+			    listSiteLastUpdate.push( value.last_update );
 		    });
 		});
-		$.getJSON("rest/parsepom/dependency/s?format=json", function(data) {
-			if (isArray(data.dependencys.dependency))
+		$.getJSON("rest/parsepom/dependency/s?format=json", function( data ) {
+			if ( isArray( data.dependencys.dependency ) )
 				data = data.dependencys.dependency;
 			else
 				data = data.dependencys;
-		    $.map(data, function (value) {
-		    	listDependencyArtifactId.push(value.artifact_id);
+		    $.map(data, function ( value ) {
+		    	listDependencyArtifactId.push( value.artifact_id );
 		    });
 		});
 	};
