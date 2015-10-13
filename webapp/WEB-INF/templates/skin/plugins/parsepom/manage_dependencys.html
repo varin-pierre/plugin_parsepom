@@ -1,7 +1,6 @@
 <#include "parsepom_tabs.html" />
 <@tabs tab="dependency" />
 
-<br />
 <div class="row" >
     <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
 
@@ -60,8 +59,10 @@
 		        </#list>
 		    </table>
 		</div>
-		<@messages errors=errors />
+		
 		<br />
+		<@messages errors=errors />
+		
 		<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=dependency">
   			<div class="form-group">
     			<label for="dependencyAll">#i18n{parsepom.manage_dependencys.labelResearch} :</label>

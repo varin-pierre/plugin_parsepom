@@ -2,14 +2,6 @@
  * 
  */
 $(document).ready(function() {
-	$('#datepicker').datepicker();
-	$('#buttonpicker').click(function ()
-	{
-	    $('#datepicker').datepicker('show');
-	});
-
-	
-	
 	$( '#myTableSite th' ).append( " <i class=\"fa fa-fw fa-sort\">" );
 	$( '#myTableDependency th' ).append( " <i class=\"fa fa-fw fa-sort\">" );
 	
@@ -35,7 +27,7 @@ $(document).ready(function() {
 	
 	switchDebug( );
 	autoComplete( );
-	
+	datePicker( );
     
 })
 
@@ -73,36 +65,74 @@ function switchDebug( ) {
 };
 
 function autoComplete(  ) {
-	var listArtifactId = [];
-	var listName = [];
-	var listVersion = [];
+	var listSiteArtifactId = [];
+	var listSiteName = [];
+	var listSiteVersion = [];
+	var listSiteLastUpdate = [];
 	
-	var listDependency = [];
+	var listDependencyArtifactId = [];
+
+	function isArray( object ) {
+	    return Object.prototype.toString.call( object ) === '[object Array]';
+	}
+	
 	function availableTags ( ) {
 		$.getJSON("rest/parsepom/site/s?format=json", function(data) {
-		    $.map(data.sites.site, function (value) {
-		    	listArtifactId.push(value.artifact_id);
-		    	listName.push(value.name);
-		    	listVersion.push(value.version);
-	        });
+			if (isArray(data.sites.site))
+				data = data.sites.site;
+			else
+				data = data.sites;
+			$.map(data, function (value) {
+			    listSiteArtifactId.push(value.artifact_id);
+			    listSiteName.push(value.name);
+			    listSiteVersion.push(value.version);
+			    listSiteLastUpdate.push(value.last_update);
+		    });
 		});
 		$.getJSON("rest/parsepom/dependency/s?format=json", function(data) {
-		    $.map(data.dependencys.dependency, function (value) {
-		    	listDependency.push(value.artifact_id);
+			if (isArray(data.dependencys.dependency))
+				data = data.dependencys.dependency;
+			else
+				data = data.dependencys;
+		    $.map(data, function (value) {
+		    	listDependencyArtifactId.push(value.artifact_id);
 		    });
 		});
 	};
+	
 	availableTags( );
+	
 	$( "#siteArtifactId" ).autocomplete({
-	  source: listArtifactId,
+		source: listSiteArtifactId,
 	});
 	$( "#siteName" ).autocomplete({
-	  source: listName,
+		source: listSiteName,
 	});
 	$( "#siteVersion" ).autocomplete({
-	  source: listVersion,
+		source: listSiteVersion,
+	});
+	$( "#datepicker" ).autocomplete({
+		source: listSiteLastUpdate,
 	});
 	$( "#dependencyArtifactId" ).autocomplete({
-	  source: listDependency,
+		source: listDependencyArtifactId,
+	});
+}
+
+function datePicker( )
+{
+	$( '#submit' ).attr( 'disabled', true );
+	$( "#datepicker" ).datepicker({
+	    onClose: function( dateText ){
+	        if( !dateText ){
+	        	$( '#submit' ).attr( 'disabled', true );
+	        }
+	        else
+		        $( '#submit' ).attr( 'disabled', false );
+	    }
+	});
+	$( '#buttonpicker' ).click( function ( )
+	{
+	    $( '#datepicker' ).datepicker( 'show' );
 	});
 }
