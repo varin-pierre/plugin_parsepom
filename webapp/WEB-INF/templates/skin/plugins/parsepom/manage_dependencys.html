@@ -67,7 +67,11 @@
   			<div class="form-group">
     			<label for="dependencyAll">#i18n{parsepom.manage_dependencys.labelResearch} :</label>
  			</div>
-  			<button name="action_searchAllDependencys" type="submit" class="btn btn-success">#i18n{parsepom.manage_dependencys.buttonAll}</button>
+ 			<#assign i = 0>
+  			<#list dependency_list as dependency >
+  				<#assign i = i + 1>
+  			</#list>
+  			<button name="action_searchAllDependencys" type="submit" class="btn btn-success">#i18n{parsepom.manage_dependencys.buttonAll} (${i})</button>
 		</form>
 		<br />
 		<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=dependency">

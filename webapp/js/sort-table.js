@@ -65,58 +65,76 @@ function switchDebug( ) {
 };
 
 function autoComplete(  ) {
-	var listSiteArtifactId = [];
+	var listSiteArtifactId = [];	
 	var listSiteName = [];
 	var listSiteVersion = [];
-	var listSiteLastUpdate = [];
-	
+	var listSiteLastUpdate = [];	
 	var listDependencyArtifactId = [];
 
 	function isArray( object ) {
 	    return Object.prototype.toString.call( object ) === '[object Array]';
 	}
 	
+	function removeDuplicates( list )
+	{
+		var tmp = [];
+		
+		$.each( list, function( index, value ) {
+	        if( $.inArray( value, tmp) === -1 )
+	        	tmp.push( value );
+	    });
+		return tmp;
+	}
+	
 	function availableTags ( ) {
-		$.getJSON("rest/parsepom/site/s?format=json", function( data ) {
+		$.getJSON("rest/parsepom/site/s?format=json", function( data ) {			
 			if ( isArray( data.sites.site ) )
 				data = data.sites.site;
 			else
-				data = data.sites;
-			$.map(data, function ( value ) {
+				data = data.sites;			
+			$.map(data, function ( value, index ) {				
 			    listSiteArtifactId.push( value.artifact_id );
 			    listSiteName.push( value.name );
 			    listSiteVersion.push( value.version );
 			    listSiteLastUpdate.push( value.last_update );
 		    });
+			
+			listSiteArtifactId = removeDuplicates( listSiteArtifactId );
+			listSiteName = removeDuplicates( listSiteName );
+			listSiteVersion = removeDuplicates( listSiteVersion );
+			listSiteLastUpdate = removeDuplicates( listSiteLastUpdate );
+			
+			$( "#siteArtifactId" ).autocomplete({
+				source: listSiteArtifactId,
+			});
+			$( "#siteName" ).autocomplete({
+				source: listSiteName,
+			});
+			$( "#siteVersion" ).autocomplete({
+				source: listSiteVersion,
+			});
+			$( "#datepicker" ).autocomplete({
+				source: listSiteLastUpdate,
+			});
 		});
 		$.getJSON("rest/parsepom/dependency/s?format=json", function( data ) {
 			if ( isArray( data.dependencys.dependency ) )
 				data = data.dependencys.dependency;
 			else
 				data = data.dependencys;
-		    $.map(data, function ( value ) {
+		    $.map(data, function ( value, index ) {
 		    	listDependencyArtifactId.push( value.artifact_id );
 		    });
+		    
+		    listDependencyArtifactId = removeDuplicates( listDependencyArtifactId );
+		    
+		    $( "#dependencyArtifactId" ).autocomplete({
+				source: listDependencyArtifactId,
+			});
 		});
 	};
-	
+
 	availableTags( );
-	
-	$( "#siteArtifactId" ).autocomplete({
-		source: listSiteArtifactId,
-	});
-	$( "#siteName" ).autocomplete({
-		source: listSiteName,
-	});
-	$( "#siteVersion" ).autocomplete({
-		source: listSiteVersion,
-	});
-	$( "#datepicker" ).autocomplete({
-		source: listSiteLastUpdate,
-	});
-	$( "#dependencyArtifactId" ).autocomplete({
-		source: listDependencyArtifactId,
-	});
 }
 
 function datePicker( )

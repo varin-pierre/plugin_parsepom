@@ -54,7 +54,11 @@
   		<div class="form-group">
     		<label for="siteAll">#i18n{parsepom.manage_sites.labelResearch} :</label>
  		</div>
-  		<button name="action_searchAllSites" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonAll}</button>
+ 		<#assign i = 0>
+  		<#list site_list as site >
+  			<#assign i = i + 1>
+  		</#list>
+  		<button name="action_searchAllSites" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonAll} (${i})</button>
 	</form>
 	<br />
 	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
