@@ -60,7 +60,8 @@ public final class SiteDAO implements ISiteDAO
     private static final String SQL_QUERY_SELECT_BY_ARTIFACT_ID = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE artifact_id = ?";
     private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE name = ?";
     private static final String SQL_QUERY_SELECT_BY_VERSION = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE version = ?";
-    
+    private static final String SQL_QUERY_SELECT_BY_ONE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE artifact_id = ? AND last_update = ?";
+
     /**
      * Generates a new primary key
      * @param plugin The Plugin
@@ -384,5 +385,60 @@ public final class SiteDAO implements ISiteDAO
 
         daoUtil.free( );
         return siteList;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public 	Site selectSitesByFilter( String strArtifactId, String strLastUpDate, Plugin plugin)
+    {
+
+    	Site site = null;
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ONE, plugin );
+        daoUtil.setString( 1 , strArtifactId );
+        daoUtil.setString( 2 , strLastUpDate );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next( ) )
+        {
+        	site = new Site(  );
+            site.setId( daoUtil.getInt( 1 ) );
+            site.setArtifactId( daoUtil.getString( 2 ) );
+            site.setName( daoUtil.getString( 3 ) );
+            site.setVersion( daoUtil.getString( 4 ) );
+            site.setIdPlugins( daoUtil.getString( 5 ) );
+            site.setLastUpdate( daoUtil.getString( 6 ) );
+        }
+
+        daoUtil.free( );
+        return site;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public 	Site selectSitesByArtifactId( String strArtifactId, Plugin plugin)
+    {
+    	
+    	Site site = null;
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ONE, plugin );
+        daoUtil.setString( 1 , strArtifactId );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next( ) )
+        {
+        	site = new Site(  );
+            site.setId( daoUtil.getInt( 1 ) );
+            site.setArtifactId( daoUtil.getString( 2 ) );
+            site.setName( daoUtil.getString( 3 ) );
+            site.setVersion( daoUtil.getString( 4 ) );
+            site.setIdPlugins( daoUtil.getString( 5 ) );
+            site.setLastUpdate( daoUtil.getString( 6 ) );
+        }
+
+        daoUtil.free( );
+        return site;
     }
 }

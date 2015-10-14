@@ -106,13 +106,13 @@ public class ParseXPage extends MVCApplication
     private  int _nMaxDepth = 0;
     private Collection<Site> _globaleSites;
     private Collection<Dependency> _globalDep;
-    private List<String> _conflict;
+    private List<Site> _conflict;
     private String path;
     int maxIdSite;
     int maxIdDep;
 
     
-    public List<String> debug ;
+    public List<String> debug = new ArrayList<String>();
     
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
@@ -145,7 +145,8 @@ public class ParseXPage extends MVCApplication
     {		
     	_globaleSites = new ArrayList<Site>();
     	_globalDep = new ArrayList<Dependency>();
-    	_conflict = new ArrayList<String>();
+    	_conflict = new ArrayList<Site>();
+    	debug = new ArrayList<String>();
 		maxIdSite = SiteHome.getMaxId( );
 		maxIdDep = DependencyHome.getMaxId( );
 		_nMaxDepth = 0;
@@ -169,6 +170,7 @@ public class ParseXPage extends MVCApplication
      */
 	private void openDir( File dirs, FileFilter filter ) throws IOException
     {
+		debug.add(" ");
 		FileFilter _pomFilter = new PomFilter(  );
 		File[] pom = dirs.listFiles( _pomFilter );
 		if ( ( pom.length ) == 1 )
@@ -204,7 +206,13 @@ public class ParseXPage extends MVCApplication
 	    BasicFileAttributes view
 	       = Files.getFileAttributeView(p, BasicFileAttributeView.class)
 	              .readAttributes();
-        
+    
+	    debug.add("=== extractInfoPom ===");
+	   
+        debug.add( "last ceation = " + view.creationTime());
+        debug.add( "last access = " + view.lastAccessTime());
+        debug.add( "last modify = " + view.lastModifiedTime());
+        debug.add("=== /extractInfoPom ===");
         site = new Site( );
         site = handler.getSite( );
         if ( site == null )
@@ -214,7 +222,10 @@ public class ParseXPage extends MVCApplication
     	Site _dbSite = new Site( );
     	site.setIdPlugins( "" );
     	site.setId( maxIdSite );
-    	_dbSite = SiteHome.getSiteByArtifactId( site.getArtifactId( ) );
+    	Collection <Site> listSiteDb = SiteHome.getSitesListByArtifactId( site.getArtifactId( ) );
+    	 debug.add( "size listSiteDb = " + listSiteDb.size());
+//    	_dbSite = SiteHome.getOneSite( site.getArtifactId( ), site.getLastUpdate( ) );
+ // exit parse for current pom
     	
         for ( Dependency d : lDep )
         {
@@ -231,10 +242,10 @@ public class ParseXPage extends MVCApplication
         	strIdPlugins.append(";");
         }
         site.setIdPlugins(strIdPlugins.toString());
-        String date =  view.creationTime().toString();
+        String date =  view.lastAccessTime().toString();
         date = formatDate(date);
         site.setLastUpdate( date );
-        if ( site.getName() == null ) 
+        if ( site.getName() == null )
 		{
         	site.setName( "null");
 		}
@@ -250,14 +261,43 @@ public class ParseXPage extends MVCApplication
         {
         	site.setLastUpdate( "null " );
         }
+        // find in base site with Artifactid and compare with current site 
         
-    	if ( _dbSite != null )
-    	{
-    		_conflict.add( site.getArtifactId( ) );
+                
+        
+        Iterator<Site> it;
+        it = listSiteDb.iterator();
+        if ( it.hasNext( ) )
+        {
+        	Site tmp = it.next( );
+        	debug.add( "pom name = " + site.getName( ) + " | bd name = " + tmp.getName() ) ;
+        	debug.add( "pom ArtifactId = " + site.getArtifactId( ) + " | bd ArtifactId = " + tmp.getArtifactId( ) );
+            debug.add( "date site = " + site.getLastUpdate( ) + " | date tmp = " + tmp.getLastUpdate( ) ); 
+            Site test = SiteHome.getOneSite( site.getArtifactId( ), site.getLastUpdate( ) );
+          
+        	if ( test != null )
+        	{
+        		debug.add("return void | in if");
+        		return ;
+        	}
+        	else if ( tmp.getArtifactId().equals(site.getArtifactId() )) 
+    		{
+				debug.add("else add site in conf");
+				_conflict.add( tmp );
+				_globaleSites.add( site );
+    		}
+        	
+        	
     	}
-		_globaleSites.add( site );
+        else
+        {
+        	debug.add("else + add site in globaleSite");
+        	_globaleSites.add( site );
+    		
+        }
+//		_globaleSites.add( site );
     	
-
+		debug.add( "size site = " + _globaleSites.size() + " | size conf = " + _conflict.size());
 	}
 
 	/**
@@ -287,20 +327,24 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_VALIDATE)
     public XPage getValidate( HttpServletRequest request )
     {
-    	Iterator<String> itConflict;
+    	Iterator<Site> itConflict;
     	Collection<Site> listSiteConflict = new ArrayList<>( );
     	
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PARSE, path);
-    	if ( !_conflict.isEmpty( ) )
-    	{
-    		itConflict = _conflict.iterator( );
-    		while ( itConflict.hasNext( ) )
-			{      		
-        		listSiteConflict.add( SiteHome.getSiteByArtifactId( itConflict.next( ) ) ) ;
-			}
-    	}
-    	model.put( "conflict", listSiteConflict );
+//    	if ( !_conflict.isEmpty( ) )
+//    	{
+//    		itConflict = _conflict.iterator( );
+//    		while ( itConflict.hasNext( ) )
+//			{      		
+//        		listSiteConflict.add( SiteHome.getSiteByArtifactId( itConflict.next( ) ) ) ;
+//			}
+//    	}
+//    	model.put( "conflict", listSiteConflict );
+    	debug.add( " TAILLE CONFLICT = " + _conflict.size( ) );
+    	model.put( "debug", debug );
+    	
+    	model.put( "conflict", _conflict );
     	model.put( "all", _globaleSites );
     	addInfo( "path to ", getLocale( request ) );
 
@@ -309,11 +353,11 @@ public class ParseXPage extends MVCApplication
     
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
-    {		
-    	
+    {
+
     	debug = new ArrayList<String>();
     	Iterator<Site> itSite;
-    	Iterator<String> itConflict;
+    	Iterator<Site> itConflict;
     	debug.add( "dovalidate begin");
     	if ( !_conflict.isEmpty( ) )
     	{
@@ -321,12 +365,11 @@ public class ParseXPage extends MVCApplication
     		itConflict = _conflict.iterator( );
     		while ( itConflict.hasNext( ) )
 			{
-    			String strConflict = itConflict.next( );
-    			debug.add( "strCnfilct = " + strConflict );
-        		conflictSite( SiteHome.getSiteByArtifactId( strConflict) ) ;
+    			Site siteConflict = itConflict.next( );
+    			debug.add( "strCnfilct = " + siteConflict.getArtifactId( ) );
+        		conflictSite(  siteConflict ) ;
         		
         		itConflict.remove( );
-        		
 			} 
     	}
     	debug.add( "Size list site = " + _globaleSites.size( ) );
@@ -347,7 +390,7 @@ public class ParseXPage extends MVCApplication
 
     	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
-    
+
     /*
      * Call when conflict is find 
      * Name of Site in current read and database is the same

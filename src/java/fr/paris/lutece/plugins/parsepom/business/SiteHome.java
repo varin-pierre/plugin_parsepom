@@ -186,5 +186,20 @@ public final class SiteHome
    {
 	   return _dao.newPrimaryKey( _plugin );
    }
+
+   /**
+    * Load sites who match with strArtifactId and return site
+    * @return site
+    */
+   public static Site getOneSite( String strArtifactId, String strLastUpDate)
+   {
+	   return _dao.selectSitesByFilter( strArtifactId, strLastUpDate, _plugin );
+   }
+   
+   public static Site   getSiteByArtifactId( String strArtifactId )
+   {
+	   return _dao.selectSitesByArtifactId( strArtifactId, _plugin );
+   }
+   
 }
 
