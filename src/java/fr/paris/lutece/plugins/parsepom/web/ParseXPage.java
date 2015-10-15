@@ -503,13 +503,13 @@ public class ParseXPage extends MVCApplication
 	private void depFiledNotNull( Dependency d )
 	{
 		if ( d.getArtifactId( ) == null)
-			d.setArtifactId( "" );
+			d.setArtifactId( "null" );
 		if ( d.getGroupId( ) == null )
-			d.setGroupId( "" );
+			d.setGroupId( "null" );
 		if ( d.getType( ) == null )
-			d.setType( "" );
+			d.setType( "null" );
 		if ( d.getVersion( ) == null )
-			d.setVersion( "" );
+			d.setVersion( "null" );
 	}
 	
 
@@ -519,15 +519,15 @@ public class ParseXPage extends MVCApplication
 	private void siteFiledNotNull( Site s )
 	{
 		if ( s.getArtifactId( ) == null)
-			s.setArtifactId( "" );
+			s.setArtifactId( "null" );
 		if ( s.getVersion( ) == null )
-			s.setVersion( "" );
+			s.setVersion( "null" );
 		if ( s.getName( ) == null )
-			s.setName( "" );
+			s.setName( "null" );
 		if ( s.getIdPlugins( ) == null )
-			s.setIdPlugins( "" );
+			s.setIdPlugins( "null" );
 		if (s.getLastUpdate( ) == null )
-			s.setLastUpdate( "" );
+			s.setLastUpdate( "null" );
 	}
 	
    
