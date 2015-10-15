@@ -37,6 +37,12 @@ package fr.paris.lutece.plugins.parsepom.web;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,16 +103,16 @@ public class ParseXPage extends MVCApplication
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
     
     // Session variable to store working values
-    private static int _nMaxDepth = 5;
+    private  int _nMaxDepth = 0;
     private Collection<Site> _globaleSites;
     private Collection<Dependency> _globalDep;
-    private List<String> _conflict;
+    private List<Site> _conflict;
     private String path;
     int maxIdSite;
     int maxIdDep;
 
     
-    public List<String> debug ;
+    public List<String> debug = new ArrayList<String>();
     
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
@@ -135,14 +141,15 @@ public class ParseXPage extends MVCApplication
     }
     
     @Action( ACTION_PARSE )
-    public XPage doParse( HttpServletRequest request )
+    public XPage doParse( HttpServletRequest request ) throws IOException
     {		
     	_globaleSites = new ArrayList<Site>();
     	_globalDep = new ArrayList<Dependency>();
-    	_conflict = new ArrayList<String>();
+    	_conflict = new ArrayList<Site>();
+    	debug = new ArrayList<String>();
 		maxIdSite = SiteHome.getMaxId( );
 		maxIdDep = DependencyHome.getMaxId( );
-		
+		_nMaxDepth = 0;
 		path = request.getParameter( "path" );
 		
 		FileFilter filter = new DirFilter ( );
@@ -152,9 +159,8 @@ public class ParseXPage extends MVCApplication
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
     		return redirectView( request, VIEW_PARSE );
     	}
-    	parsePom(dirs.getName( ), dirs);
     	
-		openDir( dirs, filter, 0 );
+		openDir( dirs, filter );
 		return redirectView( request, VIEW_VALIDATE );
     }
     
@@ -162,99 +168,109 @@ public class ParseXPage extends MVCApplication
      * open all directory in recurcive mode 
      * stop recursive at value of _nMaxDepth 
      */
-	private void openDir( File dirs, FileFilter filter, int depth )
+	private void openDir( File dirs, FileFilter filter ) throws IOException
     {
-		int i = depth;
-    	File[] site = dirs.listFiles(filter);
-    	if ( i > _nMaxDepth )
-    		return ;
-    	for ( File d : site )
-    	{
-    		String name = d.getName();
-    		parsePom(name, d );
-			openDir( d, filter, i++ );
-    	}
-    }
-    
-	/*
-	 * @return Boolean with status 
-	 */
-	private Boolean parsePom( String name, File fDir ) 
-    {
-    	 FileFilter _pomFilter = new PomFilter(  );
-         File[] pom = fDir.listFiles( _pomFilter );
-         int i = 0;
-         for (File p : pom)
-         {
-        	extratInfoPom( p );
+		FileFilter _pomFilter = new PomFilter(  );
+		File[] pom = dirs.listFiles( _pomFilter );
+		if ( ( pom.length ) == 1 )
+		{
+			extratInfoPom( pom[0]);
         	maxIdSite++;
-        	i++;
-         }
-         if ( i == 1 )
-         {
-        	 return true;
-         }
+		}
+		else
+		{
+			File[] site = dirs.listFiles(filter);
+	    	for ( File d : site )
+    			openDir( d, filter );
+		}
+    }
 
-         return false;
-	}
-   
-	private void extratInfoPom( File pom )
+	/*
+	 * Format Date in string like date picker format
+	 * @return String 
+	 */
+	private String formatDate( String date )
 	{
-		Site site;
+		date = date.replaceAll("-", "/");
+		date = date.replace('T', ' ');
+		date = date.replace('Z', ' ');
+		
+		return date;
+	}
+	
+	/*
+	 * Extract Date of metadata in File pom
+	 * and modify with formatDate
+	 * @return String date 
+	 */
+	private String extractdate(File pom) throws IOException
+	{
+		Path p = pom.toPath();
+	    BasicFileAttributes view = Files.getFileAttributeView(p, BasicFileAttributeView.class).readAttributes();
+	    String date =  view.lastAccessTime().toString();
+        date = formatDate(date);
+        
+        return date;
+	}
+	
+	/*
+	 * Find conflict if current pom is already in data base 
+	 * check if file has been modify recently 
+	 */
+	private void findConfilct( Site site )
+	{
+		Collection <Site> listSiteDb = SiteHome.getSitesListByArtifactId( site.getArtifactId( ) );
+		Iterator<Site> it;
+        it = listSiteDb.iterator( );
+        if ( it.hasNext( ) )
+        {
+        	Site tmp = it.next( );
+            Site _dbSite = SiteHome.getOneSite( site.getArtifactId( ), site.getLastUpdate( ) );
+          
+        	if ( _dbSite != null )
+        	{
+        		return ;
+        	}
+        	else if ( tmp.getArtifactId( ).equals(site.getArtifactId( ) ) ) 
+    		{
+				_conflict.add( tmp );
+				_globaleSites.add( site );
+    		}
+    	}
+        else
+        {
+        	_globaleSites.add( site );
+        }
+	}
+	
+	/*
+	 * Extract Data of pom.xml
+	 */
+	private void extratInfoPom( File pom ) throws IOException
+	{
 		PomHandler handler = new PomHandler(  );
         handler.parse( pom );
         List<Dependency> lDep = handler.getDependencies(  );
+        StringBuffer strIdPlugins = new StringBuffer( );
+        Site site = new Site( );
         
-        site = new Site();
-        site = handler.getSite();
-        if ( site == null )
-        	return;
-        StringBuffer strIdPlugins = new StringBuffer();
-        
-    	Site _dbSite = new Site( );
-    	site.setIdPlugins( "" );
-    	site.setId( maxIdSite );
-    	_dbSite = SiteHome.getSiteByArtifactId( site.getArtifactId( ) );
-    	
+        if ( ( site = handler.getSite( ) ) == null )
+        	return ;
+
         for ( Dependency d : lDep )
         {
         	d.setSiteId( maxIdSite );
-        	d.setId(maxIdDep);
-        	maxIdDep++;
-      
-        	if (d.getType( ) == null)
-        	{
-        		d.setType( "NULL" );
-        	}
+        	d.setId(maxIdDep++);
+        	depFiledNotNull( d );
+        	strIdPlugins.append( d.getId( ) + ";" );
         	_globalDep.add( d );
-        	strIdPlugins.append(d.getId());
-        	strIdPlugins.append(";");
         }
-        site.setIdPlugins(strIdPlugins.toString());
-        if ( site.getName() == null ) 
-		{
-        	site.setName( "null");
-		}
-        if ( site.getVersion() == null )
-        {
-        	site.setVersion( "null" );
-        }
-        if ( site.getArtifactId( ) == null )
-        {
-        	site.setArtifactId( "null" );
-        }
-        if ( site.getLastUpdate() == null)
-        {
-        	site.setLastUpdate( "null " );
-        }
-        
-    	if ( _dbSite != null )
-    	{
-    		_conflict.add( site.getArtifactId( ) );
-    	}
-		_globaleSites.add( site );
-    	
-
+        site.setId( maxIdSite );
+        site.setIdPlugins( strIdPlugins.toString( ) );
+        site.setLastUpdate( extractdate(pom) );
+        siteFiledNotNull( site );
+      
+        findConfilct(site);
 	}
 
 	/**
@@ -284,20 +300,9 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_VALIDATE)
     public XPage getValidate( HttpServletRequest request )
     {
-    	Iterator<String> itConflict;
-    	Collection<Site> listSiteConflict = new ArrayList<>( );
-    	
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PARSE, path);
-    	if ( !_conflict.isEmpty( ) )
-    	{
-    		itConflict = _conflict.iterator( );
-    		while ( itConflict.hasNext( ) )
-			{      		
-        		listSiteConflict.add( SiteHome.getSiteByArtifactId( itConflict.next( ) ) ) ;
-			}
-    	}
-    	model.put( "conflict", listSiteConflict );
+    	model.put( "conflict", _conflict );
     	model.put( "all", _globaleSites );
     	addInfo( "path to ", getLocale( request ) );
 
@@ -306,43 +311,34 @@ public class ParseXPage extends MVCApplication
     
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
-    {		
-    	
-    	debug = new ArrayList<String>();
+    {
     	Iterator<Site> itSite;
-    	Iterator<String> itConflict;
-    	debug.add( "dovalidate begin");
+    	Iterator<Site> itConflict;
     	if ( !_conflict.isEmpty( ) )
     	{
-    		debug.add( "not emptuy");
     		itConflict = _conflict.iterator( );
     		while ( itConflict.hasNext( ) )
 			{
-    			String strConflict = itConflict.next( );
-    			debug.add( "strCnfilct = " + strConflict );
-        		conflictSite( SiteHome.getSiteByArtifactId( strConflict) ) ;
+    			Site siteConflict = itConflict.next( );
+        		conflictSite(  siteConflict ) ;
         		
         		itConflict.remove( );
-        		
 			} 
     	}
-    	debug.add( "Size list site = " + _globaleSites.size( ) );
     	itSite =_globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
 		{
-			String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance( ).getTime( ) );
 			Site currentSite = itSite.next( );
-			currentSite.setLastUpdate( timeStamp );
 			createSite( currentSite );
-			debug.add("create Site : " + currentSite.getId( ) + " Name = " + currentSite.getArtifactId());
 			itSite.remove( );
 		}
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-        model.put("debug", debug) ;
+    	model.put( "depth", _nMaxDepth );
+
     	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
-    
+
     /*
      * Call when conflict is find 
      * Name of Site in current read and database is the same
@@ -362,11 +358,9 @@ public class ParseXPage extends MVCApplication
     			bFind = true;
     		}
     	}
-    	strIdPluginNew = conflicDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
+    	strIdPluginNew = conflictDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
 		updateSite( currentSite, conflict.getId( ), conflict.getArtifactId( ), conflict.getName( ), conflict.getVersion( ), strIdPluginNew.toString( ), conflict.getLastUpdate( ) );
-		debug.add( "confilct befor remove size = " + _globaleSites.size( ) );
 		itSite.remove( );
-		debug.add( "confilct after remove size = " + _globaleSites.size( ) );
     }
     
     /*
@@ -374,7 +368,7 @@ public class ParseXPage extends MVCApplication
      * Create new Dependency if pom as more dependencies than previous file 
      * @return StringBuilder with update value of id dependency
      */
-    private StringBuilder conflicDependency( int siteTmp, int siteDb, StringBuilder strIdPluginNew )
+    private StringBuilder conflictDependency( int siteTmp, int siteDb, StringBuilder strIdPluginNew )
     {
     	Iterator<Dependency> itDep = _globalDep.iterator( );
     	Iterator<Dependency> itColDepDB;
@@ -387,8 +381,6 @@ public class ParseXPage extends MVCApplication
     	{
     		currentDep = itDep.next( );
         	itColDepDB = coldepDB.iterator( );
-        	debug.add("size dep = [" + _globalDep.size() + "] ");
-        	debug.add("size col = [" + coldepDB.size() + "] ");
         	if ( currentDep.getSiteId( ) == siteTmp )
         	{
         		while ( itColDepDB.hasNext( ) && !bFind )
@@ -404,7 +396,6 @@ public class ParseXPage extends MVCApplication
 	    		}
 	    		if ( bFind )
 	    		{
-	    			debug.add("bfind == true et itdep remove");
 	    			itDep.remove( );
 	    			bFind = false;
 	    		}
@@ -429,7 +420,6 @@ public class ParseXPage extends MVCApplication
      */
     private void createSite( Site currentSite )
     {
-    	debug.add( "ceate Site :begin");
     	Iterator<Dependency> itDep = _globalDep.iterator( );
     	String stridPlugin;
 		
@@ -462,7 +452,7 @@ public class ParseXPage extends MVCApplication
 		upSite.setName( strName );
 		upSite.setVersion( version );
 		upSite.setIdPlugins( strIdPlugins );
-		upSite.setLastUpdate( strLastUpdate );
+//		upSite.setLastUpdate( strLastUpdate );
 		
 		SiteHome.update( upSite );
 	}
@@ -505,6 +495,41 @@ public class ParseXPage extends MVCApplication
     	_globalDep = null;
         return getXPage( TEMPLATE_PARSE );
     }
+	
+
+	/*
+	 * Check if Dependency object have not field at null
+	 */
+	private void depFiledNotNull( Dependency d )
+	{
+		if ( d.getArtifactId( ) == null)
+			d.setArtifactId( "" );
+		if ( d.getGroupId( ) == null )
+			d.setGroupId( "" );
+		if ( d.getType( ) == null )
+			d.setType( "" );
+		if ( d.getVersion( ) == null )
+			d.setVersion( "" );
+	}
+	
+
+	/*
+	 * Check if Site object have not field at null
+	 */
+	private void siteFiledNotNull( Site s )
+	{
+		if ( s.getArtifactId( ) == null)
+			s.setArtifactId( "" );
+		if ( s.getVersion( ) == null )
+			s.setVersion( "" );
+		if ( s.getName( ) == null )
+			s.setName( "" );
+		if ( s.getIdPlugins( ) == null )
+			s.setIdPlugins( "" );
+		if (s.getLastUpdate( ) == null )
+			s.setLastUpdate( "" );
+	}
+	
    
  /*
   * DEPRECIATE

@@ -137,5 +137,10 @@ public interface ISiteDAO
 	Collection<Site> selectSitesListByVersion( String strVersion, Plugin plugin );
 
 	int newPrimaryKey(Plugin plugin);
+	
+	Site selectSitesByFilter( String strArtifactId, String strLastUpDate, Plugin plugin);
+	
+	Site selectSitesByArtifactId( String strArtifactId, Plugin plugin);
+	
 }
 
