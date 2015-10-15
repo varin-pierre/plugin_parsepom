@@ -2,108 +2,60 @@
 <@tabs tab="site" />
 
 <div class="row" >
-    <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
-
-		<div class="hidden">
-	        <@messages infos=infos />
-	
-	        <form method="post"  action="jsp/site/Portal.jsp?page=site">
-	            <button name="view_createSite" class="btn btn-primary pull-right" type="submit">
-	                <span class="glyphicon glyphicon-plus"></span>
-	                #i18n{parsepom.manage_sites.buttonAdd}
-	            </button>
-	        </form>
-	
-	    <h4>#i18n{parsepom.manage_sites.tableLabel}</h4>
-	        
-	    <table class="table table-condensed table-striped">
-	        <tr>
-	            <input type="hidden" id="id" name="id"/>
-	            <th>#i18n{parsepom.manage_sites.columnName}</th>
-	            <th>#i18n{parsepom.manage_sites.columnIdPlugins}</th>
-	            <th>#i18n{portal.util.labelActions}</th>
-	        </tr>
-	            <#list site_list as site >
-	        <tr>
-	            <input type="hidden" id="id" name="id" />
-	            <td>
-	                ${site.name}
-	            </td>
-	            <td>
-	                ${site.idPlugins}
-	            </td>  
-	        <td>
-	            <a href="jsp/site/Portal.jsp?page=site&view=modifySite&id=${site.id}"
-	               class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
-	                <span class="glyphicon glyphicon-edit"></span>
-	            </a>
-	
-	            <a href="jsp/site/Portal.jsp?page=site&action=removeSite&id=${site.id}"
-	               class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
-	                <span class="glyphicon glyphicon-trash"></span>
-	            </a>
-	        </td>
-	        </tr>
-	        </#list>
-	    </table>
+    <div class="col-md-12">   
+		<br />
+		<div class="jumbotron well">
+	    <@messages errors=errors />
+			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+		  		<div class="form-group">
+		    		<label for="siteAll">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		 		</div>
+		 		<#assign i = 0>
+		  		<#list site_list as site >
+		  			<#assign i = i + 1>
+		  		</#list>
+		  		<button name="action_searchAllSites" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonAll} (${i})</button>
+			</form>
+			<br />
+			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+		  		<div class="form-group">
+		    		<label for="siteArtifactId">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<input type="search" class="form-control" id="siteArtifactId" name="siteArtifactId" placeholder="#i18n{parsepom.manage_sites.placeholderArtifactId}">
+		 		</div>
+		  		<button name="action_searchSiteByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
+			</form>
+			<br />
+			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+		  		<div class="form-group">
+		    		<label for="siteName">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<input type="search" class="form-control" id="siteName" name="siteName" placeholder="#i18n{parsepom.manage_sites.placeholderName}">
+		 		</div>
+		  		<button name="action_searchSiteByName" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
+			</form>
+			<br />
+			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+		  		<div class="form-group">
+		    		<label for="siteVersion">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<input type="search" class="form-control" id="siteVersion" name="siteVersion" placeholder="#i18n{parsepom.manage_sites.placeholderVersion}">
+		 		</div>
+		  		<button name="action_searchSiteByVersion" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
+			</form>
+			<br />
+		    <form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+		        <div class='form-group' id='datetimepicker1'>
+		           	<label for="siteLastUpdate">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		            <input type='search' class="form-control" id="datepicker" name="siteLastUpdate" placeholder="#i18n{parsepom.manage_sites.placeholderLastUpdate}"/>
+		        </div>
+		        <button type="button" id="buttonpicker" class="btn btn-info"><span class="glyphicon glyphicon-calendar"></span></button>
+		        <button name="action_searchSiteByLastUpdate" type="submit" id="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
+		    </form>
+		</div>
+		<div>  
+		  	<#list debug! as c >
+		    	<ul>
+		   			${c}
+		    	</ul>
+		    </#list>
+		</div>
     </div>
-    <br />
-    <@messages errors=errors />
-	
-	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
-  		<div class="form-group">
-    		<label for="siteAll">#i18n{parsepom.manage_sites.labelResearch} :</label>
- 		</div>
- 		<#assign i = 0>
-  		<#list site_list as site >
-  			<#assign i = i + 1>
-  		</#list>
-  		<button name="action_searchAllSites" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonAll} (${i})</button>
-	</form>
-	<br />
-	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
-  		<div class="form-group">
-    		<label for="siteArtifactId">#i18n{parsepom.manage_sites.labelResearch} :</label>
-    		<input type="search" class="form-control" id="siteArtifactId" name="siteArtifactId" placeholder="#i18n{parsepom.manage_sites.placeholderArtifactId}">
- 		</div>
-  		<button name="action_searchSiteByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
-	</form>
-	<br />
-	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
-  		<div class="form-group">
-    		<label for="siteName">#i18n{parsepom.manage_sites.labelResearch} :</label>
-    		<input type="search" class="form-control" id="siteName" name="siteName" placeholder="#i18n{parsepom.manage_sites.placeholderName}">
- 		</div>
-  		<button name="action_searchSiteByName" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
-	</form>
-	<br />
-	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
-  		<div class="form-group">
-    		<label for="siteVersion">#i18n{parsepom.manage_sites.labelResearch} :</label>
-    		<input type="search" class="form-control" id="siteVersion" name="siteVersion" placeholder="#i18n{parsepom.manage_sites.placeholderVersion}">
- 		</div>
-  		<button name="action_searchSiteByVersion" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
-	</form>
-	<br />
-    <form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
-        <div class='form-group' id='datetimepicker1'>
-           	<label for="siteLastUpdate">#i18n{parsepom.manage_sites.labelResearch} :</label>
-            <input type='search' class="form-control" id="datepicker" name="siteLastUpdate" placeholder="#i18n{parsepom.manage_sites.placeholderLastUpdate}"/>
-        </div>
-        <button type="button" id="buttonpicker" class="btn btn-info"><span class="glyphicon glyphicon-calendar"></span></button>
-        <button name="action_searchSiteByLastUpdate" type="submit" id="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
-    </form>
-    </div>
-    
-    <div>
-    
-    	<#list debug! as c >
-    		<ul>
-   				${c}
-    		</ul>
-    	</#list>
-    </div>
-    
 </div>
-
-  
