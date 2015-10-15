@@ -141,6 +141,7 @@ function datePicker( )
 {
 	$( '#submit' ).attr( 'disabled', true );
 	$( "#datepicker" ).datepicker({
+		dateFormat: 'yy-mm-dd',
 	    onClose: function( dateText ){
 	        if( !dateText ){
 	        	$( '#submit' ).attr( 'disabled', true );
