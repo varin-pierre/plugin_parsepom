@@ -5,10 +5,12 @@
     <div class="col-md-12">   
 		<br />
 		<div class="jumbotron well">
-	    <@messages errors=errors />
-			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
+	    	<@messages errors=errors />
+	    	<h2>#i18n{parsepom.manage_sites.labelResearch} :</h2>
+	    	<br />
+	    	<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
 		  		<div class="form-group">
-		    		<label for="siteAll">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<label for="siteAll"></label>
 		 		</div>
 		 		<#assign i = 0>
 		  		<#list site_list as site >
@@ -19,7 +21,7 @@
 			<br />
 			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
 		  		<div class="form-group">
-		    		<label for="siteArtifactId">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<label for="siteArtifactId"></label>
 		    		<input type="search" class="form-control" id="siteArtifactId" name="siteArtifactId" placeholder="#i18n{parsepom.manage_sites.placeholderArtifactId}">
 		 		</div>
 		  		<button name="action_searchSiteByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
@@ -27,7 +29,7 @@
 			<br />
 			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
 		  		<div class="form-group">
-		    		<label for="siteName">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<label for="siteName"></label>
 		    		<input type="search" class="form-control" id="siteName" name="siteName" placeholder="#i18n{parsepom.manage_sites.placeholderName}">
 		 		</div>
 		  		<button name="action_searchSiteByName" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
@@ -35,7 +37,7 @@
 			<br />
 			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
 		  		<div class="form-group">
-		    		<label for="siteVersion">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		    		<label for="siteVersion"></label>
 		    		<input type="search" class="form-control" id="siteVersion" name="siteVersion" placeholder="#i18n{parsepom.manage_sites.placeholderVersion}">
 		 		</div>
 		  		<button name="action_searchSiteByVersion" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSubmit}</button>
@@ -43,7 +45,7 @@
 			<br />
 		    <form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=site">
 		        <div class='form-group' id='datetimepicker1'>
-		           	<label for="siteLastUpdate">#i18n{parsepom.manage_sites.labelResearch} :</label>
+		           	<label for="siteLastUpdate"></label>
 		            <input type='search' class="form-control" id="datepicker" name="siteLastUpdate" placeholder="#i18n{parsepom.manage_sites.placeholderLastUpdate}"/>
 		        </div>
 		        <button type="button" id="buttonpicker" class="btn btn-info"><span class="glyphicon glyphicon-calendar"></span></button>

@@ -6,9 +6,11 @@
 		<br />
 		<div class="jumbotron well">
 		<@messages errors=errors />
+			<h2>#i18n{parsepom.manage_sites.labelResearch} :</h2>
+			<br />
 			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=dependency">
 	  			<div class="form-group">
-	    			<label for="dependencyAll">#i18n{parsepom.manage_dependencys.labelResearch} :</label>
+	    			<label for="dependencyAll"></label>
 	 			</div>
 	 			<#assign i = 0>
 	  			<#list dependency_list as dependency >
@@ -19,7 +21,7 @@
 			<br />
 			<form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=dependency">
 	  			<div class="form-group">
-	    			<label for="dependencyArtifactId">#i18n{parsepom.manage_dependencys.labelResearch} :</label>
+	    			<label for="dependencyArtifactId"></label>
 	    			<input type="search" class="form-control" id="dependencyArtifactId" name="dependencyArtifactId" placeholder="#i18n{parsepom.manage_dependencys.placeholder}">
 	 			</div>
 	  			<button name="action_searchDependencyByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_dependencys.buttonSubmit}</button>

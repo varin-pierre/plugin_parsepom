@@ -6,9 +6,9 @@
 		<br />
 		<div class="jumbotron well">
 			<@messages errors=errors />
-			<h1>#i18n{parsepom.manage_parse.title}</h1>
+			<h2>#i18n{parsepom.manage_parse.title}</h2>
 			<form method="post"  action="jsp/site/Portal.jsp?page=parse">
-				<p><em>#i18n{parsepom.manage_parse.pastPath}</em></p>				
+				<em>#i18n{parsepom.manage_parse.pastPath}</em><br /><br />		
 				<label for="Path">#i18n{parsepom.manage_parse.path} : </label><input class="form-control" type="text" id="path" name="path" value="${path!}" placeholder="/home/user/site"/>
 				<#if path?has_content >
 					<div class=".col-md-6 .col-md-offset-2">
