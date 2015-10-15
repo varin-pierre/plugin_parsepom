@@ -135,6 +135,13 @@ public interface ISiteDAO
      * @return The site which contains the data of the site matching the strVersion 
      */
 	Collection<Site> selectSitesListByVersion( String strVersion, Plugin plugin );
+	
+	/**
+     * Load the data of all the sites object matching the strLastUpdate and return them as an collection
+     * @param plugin the Plugin
+     * @return The site which contains the data of the site matching the strLastUpdate 
+     */
+	Collection<Site> selectSitesListByLastUpdate( String strLastUpdate, Plugin plugin );
 
 	int newPrimaryKey(Plugin plugin);
 	

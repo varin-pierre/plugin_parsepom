@@ -191,7 +191,6 @@ public class ParseXPage extends MVCApplication
 	 */
 	private String formatDate( String date )
 	{
-		date = date.replaceAll("-", "/");
 		date = date.replace('T', ' ');
 		date = date.replace('Z', ' ');
 		
