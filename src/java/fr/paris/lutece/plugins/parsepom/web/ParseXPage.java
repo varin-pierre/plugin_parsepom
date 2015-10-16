@@ -133,6 +133,7 @@ public class ParseXPage extends MVCApplication
 		
 		FileFilter filter = new Extract.DirFilter( );
     	File dirs = new File( path );
+    	ext.initMaxInt( );
     	if ( !dirs.isDirectory( ) )
     	{
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
@@ -140,11 +141,13 @@ public class ParseXPage extends MVCApplication
     	}
 
     	ext.openDir( dirs, filter );
+    	
  	    if ( ext.getConflict().isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
  	    {
  	 	  addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
   		  return redirectView( request, VIEW_PARSE );
  	    }
+ 	    
 		return redirectView( request, VIEW_VALIDATE );
     }
     

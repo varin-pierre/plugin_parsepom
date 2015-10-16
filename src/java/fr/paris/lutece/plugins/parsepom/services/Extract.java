@@ -26,8 +26,9 @@ public class Extract {
     private Collection<Site> _globaleSites = new ArrayList<Site>();
     private Collection<Dependency> _globalDep = new ArrayList<Dependency>();
     private Collection<Site> _conflict = new ArrayList<Site>();
-    private int maxIdSite = SiteHome.getMaxId( );
-    private int maxIdDep = DependencyHome.getMaxId( );
+    private int maxIdSite = 0;
+    private int maxIdDep = 0;
+    
 	
 	/*
 	 * Getter
@@ -237,9 +238,9 @@ public class Extract {
     {
     	Iterator<Dependency> itDep = _globalDep.iterator( );
     	Iterator<Dependency> itColDepDB;
-    	Dependency currentDep = new Dependency();
+    	Dependency currentDep = new Dependency( );
     	Collection<Dependency> coldepDB = DependencyHome.getDependencysListBySiteId( siteDb );
-    	strIdPluginNew = new StringBuilder();
+    	strIdPluginNew = new StringBuilder( );
     	Boolean bFind = false;
 
     	while ( itDep.hasNext( ) )
@@ -269,7 +270,7 @@ public class Extract {
     	itDep = _globalDep.iterator( );
     	while ( itDep.hasNext( ) )
     	{
-    		currentDep = itDep.next();
+    		currentDep = itDep.next( );
     		if ( currentDep.getSiteId( ) == siteTmp )
     		{
     			createDependency( currentDep , siteDb );
@@ -381,6 +382,15 @@ public class Extract {
 			s.setIdPlugins( "-" );
 		if (s.getLastUpdate( ) == null )
 			s.setLastUpdate( "-" );
+	}
+	
+	/*
+	 * initiation of variable at each call of doParse
+	 */
+	public void initMaxInt( )
+	{
+		maxIdSite = SiteHome.getMaxId( );
+		maxIdDep = DependencyHome.getMaxId( );
 	}
 	
 }
