@@ -11,12 +11,16 @@
   			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   				<div class="panel panel-info">
   					<div class="panel-heading">
-     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleNew}</h3>
+  						<#assign i = 0>
+						<#list all! as con>
+							<#assign i = i + 1>
+						</#list>
+     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleNew} (${i})</h3>
    					</div>
  	 				<ul class="list-group">
  	 					<#assign doublon = 0>
 	 	 				<#list all! as a>
-	 	 				<#assign doublon = 0>
+	 	 					<#assign doublon = 0>
 							<#list conflict! as con>
 								<#if "${con.artifactId}" == "${a.artifactId}">
 									<#assign doublon = 1>
@@ -26,14 +30,18 @@
 								<li class="list-group-item">${a.artifactId}</li>
 							</#if>
 						</#list>
-						<#if doublon == 1 >
+						<#if doublon == 1 || a.has_content?? == null>
 							<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
 						</#if>
   					</ul>
   				</div>
   				<div class="panel panel-danger">
   					<div class="panel-heading">
-     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleConflict}</h3>
+  						<#assign i = 0>
+						<#list conflict! as con>
+							<#assign i = i + 1>
+						</#list>
+     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleConflict} (${i})</h3>
    					</div>
  	 				<ul class="list-group">
  	 					<#if conflict?has_content >
