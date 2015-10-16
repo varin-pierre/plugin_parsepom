@@ -4,17 +4,35 @@
 		<div class="panel panel-info">
 			<div class="panel-heading">
 				<#assign i = 0>
-				<#list all! as con>
+				<#assign j = 0>
+				<#list all! as a>
+					<#list conflict! as con>
+						<#assign j = j + 1>
+					</#list>
 					<#assign i = i + 1>
 				</#list>
+				<#assign i = i - j>
+				<#if i lt 0>
+					<#assign i = 0>
+				</#if>
 				<h3 class="panel-title">#i18n{parsepom.validate_parse.titleNew} (${i})</h3>
 			</div>
 			<ul class="list-group">
+				<#assign notEmpty = 0>
  				<#list all! as a>
-					<li class="list-group-item">${a.artifactId}</li>
+	 	 			<#assign doublon = 0>
+					<#list conflict! as con>
+						<#if "${con.artifactId}" == "${a.artifactId}">
+							<#assign doublon = 1>
+							<#assign notEmpty = 1>
+						</#if>
+					</#list>
+					<#if doublon == 0 >
+						<li class="list-group-item">${a.artifactId}</li>
+					</#if>
 				</#list>
 				<#if all??>
-					<#if all?has_content>
+					<#if all?has_content && notEmpty == 0>
 					<#else>
 						<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
 					</#if>
