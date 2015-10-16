@@ -25,15 +25,14 @@ $(document).ready(function() {
 		handleHeaderClick( '#fourth' );
 	})
 	
-	switchDebug( );
 	autoComplete( );
 	datePicker( );
-    
 })
 
 function handleHeaderClick( hdr ) {
 	
     var concat = hdr.concat(' i');
+    
     if ($(hdr).hasClass('sortUp') == true) {
         $(hdr).removeClass('sortUp');
         $(hdr).addClass('sortDown');
@@ -47,22 +46,7 @@ function handleHeaderClick( hdr ) {
         $(hdr).addClass('sortUp');
         $(concat).removeClass('fa-sort').addClass('fa-sort-asc');
     }
-};
-
-function switchDebug( ) {
-	$("#debug").css('cursor', 'pointer');
-	$("#debug").next().hide();
-	$("#debug").children('.switch').text('[ + ] ');
-	$("#debug").click(function() {
-		if ($(this).next().is(":hidden")) {
-			$(this).next().slideDown("slow");
-			$(this).children('.switch').text('[ - ] ');
-		} else {
-			$(this).next().slideUp("slow");
-			$(this).children('.switch').text('[ + ] ');
-		}
-	})
-};
+}
 
 function autoComplete(  ) {
 	var listSiteArtifactId = [];	
