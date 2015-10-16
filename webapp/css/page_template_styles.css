@@ -35,7 +35,3 @@ img.thumblist-large{width:128px;height:128px;}
 td a { display:block;color:black; }
 
 td a:hover { text-decoration: none;color:black; }
-
-#loading {
-    background: white url("img/ajax-loader2.gif") right center no-repeat;
-}
