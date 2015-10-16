@@ -97,7 +97,7 @@ public class ParseXPage extends MVCApplication
     
     
     // Session variable to store working values
-    private String path;
+    private String path = "";
     private Extract ext = new Extract( );
     
     

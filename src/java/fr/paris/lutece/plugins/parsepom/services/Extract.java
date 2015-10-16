@@ -28,7 +28,6 @@ public class Extract {
     private Collection<Site> _conflict = new ArrayList<Site>();
     private int maxIdSite = 0;
     private int maxIdDep = 0;
-    
 	
 	/*
 	 * Getter
@@ -66,7 +65,7 @@ public class Extract {
 	 	_conflict.clear();
 	}
     
-	/*
+	/**
     * open recursive directory
     * stop recursive at value of _nMaxDepth 
     */
@@ -75,6 +74,7 @@ public class Extract {
 		
 		FileFilter _pomFilter = new PomFilter(  );
 		File[] pom = dirs.listFiles( _pomFilter );
+		
 		if ( ( pom.length ) == 1 )
 		{
 			extratInfoPom( pom[0]);
@@ -92,7 +92,7 @@ public class Extract {
 		}
     }
 
-	/*
+	/**
 	 * Format Date in string like date picker format
 	 * @return String 
 	 */
@@ -104,7 +104,7 @@ public class Extract {
 		return date;
 	}
 	
-	/*
+	/**
 	 * Extract Date of metadata in File pom
 	 * and modify with formatDate
 	 * @return String date 
@@ -119,7 +119,7 @@ public class Extract {
         return date;
 	}
 	
-	/*
+	/**
 	 * Find conflict if current pom is already in data base 
 	 * check if file has been modify recently 
 	 * @params Site site
@@ -150,7 +150,7 @@ public class Extract {
         }
 	}
 	
-	/*
+	/**
 	 * Extract Data of pom.xml
 	 */
 	private void extratInfoPom( File pom ) throws IOException
