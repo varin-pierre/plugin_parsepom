@@ -70,7 +70,7 @@ function autoComplete(  ) {
 	var listSiteVersion = [];
 	var listSiteLastUpdate = [];	
 	var listDependencyArtifactId = [];
-
+	
 	function isArray( object ) {
 	    return Object.prototype.toString.call( object ) === '[object Array]';
 	}
@@ -83,6 +83,7 @@ function autoComplete(  ) {
 	        if( $.inArray( value, tmp) === -1 )
 	        	tmp.push( value );
 	    });
+		
 		return tmp;
 	}
 	
@@ -91,14 +92,13 @@ function autoComplete(  ) {
 			if ( isArray( data.sites.site ) )
 				data = data.sites.site;
 			else
-				data = data.sites;			
+				data = data.sites;
 			$.map(data, function ( value, index ) {				
 			    listSiteArtifactId.push( value.artifact_id );
 			    listSiteName.push( value.name );
 			    listSiteVersion.push( value.version );
 			    listSiteLastUpdate.push( value.last_update );
 		    });
-			
 			listSiteArtifactId = removeDuplicates( listSiteArtifactId );
 			listSiteName = removeDuplicates( listSiteName );
 			listSiteVersion = removeDuplicates( listSiteVersion );
@@ -125,7 +125,6 @@ function autoComplete(  ) {
 		    $.map(data, function ( value, index ) {
 		    	listDependencyArtifactId.push( value.artifact_id );
 		    });
-		    
 		    listDependencyArtifactId = removeDuplicates( listDependencyArtifactId );
 		    
 		    $( "#dependencyArtifactId" ).autocomplete({
@@ -133,6 +132,8 @@ function autoComplete(  ) {
 			});
 		});
 	};
+	
+	availableTags( );
 }
 
 function datePicker( )
