@@ -92,6 +92,8 @@ public class ParseXPage extends MVCApplication
     // Infos
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
     private static final String INFO_VALIDATE = "parsepom.info.validate";
+    private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
+
     
     
     // Session variable to store working values
@@ -138,7 +140,11 @@ public class ParseXPage extends MVCApplication
     	}
 
     	ext.openDir( dirs, filter );
-    	
+ 	    if ( ext.getConflict().isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
+ 	    {
+ 	 	  addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
+  		  return redirectView( request, VIEW_PARSE );
+ 	    }
 		return redirectView( request, VIEW_VALIDATE );
     }
     
@@ -146,11 +152,11 @@ public class ParseXPage extends MVCApplication
     public XPage getValidate( HttpServletRequest request )
     {
     	Map<String, Object> model = getModel(  );
-    
+
+		addInfo( INFO_VALIDATE, getLocale( request ) );
     	model.put( MARK_PARSE, path );
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
-    	addInfo( INFO_VALIDATE, getLocale( request ) );
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
     }
     
@@ -159,7 +165,7 @@ public class ParseXPage extends MVCApplication
     {
 	   Collection<Site> _globaleSites  = ext.getGlobaleSite( );
 	   Collection<Site> _conflict =  ext.getConflict( );
-         
+        
     	Iterator<Site> itSite;
     	Iterator<Site> itConflict;
     	if ( !_conflict.isEmpty( ) )
@@ -180,6 +186,7 @@ public class ParseXPage extends MVCApplication
 			ext.createSite( currentSite );
 			itSite.remove( );
 		}
+		
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
 
@@ -195,7 +202,7 @@ public class ParseXPage extends MVCApplication
 		ext.setConflictClear( );
 		ext.setGlobaleDepClear( );
 		ext.setGlobaleSiteClear( );
-		return getXPage( TEMPLATE_PARSE );
+		return getXPage( TEMPLATE_PARSE, request.getLocale( ) );
     }
 		
 }
