@@ -19,17 +19,19 @@ import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 
 public class Extract {
 	
+	// Markers
+    private static final String MARK_TAGS = "tags";
+    
+    // Session variable to store working values
     private Collection<Site> _globaleSites = new ArrayList<Site>();
     private Collection<Dependency> _globalDep = new ArrayList<Dependency>();
     private Collection<Site> _conflict = new ArrayList<Site>();
-    private Iterable<Dependency> gDep;
-    private Iterable<Site> gSite;
-    private Iterable<Site> gConflict;
-//    int maxIdSite;
-//    int maxIdDep;
-    int maxIdSite = SiteHome.getMaxId( );
-	int maxIdDep = DependencyHome.getMaxId( );
+    private int maxIdSite = SiteHome.getMaxId( );
+    private int maxIdDep = DependencyHome.getMaxId( );
 	
+	/*
+	 * Getter
+	 */
     public Collection<Site> getGlobaleSite( )
 	{
 		return _globaleSites;
@@ -45,6 +47,9 @@ public class Extract {
     	return _conflict;
     }
     
+    /*
+     * Setter clean COllection
+     */
     public void setGlobaleSiteClear( )
   	{
   		 _globaleSites.clear();
@@ -60,10 +65,10 @@ public class Extract {
 	 	_conflict.clear();
 	}
     
-	  /*
-     * open all directory in recurcive mode 
-     * stop recursive at value of _nMaxDepth 
-     */
+	/*
+    * open recursive directory
+    * stop recursive at value of _nMaxDepth 
+    */
 	public void openDir( File dirs, FileFilter filter ) throws IOException
     {
 		
@@ -78,7 +83,11 @@ public class Extract {
 		{
 			File[] site = dirs.listFiles(filter);
 	    	for ( File d : site )
-    			openDir( d, filter );
+	    	{
+	    		String name = d.getName( );
+	    		if ( !name.equals( MARK_TAGS ) )
+	    			openDir( d, filter );
+	    	}
 		}
     }
 
@@ -112,6 +121,7 @@ public class Extract {
 	/*
 	 * Find conflict if current pom is already in data base 
 	 * check if file has been modify recently 
+	 * @params Site site
 	 */
 	private void findConfilct( Site site )
 	{
@@ -163,10 +173,10 @@ public class Extract {
         }
         site.setId( maxIdSite );
         site.setIdPlugins( strIdPlugins.toString( ) );
-        site.setLastUpdate( extractdate(pom) );
+        site.setLastUpdate( extractdate( pom ) );
         siteFiledNotNull( site );
       
-        findConfilct(site);
+        findConfilct( site );
 	}
 
 	/**
@@ -373,7 +383,4 @@ public class Extract {
 			s.setLastUpdate( "-" );
 	}
 	
-   
-    
-
 }

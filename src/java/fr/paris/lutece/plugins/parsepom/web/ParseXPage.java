@@ -106,11 +106,11 @@ public class ParseXPage extends MVCApplication
         return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
    
-    @View( value = VIEW_CHOOSE)
+    @View( value = VIEW_CHOOSE )
     public XPage getChoose( HttpServletRequest request )
     {
     	
-    	return getXPage( TEMPLATE_CHOOSE, request.getLocale() );
+    	return getXPage( TEMPLATE_CHOOSE, request.getLocale( ) );
     }
     
     @Action( ACTION_CHOOSE )
@@ -121,7 +121,7 @@ public class ParseXPage extends MVCApplication
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PATH, path);
     	    	
-    	return getXPage( TEMPLATE_PARSE, request.getLocale(), model );
+    	return getXPage( TEMPLATE_PARSE, request.getLocale( ), model );
     }
     
     @Action( ACTION_PARSE )
@@ -147,20 +147,18 @@ public class ParseXPage extends MVCApplication
     {
     	Map<String, Object> model = getModel(  );
     
-    	model.put( MARK_PARSE, path);
+    	model.put( MARK_PARSE, path );
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
-    	addInfo( "path to ", getLocale( request ) );
     	addInfo( INFO_VALIDATE, getLocale( request ) );
-
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
     }
     
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
     {
-	   Collection<Site> _globaleSites  = ext.getGlobaleSite();
-	   Collection<Site> _conflict =  ext.getConflict();
+	   Collection<Site> _globaleSites  = ext.getGlobaleSite( );
+	   Collection<Site> _conflict =  ext.getConflict( );
          
     	Iterator<Site> itSite;
     	Iterator<Site> itConflict;
@@ -184,8 +182,8 @@ public class ParseXPage extends MVCApplication
 		}
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-        addInfo( INFO_VALIDATE, getLocale( request ) );
-    	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
+
+        return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
    
 	/*
