@@ -104,7 +104,7 @@ function autoComplete(  ) {
 			listSiteVersion = removeDuplicates( listSiteVersion );
 			listSiteLastUpdate = removeDuplicates( listSiteLastUpdate );
 			
-			$( "#siteArtifactId" ).autocomplete({
+			$( "#siteArtifactId" ).autocomplete({		
 				source: listSiteArtifactId,
 			});
 			$( "#siteName" ).autocomplete({
@@ -133,8 +133,6 @@ function autoComplete(  ) {
 			});
 		});
 	};
-
-	availableTags( );
 }
 
 function datePicker( )
