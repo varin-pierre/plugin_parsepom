@@ -29,3 +29,15 @@ site_id int(11) NOT NULL default '0',
 FOREIGN KEY (site_id) REFERENCES parsepom_site(id_site),
 PRIMARY KEY (id_dependency)
 );
+
+--
+-- Structure for table parsepom_tools
+--
+
+DROP TABLE IF EXISTS parsepom_tools;
+CREATE TABLE parsepom_tools (
+id_tools int(6) NOT NULL,
+artifact_id varchar(50) NOT NULL default '',
+last_release varchar(50) NOT NULL default '',
+PRIMARY KEY (id_tools)
+);

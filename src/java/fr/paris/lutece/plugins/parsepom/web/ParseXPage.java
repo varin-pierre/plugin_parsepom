@@ -33,7 +33,6 @@
  */
 
 package fr.paris.lutece.plugins.parsepom.web;
- 
 
 import java.io.File;
 import java.io.FileFilter;
@@ -75,12 +74,10 @@ public class ParseXPage extends MVCApplication
     private static final String MARK_CONFLICT = "conflict";
     private static final String MARK_ALLSITE = "all";
 
-
     // Views
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_VALIDATE = "validate";
     private static final String VIEW_CHOOSE = "choose";
-
 
     // Actions
     private static final String ACTION_PARSE = "parse";
@@ -88,13 +85,11 @@ public class ParseXPage extends MVCApplication
     private static final String ACTION_CLEAN = "clean";
     private static final String ACTION_CHOOSE = "choose";
     
-    
     // Infos
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
     private static final String INFO_VALIDATE = "parsepom.info.validate";
     private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
    
-    
     // Session variable to store working values
     private String path = "";
     private Extract ext = new Extract( );
@@ -108,7 +103,7 @@ public class ParseXPage extends MVCApplication
     public XPage getParse( HttpServletRequest request )
     {
     	
-        return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
+    	return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
    
 
@@ -120,7 +115,6 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_CHOOSE )
     public XPage getChoose( HttpServletRequest request )
     {
-    	
     	return getXPage( TEMPLATE_CHOOSE, request.getLocale( ) );
     }
     
@@ -136,33 +130,33 @@ public class ParseXPage extends MVCApplication
     	path = FileChooser.chooserDir();
     	Map<String, Object> model = getModel(  );
     	model.put( MARK_PATH, path);
-    	    	
+    	
     	return getXPage( TEMPLATE_PARSE, request.getLocale( ), model );
     }
     
     @Action( ACTION_PARSE )
     public XPage doParse( HttpServletRequest request ) throws IOException
     {		
-		path = request.getParameter( "path" );
+    	path = request.getParameter( "path" );
 		
-		FileFilter filter = new Extract.DirFilter( );
+    	FileFilter filter = new Extract.DirFilter( );
     	File dirs = new File( path );
     	ext.initMaxInt( );
     	if ( !dirs.isDirectory( ) )
-    	{
+	    {
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
     		return redirectView( request, VIEW_PARSE );
-    	}
+	    }
 
     	ext.openDir( dirs, filter );
     	
- 	    if ( ext.getConflict().isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
+    	if ( ext.getConflict( ).isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
  	    {
- 	 	  addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
-  		  return redirectView( request, VIEW_PARSE );
+    		addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
+    		return redirectView( request, VIEW_PARSE );
  	    }
  	    
-		return redirectView( request, VIEW_VALIDATE );
+	return redirectView( request, VIEW_VALIDATE );
     }
     
     @View( value = VIEW_VALIDATE)
@@ -170,7 +164,7 @@ public class ParseXPage extends MVCApplication
     {
     	Map<String, Object> model = getModel(  );
 
-		addInfo( INFO_VALIDATE, getLocale( request ) );
+    	addInfo( INFO_VALIDATE, getLocale( request ) );
     	model.put( MARK_PARSE, path );
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
@@ -180,40 +174,40 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
     {
-	   Collection<Site> _globaleSites  = ext.getGlobaleSite( );
-	   Collection<Site> _conflict =  ext.getConflict( );
-        
-    	Iterator<Site> itSite;
-    	Iterator<Site> itConflict;
-    	if ( !_conflict.isEmpty( ) )
-    	{
-    		itConflict = _conflict.iterator( );
-    		while ( itConflict.hasNext( ) )
+		Collection<Site> _globaleSites  = ext.getGlobaleSite( );
+		Collection<Site> _conflict =  ext.getConflict( );
+	        
+		Iterator<Site> itSite;
+		Iterator<Site> itConflict;
+		if ( !_conflict.isEmpty( ) )
+	    {
+			itConflict = _conflict.iterator( );
+			while ( itConflict.hasNext( ) )
 			{
-    			Site siteConflict = itConflict.next( );
-        		ext.conflictSite(  siteConflict ) ;
-        		
-        		itConflict.remove( );
+			    Site siteConflict = itConflict.next( );
+			    ext.conflictSite(  siteConflict ) ;
+			    
+			    itConflict.remove( );
 			} 
-    	}
-    	itSite = _globaleSites.iterator( );
+	    }
+		itSite = _globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
-		{
+	    {
 			Site currentSite = itSite.next( );
 			ext.createSite( currentSite );
 			itSite.remove( );
-		}
+	    }
 		
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-
-        return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
+	    Map<String, Object> model = getModel(  );
+	    model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
+	
+	    return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
    
-	/*
-	 * Cancel parsing of all pom.xml file
-	 */
-	@Action( ACTION_CLEAN )
+    /*
+     * Cancel parsing of all pom.xml file
+     */
+    @Action( ACTION_CLEAN )
     public XPage doClean( HttpServletRequest request )
     {
 		ext.setConflictClear( );

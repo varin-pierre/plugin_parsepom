@@ -9,5 +9,6 @@
 
     <bean id="parsepom.siteDAO"  class="fr.paris.lutece.plugins.parsepom.business.SiteDAO" />  
     <bean id="parsepom.dependencyDAO"  class="fr.paris.lutece.plugins.parsepom.business.DependencyDAO" />
+    <bean id="parsepom.toolsDAO"  class="fr.paris.lutece.plugins.parsepom.business.ToolsDAO" />  
     
 </beans>
