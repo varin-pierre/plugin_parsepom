@@ -38,28 +38,16 @@ package fr.paris.lutece.plugins.parsepom.web;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.parsepom.business.Dependency;
-import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.services.Extract;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
-import fr.paris.lutece.plugins.parsepom.services.PomHandler;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -80,16 +68,18 @@ public class ParseXPage extends MVCApplication
     private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_CHOOSE="/skin/plugins/parsepom/choose.html";
  
-    
     // Markers
     private static final String MARK_PARSE = "parse";
     private static final String MARK_SITE_LIST = "site_list";
+    private static final String MARK_PATH = "path";
+    private static final String MARK_CONFLICT = "conflict";
+    private static final String MARK_ALLSITE = "all";
+
 
     // Views
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_VALIDATE = "validate";
     private static final String VIEW_CHOOSE = "choose";
-
 
 
     // Actions
@@ -101,19 +91,20 @@ public class ParseXPage extends MVCApplication
     
     // Infos
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
-    
-    // Session variable to store working values
-    private  int _nMaxDepth = 0;
-    private Collection<Site> _globaleSites;
-    private Collection<Dependency> _globalDep;
-    private List<Site> _conflict;
-    private String path;
-    int maxIdSite;
-    int maxIdDep;
+    private static final String INFO_VALIDATE = "parsepom.info.validate";
+    private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
 
     
-    public List<String> debug = new ArrayList<String>();
     
+    // Session variable to store working values
+    private String path = "";
+    private Extract ext = new Extract( );
+    
+    /**
+     * Returns the page home.
+     * @param request The HTTP request
+     * @return The view
+     */
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
     {
@@ -121,197 +112,77 @@ public class ParseXPage extends MVCApplication
         return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
    
-    @View( value = VIEW_CHOOSE)
+    /**
+     * Returns the page to choose your depot.
+     * @param request
+     * @return The view
+     */
+    @View( value = VIEW_CHOOSE )
     public XPage getChoose( HttpServletRequest request )
     {
     	
-    	return getXPage( TEMPLATE_CHOOSE, request.getLocale() );
+    	return getXPage( TEMPLATE_CHOOSE, request.getLocale( ) );
     }
     
+    /**
+     * 
+     * @param request
+     * @return XPage
+     */
     @Action( ACTION_CHOOSE )
     public XPage doChoose( HttpServletRequest request )
     {		
     	
     	path = FileChooser.chooserDir();
     	Map<String, Object> model = getModel(  );
-    	model.put( "path", path);
+    	model.put( MARK_PATH, path);
     	    	
-    	return getXPage( TEMPLATE_PARSE, request.getLocale(), model );
-
+    	return getXPage( TEMPLATE_PARSE, request.getLocale( ), model );
     }
     
     @Action( ACTION_PARSE )
     public XPage doParse( HttpServletRequest request ) throws IOException
     {		
-    	_globaleSites = new ArrayList<Site>();
-    	_globalDep = new ArrayList<Dependency>();
-    	_conflict = new ArrayList<Site>();
-    	debug = new ArrayList<String>();
-		maxIdSite = SiteHome.getMaxId( );
-		maxIdDep = DependencyHome.getMaxId( );
-		_nMaxDepth = 0;
 		path = request.getParameter( "path" );
 		
-		FileFilter filter = new DirFilter ( );
+		FileFilter filter = new Extract.DirFilter( );
     	File dirs = new File( path );
+    	ext.initMaxInt( );
     	if ( !dirs.isDirectory( ) )
     	{
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
     		return redirectView( request, VIEW_PARSE );
     	}
+
+    	ext.openDir( dirs, filter );
     	
-		openDir( dirs, filter );
+ 	    if ( ext.getConflict().isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
+ 	    {
+ 	 	  addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
+  		  return redirectView( request, VIEW_PARSE );
+ 	    }
+ 	    
 		return redirectView( request, VIEW_VALIDATE );
-    }
-    
-    /*
-     * open all directory in recurcive mode 
-     * stop recursive at value of _nMaxDepth 
-     */
-	private void openDir( File dirs, FileFilter filter ) throws IOException
-    {
-		FileFilter _pomFilter = new PomFilter(  );
-		File[] pom = dirs.listFiles( _pomFilter );
-		if ( ( pom.length ) == 1 )
-		{
-			extratInfoPom( pom[0]);
-        	maxIdSite++;
-		}
-		else
-		{
-			File[] site = dirs.listFiles(filter);
-	    	for ( File d : site )
-    			openDir( d, filter );
-		}
-    }
-
-	/*
-	 * Format Date in string like date picker format
-	 * @return String 
-	 */
-	private String formatDate( String date )
-	{
-		date = date.replaceAll("-", "/");
-		date = date.replace('T', ' ');
-		date = date.replace('Z', ' ');
-		
-		return date;
-	}
-	
-	/*
-	 * Extract Date of metadata in File pom
-	 * and modify with formatDate
-	 * @return String date 
-	 */
-	private String extractdate(File pom) throws IOException
-	{
-		Path p = pom.toPath();
-	    BasicFileAttributes view = Files.getFileAttributeView(p, BasicFileAttributeView.class).readAttributes();
-	    String date =  view.lastAccessTime().toString();
-        date = formatDate(date);
-        
-        return date;
-	}
-	
-	/*
-	 * Find conflict if current pom is already in data base 
-	 * check if file has been modify recently 
-	 */
-	private void findConfilct( Site site )
-	{
-		Collection <Site> listSiteDb = SiteHome.getSitesListByArtifactId( site.getArtifactId( ) );
-		Iterator<Site> it;
-        it = listSiteDb.iterator( );
-        if ( it.hasNext( ) )
-        {
-        	Site tmp = it.next( );
-            Site _dbSite = SiteHome.getOneSite( site.getArtifactId( ), site.getLastUpdate( ) );
-          
-        	if ( _dbSite != null )
-        	{
-        		return ;
-        	}
-        	else if ( tmp.getArtifactId( ).equals(site.getArtifactId( ) ) ) 
-    		{
-				_conflict.add( tmp );
-				_globaleSites.add( site );
-    		}
-    	}
-        else
-        {
-        	_globaleSites.add( site );
-        }
-	}
-	
-	/*
-	 * Extract Data of pom.xml
-	 */
-	private void extratInfoPom( File pom ) throws IOException
-	{
-		PomHandler handler = new PomHandler(  );
-        handler.parse( pom );
-        List<Dependency> lDep = handler.getDependencies(  );
-        StringBuffer strIdPlugins = new StringBuffer( );
-        Site site = new Site( );
-        
-        if ( ( site = handler.getSite( ) ) == null )
-        	return ;
-
-        for ( Dependency d : lDep )
-        {
-        	d.setSiteId( maxIdSite );
-        	d.setId(maxIdDep++);
-        	depFiledNotNull( d );
-        	strIdPlugins.append( d.getId( ) + ";" );
-        	_globalDep.add( d );
-        }
-        site.setId( maxIdSite );
-        site.setIdPlugins( strIdPlugins.toString( ) );
-        site.setLastUpdate( extractdate(pom) );
-        siteFiledNotNull( site );
-      
-        findConfilct(site);
-	}
-
-	/**
-     * Directory filter
-     */
-    static class DirFilter implements FileFilter
-    {
-        @Override
-        public boolean accept( File file )
-        {
-            return file.isDirectory(  );
-        }
-    }
-    
-    /**
-     * A class that implements the Java FileFilter interface.
-     */
-    public class PomFilter implements FileFilter
-    {
-    	@Override
-    	public boolean accept( File file )
-    	{
-    		return file.getName( ).equals("pom.xml");
-    	}
     }
     
     @View( value = VIEW_VALIDATE)
     public XPage getValidate( HttpServletRequest request )
     {
     	Map<String, Object> model = getModel(  );
-    	model.put( MARK_PARSE, path);
-    	model.put( "conflict", _conflict );
-    	model.put( "all", _globaleSites );
-    	addInfo( "path to ", getLocale( request ) );
 
+		addInfo( INFO_VALIDATE, getLocale( request ) );
+    	model.put( MARK_PARSE, path );
+    	model.put( MARK_CONFLICT, ext.getConflict( ) );
+    	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
     }
     
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
     {
+	   Collection<Site> _globaleSites  = ext.getGlobaleSite( );
+	   Collection<Site> _conflict =  ext.getConflict( );
+        
     	Iterator<Site> itSite;
     	Iterator<Site> itConflict;
     	if ( !_conflict.isEmpty( ) )
@@ -320,273 +191,36 @@ public class ParseXPage extends MVCApplication
     		while ( itConflict.hasNext( ) )
 			{
     			Site siteConflict = itConflict.next( );
-        		conflictSite(  siteConflict ) ;
+        		ext.conflictSite(  siteConflict ) ;
         		
         		itConflict.remove( );
 			} 
     	}
-    	itSite =_globaleSites.iterator( );
+    	itSite = _globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
 		{
 			Site currentSite = itSite.next( );
-			createSite( currentSite );
+			ext.createSite( currentSite );
 			itSite.remove( );
 		}
+		
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-    	model.put( "depth", _nMaxDepth );
 
-    	return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
+        return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
     }
-
-    /*
-     * Call when conflict is find 
-     * Name of Site in current read and database is the same
-     */
-    private void conflictSite( Site conflict )
-    {
-    	Iterator<Site> itSite = _globaleSites.iterator( );
-    	StringBuilder strIdPluginNew = new StringBuilder( );
-    	Site currentSite = new Site( );
-    	Boolean bFind = false;
-
-    	while ( itSite.hasNext( ) && !bFind )
-    	{
-    		currentSite = itSite.next( );
-    		if ( conflict.getName( ).equals( currentSite.getName( ) ) )
-    		{
-    			bFind = true;
-    		}
-    	}
-    	strIdPluginNew = conflictDependency( currentSite.getId( ), conflict.getId( ), strIdPluginNew );
-		updateSite( currentSite, conflict.getId( ), conflict.getArtifactId( ), conflict.getName( ), conflict.getVersion( ), strIdPluginNew.toString( ), conflict.getLastUpdate( ) );
-		itSite.remove( );
-    }
-    
-    /*
-     * When Site is already in data base override Site
-     * Create new Dependency if pom as more dependencies than previous file 
-     * @return StringBuilder with update value of id dependency
-     */
-    private StringBuilder conflictDependency( int siteTmp, int siteDb, StringBuilder strIdPluginNew )
-    {
-    	Iterator<Dependency> itDep = _globalDep.iterator( );
-    	Iterator<Dependency> itColDepDB;
-    	Dependency currentDep = new Dependency();
-    	Collection<Dependency> coldepDB = DependencyHome.getDependencysListBySiteId( siteDb );
-    	strIdPluginNew = new StringBuilder();
-    	Boolean bFind = false;
-
-    	while ( itDep.hasNext( ) )
-    	{
-    		currentDep = itDep.next( );
-        	itColDepDB = coldepDB.iterator( );
-        	if ( currentDep.getSiteId( ) == siteTmp )
-        	{
-        		while ( itColDepDB.hasNext( ) && !bFind )
-	    		{
-	    			Dependency currentDB = itColDepDB.next( );
-	    			
-	    			if ( currentDB.getArtifactId( ).equals( currentDep.getArtifactId( ) ) )
-	    			{
-	    				strIdPluginNew.append( currentDB.getId( ) + ";" );
-	    				itColDepDB.remove( );
-	    				bFind = true;
-	    			}
-	    		}
-	    		if ( bFind )
-	    		{
-	    			itDep.remove( );
-	    			bFind = false;
-	    		}
-        	}
-    	}
-    	itDep = _globalDep.iterator( );
-    	while ( itDep.hasNext( ) )
-    	{
-    		currentDep = itDep.next();
-    		if ( currentDep.getSiteId( ) == siteTmp )
-    		{
-    			createDependency( currentDep , siteDb );
-    			strIdPluginNew.append( currentDep.getId( ) + ";" );
-    			itDep.remove( );
-    		}
-    	}
-		return strIdPluginNew;
-	}
-
-    /*
-     * Create new Site
-     */
-    private void createSite( Site currentSite )
-    {
-    	Iterator<Dependency> itDep = _globalDep.iterator( );
-    	String stridPlugin;
-		
-		int nidSiteOrigin = currentSite.getId( );
-		SiteHome.create( currentSite );
-		itDep = _globalDep.iterator( );
-		while ( itDep.hasNext( ) )
-		{
-			Dependency currentDep = itDep.next( );
-			if ( currentDep.getSiteId( ) == nidSiteOrigin )
-			{
-				Dependency tmp = new Dependency ( ); 
-				tmp = currentDep;
-				createDependency( currentDep,  currentSite.getId( ) );
-				itDep.remove( );
-				stridPlugin = replaceDepInIdPlugins( tmp, currentDep, currentSite );
-				currentSite.setIdPlugins( stridPlugin );
-				SiteHome.update( currentSite );
-			}
-		}
-    }
-    
-    /*
-     * Update Site
-     */
-    private void updateSite( Site upSite, int siteId, String strArtifactId, String strName, String version, String strIdPlugins, String strLastUpdate )
-	{
-		upSite.setId( siteId );
-		upSite.setArtifactId( strArtifactId );
-		upSite.setName( strName );
-		upSite.setVersion( version );
-		upSite.setIdPlugins( strIdPlugins );
-//		upSite.setLastUpdate( strLastUpdate );
-		
-		SiteHome.update( upSite );
-	}
-    
-    /*
-     * Create new Dependency
-     */
-	private void createDependency( Dependency dependency, int siteId )
-    {
-		dependency.setSiteId( siteId );
-		DependencyHome.create( dependency );
-	}
-
-	
-	/*
-	 * Switch tow Id of Dependency is strIdPlugin of Site
-	 * @return String idPlugin update
-	 */
-	private String replaceDepInIdPlugins(  Dependency old, Dependency next, Site site )
-    {
-    	String strOld =  String.valueOf(old.getId());
-		String strNew = String.valueOf( next.getId());
-		int len = strOld.length();
-		StringBuilder updateIdPlugin = new StringBuilder( site.getIdPlugins( ) );
-		int start = updateIdPlugin.indexOf( strOld ); 
-		
-		if ( start != -1 )
-			updateIdPlugin.replace(start, start + len, strNew);
-		
-		return updateIdPlugin.toString( );
-    }
-    
+   
 	/*
 	 * Cancel parsing of all pom.xml file
 	 */
 	@Action( ACTION_CLEAN )
     public XPage doClean( HttpServletRequest request )
     {
-    	_globaleSites = null;
-    	_globalDep = null;
-        return getXPage( TEMPLATE_PARSE );
+		ext.setConflictClear( );
+		ext.setGlobaleDepClear( );
+		ext.setGlobaleSiteClear( );
+		return getXPage( TEMPLATE_PARSE, request.getLocale( ) );
     }
-	
-
-	/*
-	 * Check if Dependency object have not field at null
-	 */
-	private void depFiledNotNull( Dependency d )
-	{
-		if ( d.getArtifactId( ) == null)
-			d.setArtifactId( "" );
-		if ( d.getGroupId( ) == null )
-			d.setGroupId( "" );
-		if ( d.getType( ) == null )
-			d.setType( "" );
-		if ( d.getVersion( ) == null )
-			d.setVersion( "" );
-	}
-	
-
-	/*
-	 * Check if Site object have not field at null
-	 */
-	private void siteFiledNotNull( Site s )
-	{
-		if ( s.getArtifactId( ) == null)
-			s.setArtifactId( "" );
-		if ( s.getVersion( ) == null )
-			s.setVersion( "" );
-		if ( s.getName( ) == null )
-			s.setName( "" );
-		if ( s.getIdPlugins( ) == null )
-			s.setIdPlugins( "" );
-		if (s.getLastUpdate( ) == null )
-			s.setLastUpdate( "" );
-	}
-	
-   
- /*
-  * DEPRECIATE
-  */
-	
-	private Collection<Dependency> listTmpDepBySiteId(int siteTmp) 
-	{
-    	Iterator<Dependency> itDep = _globalDep.iterator( );
-
-        Collection<Dependency> dependencyList = new ArrayList<Dependency>(  );
-        while ( itDep.hasNext( ) )
-        {
-        	Dependency currentDep = itDep.next( );
-        	if ( currentDep.getSiteId() == siteTmp )
-        	{
-        		dependencyList.add( currentDep );
-        		itDep.remove();
-        	}
-        }
-		return null;
-	}
-	
-	private void updateDependency( Dependency current, int dbId, int siteId  )
-    {
-    	current.setId( dbId );
-    	current.setSiteId( siteId );
-    	
-    	DependencyHome.update( current );
-    }
-	
-	List<String> con;
-
-    private void cleanDependency( Site site ) 
-    {
-		con.add("==> siteTmp = " + site.getName());
-		con.add("==> idplugin = " + site.getIdPlugins());
-    	if (site.getIdPlugins().isEmpty())
-		{
-			con.add("idplugin is empty");
-			return ;
-		}
-    	String[] table ;
-    	String strSiteId = site.getIdPlugins( );
-    	table = strSiteId.split(";");
-    	int i = 0;
-    	int len = table.length;
-    	con.add("len  = " + len );
-    	con.add("table [i]  = " + table[i] );
-    	while ( i < len )
-		{
-    		DependencyHome.remove( Integer.parseInt( table[i] ) );    
-			SiteHome.removeDependencyFromSite(Integer.parseInt( table[i] ), site.getId( ));
-			con.add("table [i]  = " + table[i] + " | site id = " + site.getId( ) );
-			con.add("apres remove = " + site.getIdPlugins());
-    		i++;
-		}
-    
-	}
-	
+		
 }
+	
