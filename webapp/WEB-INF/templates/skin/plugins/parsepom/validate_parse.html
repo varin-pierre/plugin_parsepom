@@ -1,51 +1,63 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<div>
-	<@messages errors=errors />
-		<div class="row">
-  			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-  				<div class="panel panel-info">
-  					<div class="panel-heading">
-     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleNew}</h3>
-   					</div>
- 	 				<ul class="list-group">
- 	 					<#assign doublon = 0>
-	 	 				<#list all! as a>
-	 	 				<#assign doublon = 0>
-							<#list conflict! as con>
-								<#if "${con.artifactId}" == "${a.artifactId}">
-									<#assign doublon = 1>
-								</#if>
-							</#list>
-							<#if doublon == 0 >
-								<li class="list-group-item">${a.artifactId}</li>
-							</#if>
-						</#list>
-						<#if doublon == 1 >
-							<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
+
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<#assign i = 0>
+				<#assign j = 0>
+				<#list all! as a>
+					<#list conflict! as con>
+						<#assign j = j + 1>
+					</#list>
+					<#assign i = i + 1>
+				</#list>
+				<#assign i = i - j>
+				<#if i lt 0>
+					<#assign i = 0>
+				</#if>
+				<h3 class="panel-title">#i18n{parsepom.validate_parse.titleNew} (${i})</h3>
+			</div>
+			<ul class="list-group">
+				<#assign notEmpty = 0>
+ 				<#list all! as a>
+	 	 			<#assign doublon = 0>
+					<#list conflict! as con>
+						<#if "${con.artifactId}" == "${a.artifactId}">
+							<#assign doublon = 1>
+							<#assign notEmpty = 1>
 						</#if>
-  					</ul>
-  				</div>
-  				<div class="panel panel-danger">
-  					<div class="panel-heading">
-     					<h3 class="panel-title">#i18n{parsepom.validate_parse.titleConflict}</h3>
-   					</div>
- 	 				<ul class="list-group">
- 	 					<#if conflict?has_content >
-							<#list conflict! as con>
-								<li class="list-group-item">${con.artifactId} - <font size="2">#i18n{parsepom.validate_parse.lastUpdate} : <em>${con.lastUpdate}</em></font></li>
-							</#list>
-						<#else>
-							<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
-						</#if>
-  					</ul>
-  				</div>
-  			</div>
+					</#list>
+					<#if doublon == 0 >
+						<li class="list-group-item">${a.artifactId}</li>
+					</#if>
+				</#list>
+				<#if all??>
+					<#if all?has_content && notEmpty == 0>
+					<#else>
+						<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
+					</#if>
+				<#else>
+					<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
+				</#if>
+			</ul>
+		</div>
+		<div class="panel panel-danger">
+			<div class="panel-heading">
+				<#assign i = 0>
+				<#list conflict! as con>
+					<#assign i = i + 1>
+				</#list>
+				<h3 class="panel-title">#i18n{parsepom.validate_parse.titleConflict} (${i})</h3>
+			</div>
+			<ul class="list-group">
+				<#if conflict?has_content >
+					<#list conflict! as con>
+						<li class="list-group-item">${con.artifactId} - <font size="2">#i18n{parsepom.validate_parse.lastUpdate} : <em>${con.lastUpdate}</em></font></li>
+					</#list>
+				<#else>
+					<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
+				</#if>
+			</ul>
 		</div>
 		<br />
 		<#if conflict?has_content >
@@ -65,10 +77,5 @@
 				#i18n{parsepom.validate_parse.cancel}
 			</button>
 	 	 </form>
-		<h2 id="debug"><span class="switch"></span><span class="slideTitle">Output Parse</span></h2>
-		<div>
-			path : ${parse!}
-		</div>
 	</div>
-</body>
-</html>
+</div>

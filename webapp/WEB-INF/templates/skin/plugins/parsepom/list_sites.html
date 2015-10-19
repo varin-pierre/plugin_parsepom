@@ -24,6 +24,8 @@
             		<#assign selected_sites = site_list_by_name>
             	<#elseif site_list_by_version??>
             		<#assign selected_sites = site_list_by_version>
+            	<#elseif site_list_by_last_update??>
+            		<#assign selected_sites = site_list_by_last_update>
             	</#if>
             	<#list selected_sites! as site>
                 <tr id="hover_tr">
@@ -35,7 +37,6 @@
                 </#list>                      
             </tbody>
    			</table>
-   			
   		</div>
   		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-warning" role="button">#i18n{portal.util.labelBack}</a>
   	</div>

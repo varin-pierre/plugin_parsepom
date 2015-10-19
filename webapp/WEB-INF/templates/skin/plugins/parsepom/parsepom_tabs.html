@@ -1,9 +1,9 @@
 <#macro tabs tab >
 <div>
     <ul class="nav nav-tabs">
-        <li <#if tab="dependency">class="active"</#if>>
-            <a href="jsp/site/Portal.jsp?page=dependency">
-                #i18n{parsepom.manage_dependencys.pageTitle}
+      <li <#if tab="parse">class="active"</#if>>
+            <a href="jsp/site/Portal.jsp?page=parse">
+                #i18n{parsepom.manage_parse.pageTitle}
             </a>
         </li>
         <li <#if tab="site">class="active"</#if>>
@@ -11,9 +11,9 @@
                 #i18n{parsepom.manage_sites.pageTitle}
             </a>
         </li>
-        <li <#if tab="parse">class="active"</#if>>
-            <a href="jsp/site/Portal.jsp?page=parse">
-                #i18n{parsepom.manage_parse.pageTitle}
+         <li <#if tab="dependency">class="active"</#if>>
+            <a href="jsp/site/Portal.jsp?page=dependency">
+                #i18n{parsepom.manage_dependencys.pageTitle}
             </a>
         </li>
     </ul>

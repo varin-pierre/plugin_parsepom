@@ -74,6 +74,7 @@ public class SiteXPage extends MVCApplication
     private static final String PARAMETER_ARTIFACT_ID_SITE = "siteArtifactId";
     private static final String PARAMETER_NAME_SITE = "siteName";
     private static final String PARAMETER_VERSION_SITE = "siteVersion";
+    private static final String PARAMETER_VERSION_LAST_UPDATE = "siteLastUpdate";
     
     // Markers
     private static final String MARK_SITE_LIST = "site_list";
@@ -82,6 +83,7 @@ public class SiteXPage extends MVCApplication
     private static final String MARK_SITE_LIST_BY_NAME = "site_list_by_name";
     private static final String MARK_SITE_LIST_BY_VERSION = "site_list_by_version";
     private static final String MARK_SITE_LIST_BY_ARTIFACT_ID = "site_list_by_artifact_id";
+    private static final String MARK_SITE_LIST_BY_LAST_UPDATE = "site_list_by_last_update";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
@@ -101,6 +103,7 @@ public class SiteXPage extends MVCApplication
     private static final String ACTION_SEARCH_SITES_BY_ARTIFACT_ID = "searchSiteByArtifactId";
     private static final String ACTION_SEARCH_SITES_BY_NAME = "searchSiteByName";
     private static final String ACTION_SEARCH_SITES_BY_VERSION = "searchSiteByVersion";
+    private static final String ACTION_SEARCH_SITES_BY_LAST_UPDATE = "searchSiteByLastUpdate";
 
     // Infos
     private static final String INFO_SITE_CREATED = "parsepom.info.site.created";
@@ -108,7 +111,7 @@ public class SiteXPage extends MVCApplication
     private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
     
     // Errors
-    private static final String ERROR_SITE_NOT_FOUND = "parsepom.error.site.notFound";
+    private static final String ERROR_NOT_FOUND = "parsepom.error.site.notFound";
     
     // Session variable to store working values
     private Site _site;
@@ -285,7 +288,7 @@ public class SiteXPage extends MVCApplication
         
         	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
         }
-        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
     }
@@ -309,7 +312,7 @@ public class SiteXPage extends MVCApplication
         
         	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
         }
-        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
     }
@@ -333,7 +336,7 @@ public class SiteXPage extends MVCApplication
         
         	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
         }
-        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
     }
@@ -357,7 +360,31 @@ public class SiteXPage extends MVCApplication
         
         	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
         }
-        addError( ERROR_SITE_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_SITES );
+    }
+    
+    /**
+     * Returns the infos about all sites ranked by last update
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     */
+    @Action( ACTION_SEARCH_SITES_BY_LAST_UPDATE )
+    public XPage doSearchLastUpdate( HttpServletRequest request )
+    {
+        String strLastUpdate = request.getParameter( PARAMETER_VERSION_LAST_UPDATE ).toLowerCase( );
+        Collection<Site> siteList = SiteHome.getSitesListByLastUpdate( strLastUpdate );
+
+        if ( !siteList.isEmpty( ) )
+        { 
+        	Map<String, Object> model = getModel(  );
+        	model.put( MARK_SITE_LIST_BY_LAST_UPDATE, siteList );
+        
+        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
+        }
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
     }

@@ -104,7 +104,7 @@ public class DependencyXPage extends MVCApplication
     private static final String INFO_DEPENDENCY_REMOVED = "parsepom.info.dependency.removed";
     
     // Errors
-    private static final String ERROR_DEPENDENCY_NOT_FOUND = "parsepom.error.dependency.notFound";
+    private static final String ERROR_NOT_FOUND = "parsepom.error.dependency.notFound";
     
     // Session variable to store working values
     private Dependency _dependency;
@@ -300,7 +300,7 @@ public class DependencyXPage extends MVCApplication
         
         	return getXPage( TEMPLATE_LIST_DEPENDENCYS, request.getLocale(  ), model );
         }
-        addError( ERROR_DEPENDENCY_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
     }
@@ -333,7 +333,7 @@ public class DependencyXPage extends MVCApplication
                 return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
         	}
         }
-        addError( ERROR_DEPENDENCY_NOT_FOUND, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
     }

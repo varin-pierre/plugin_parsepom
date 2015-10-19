@@ -93,8 +93,7 @@ public class ParseXPage extends MVCApplication
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
     private static final String INFO_VALIDATE = "parsepom.info.validate";
     private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
-
-    
+   
     
     // Session variable to store working values
     private String path = "";
@@ -112,6 +111,7 @@ public class ParseXPage extends MVCApplication
         return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
     }
    
+
     /**
      * Returns the page to choose your depot.
      * @param request
