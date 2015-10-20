@@ -58,15 +58,15 @@
             </thead>
             <tbody>
             	<#list dependency_list_by_site as depend>
-                <tr>
-                    <td>${depend.groupId}</td>
-                    <td>${depend.artifactId}</td>
-                    <td>${depend.version}</td>
-                    <td>${depend.type}</td>
+                <tr id="hover_tr">
+                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.version}</a></td>
+                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
                     <#if last_release_list?has_content>
 	                    <#list last_release_list?keys as key>
 	                    	<#if "${key}" == "${depend.artifactId}">
-	                    		<td>${last_release_list[key]}</td>
+	                    		<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
 	                    	</#if>
 	                    </#list>
 	                <#else>
