@@ -111,7 +111,7 @@ public class ToolsXPage extends MVCApplication
 		    	}
 		    	else
 		    	{
-		    		base.setLastRelease( list.getVersion( ) );
+		    		base.setLastRelease( dependency.getVersion( ) );
 		    		ToolsHome.update( base );
 		    	}
 	    	}
