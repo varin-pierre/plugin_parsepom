@@ -408,4 +408,31 @@ public class SiteXPage extends MVCApplication
 
         return redirectView( request, VIEW_MANAGE_SITES );
     }
+    
+    
+    /*
+     * Dev Zone
+     */
+    // TODO delete
+    
+    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/tools.html";
+    private static final String VIEW_TOOLS = "tools";
+
+    @View( VIEW_TOOLS )
+    public XPage getTools( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
+
+        if ( _site == null  || ( _site.getId( ) != nId ))
+        {
+            _site = SiteHome.findByPrimaryKey( nId );
+        }
+
+        Map<String, Object> model = getModel(  );
+        model.put( MARK_SITE, _site );
+        model.put( MARK_DEPENDENCY_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
+        
+        return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
+    }
+    
 }

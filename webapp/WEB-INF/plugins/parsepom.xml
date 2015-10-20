@@ -45,6 +45,10 @@
             <application-id>parse</application-id>
             <application-class>fr.paris.lutece.plugins.parsepom.web.ParseXPage</application-class>
         </application>
+         <application>
+            <application-id>tools</application-id>
+            <application-class>fr.paris.lutece.plugins.parsepom.web.ToolsXPage</application-class>
+        </application>
     </applications>
 
     <!-- Portlet parameters -->
