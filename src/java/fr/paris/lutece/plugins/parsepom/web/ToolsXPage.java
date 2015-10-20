@@ -95,21 +95,23 @@ public class ToolsXPage extends MVCApplication
 	        
 	    	for ( Dependency list : dependencyList)
 	    	{
-	    		Tools tools = new Tools( );
-		    	
 		    	fr.paris.lutece.plugins.lutecetools.business.Dependency dependency = new fr.paris.lutece.plugins.lutecetools.business.Dependency( );
-		    	
+		    	dependency.setArtifactId( list.getArtifactId( ) );
 		    	MavenRepoService.setReleaseVersion( dependency );
 		    	
-		    	tools.setArtifactId( list.getArtifactId( ) );
-		    	tools.setLastRelease( list.getVersion( ) );
 		    	Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) ); 
 		    	
 		    	if (  base == null)
-		    		ToolsHome.create(tools);
+		    	{
+		    		base = new Tools( );
+		    		base.setArtifactId( dependency.getArtifactId( ) );
+			    	base.setLastRelease( dependency.getVersion( ) );
+		    	
+		    		ToolsHome.create( base );
+		    	}
 		    	else
 		    	{
-		    		base.setLastRelease( tools.getLastRelease( ) );
+		    		base.setLastRelease( list.getVersion( ) );
 		    		ToolsHome.update( base );
 		    	}
 	    	}
@@ -121,7 +123,6 @@ public class ToolsXPage extends MVCApplication
 	    	model.put( MARK_TOOLS, listTools );
 	    	
 	    	return getXPage( TEMPLATE_TOOLS, request.getLocale(  ), model );
-//    		return redirectView( request, VIEW_TOOLS );
 	    }
 	   
 }
