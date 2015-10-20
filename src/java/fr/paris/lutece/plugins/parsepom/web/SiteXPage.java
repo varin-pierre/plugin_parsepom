@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.parsepom.web;
 
+import fr.paris.lutece.plugins.lutecetools.service.DependenciesService;
+import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
+import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
@@ -43,7 +46,10 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
@@ -80,6 +86,7 @@ public class SiteXPage extends MVCApplication
     private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_SITE = "site";
     private static final String MARK_DEPENDENCY_LIST_BY_SITE = "dependency_list_by_site";
+    private static final String MARK_LAST_RELEASE_MAP = "last_release_map";
     private static final String MARK_SITE_LIST_BY_NAME = "site_list_by_name";
     private static final String MARK_SITE_LIST_BY_VERSION = "site_list_by_version";
     private static final String MARK_SITE_LIST_BY_ARTIFACT_ID = "site_list_by_artifact_id";
@@ -258,14 +265,27 @@ public class SiteXPage extends MVCApplication
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
 
-        if ( _site == null  || ( _site.getId( ) != nId ))
+        Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
+        Map<String, String> listVersion = new HashMap<>( );
+        
+        for ( Dependency list : dependencyList)
+        {
+        	fr.paris.lutece.plugins.lutecetools.business.Dependency dependency = new fr.paris.lutece.plugins.lutecetools.business.Dependency( );
+            
+        	dependency.setArtifactId( list.getArtifactId ( ) );
+            MavenRepoService.setReleaseVersion( dependency );
+            listVersion.put( list.getArtifactId( ), dependency.getVersion( ) );
+        }
+        
+        if ( _site == null  || ( _site.getId( ) != nId ) )
         {
             _site = SiteHome.findByPrimaryKey( nId );
         }
 
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE, _site );
-        model.put( MARK_DEPENDENCY_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
+        model.put( MARK_DEPENDENCY_LIST_BY_SITE, dependencyList );
+        model.put( MARK_LAST_RELEASE_MAP, listVersion );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }
