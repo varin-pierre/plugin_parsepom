@@ -63,12 +63,15 @@
                     <td>${depend.artifactId}</td>
                     <td>${depend.version}</td>
                     <td>${depend.type}</td>
-                    <#list last_release_list?keys as key>
-
-                    	<#if "${key}" == "${depend.artifactId}">
-                    		<td>${last_release_list[key]}</td>
-                    	</#if>
-                    </#list>
+                    <#if last_release_list?has_content>
+	                    <#list last_release_list?keys as key>
+	                    	<#if "${key}" == "${depend.artifactId}">
+	                    		<td>${last_release_list[key]}</td>
+	                    	</#if>
+	                    </#list>
+	                <#else>
+                    	<td>#i18n{parsepom.details_site.nonAvailable}</td>
+                   	</#if>
                 </tr>
                 </#list>                      
             </tbody>
