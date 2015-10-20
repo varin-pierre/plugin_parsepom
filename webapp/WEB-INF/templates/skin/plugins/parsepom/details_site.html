@@ -1,8 +1,5 @@
 <div class="row">
   	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-  		<#list last_release_map?keys as key>
-  			${key}
-  		</#list>
   		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-warning" role="button">#i18n{portal.util.labelBack}</a>
   		<br /><br />
   		<div class="panel panel-info">
@@ -56,6 +53,7 @@
                     <th id="second">#i18n{parsepom.details_site.columnArtifactId}</th>
                     <th id="third">#i18n{parsepom.details_site.columnVersion}</th>
                     <th id="fourth">#i18n{parsepom.details_site.columnType}</th>
+                    <th id="fifth">#i18n{parsepom.details_site.columnLastRelease}</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,6 +63,12 @@
                     <td>${depend.artifactId}</td>
                     <td>${depend.version}</td>
                     <td>${depend.type}</td>
+                    <#list last_release_list?keys as key>
+
+                    	<#if "${key}" == "${depend.artifactId}">
+                    		<td>${last_release_list[key]}</td>
+                    	</#if>
+                    </#list>
                 </tr>
                 </#list>                      
             </tbody>

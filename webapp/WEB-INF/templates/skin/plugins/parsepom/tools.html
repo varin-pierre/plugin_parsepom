@@ -1,14 +1,22 @@
 <#include "parsepom_tabs.html" />
 <@tabs tab="tools" />
 
-<div>
-	<h1>Tools LAST UPDATE</h1>
-	<form method="post"  action="jsp/site/Portal.jsp?page=tools">
-		<button name="action_tools" class="btn btn-primary" type="submit">
-			Update
-		</button>
- 	</form>
-	<#list tools! as t >
-		<ul>${t.artifactId}  |   ${t.lastRelease} </ul>
-	</#list >
+<div class=row>
+	<div class="col-md-12">
+		<br />
+		<div class="jumbotron well">
+			<h2>#i18n{parsepom.tools.title}</h2>
+			<br />
+			<form method="post"  action="jsp/site/Portal.jsp?page=tools">
+				<button name="action_tools" class="btn btn-primary" id="buttonUpdate" type="submit">
+					#i18n{parsepom.tools.buttonUpdate}
+				</button>
+				<img src="css/img/ajax-loader3.gif" id="imgLoader" style="display:none" />
+				<#if tools??>
+					<img src="css/img/button_ok.png" style="width:2.5em;"/>
+				</#if>
+ 			</form>
+			
+		</div>
+	</div>
 </div>

@@ -24,9 +24,13 @@ $(document).ready(function() {
 	$( '#fourth' ).click( function( ) {
 		handleHeaderClick( '#fourth' );
 	})
+	$( '#fifth' ).click( function( ) {
+		handleHeaderClick( '#fifth' );
+	})
 	
 	autoComplete( );
 	datePicker( );
+	updateLoader( );
 })
 
 function handleHeaderClick( hdr ) {
@@ -88,16 +92,16 @@ function autoComplete(  ) {
 			listSiteVersion = removeDuplicates( listSiteVersion );
 			listSiteLastUpdate = removeDuplicates( listSiteLastUpdate );
 			
-			$( "#siteArtifactId" ).autocomplete({		
+			$( "#siteArtifactId" ).autocomplete( {		
 				source: listSiteArtifactId,
 			});
-			$( "#siteName" ).autocomplete({
+			$( "#siteName" ).autocomplete( {
 				source: listSiteName,
 			});
-			$( "#siteVersion" ).autocomplete({
+			$( "#siteVersion" ).autocomplete( {
 				source: listSiteVersion,
 			});
-			$( "#datepicker" ).autocomplete({
+			$( "#datepicker" ).autocomplete( {
 				source: listSiteLastUpdate,
 			});
 		});
@@ -111,7 +115,7 @@ function autoComplete(  ) {
 		    });
 		    listDependencyArtifactId = removeDuplicates( listDependencyArtifactId );
 		    
-		    $( "#dependencyArtifactId" ).autocomplete({
+		    $( "#dependencyArtifactId" ).autocomplete( {
 				source: listDependencyArtifactId,
 			});
 		});
@@ -133,8 +137,14 @@ function datePicker( )
 		        $( '#submit' ).attr( 'disabled', false );
 	    }
 	});
-	$( '#buttonpicker' ).click( function ( )
-	{
+	$( '#buttonpicker' ).click( function ( ) {
 	    $( '#datepicker' ).datepicker( 'show' );
 	});
+}
+
+function updateLoader( )
+{
+	$( '#buttonUpdate' ).click( function( ) {
+		$( '#imgLoader' ).show( );
+	})
 }

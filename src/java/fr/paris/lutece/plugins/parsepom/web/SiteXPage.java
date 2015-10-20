@@ -39,6 +39,8 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.business.Tools;
+import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -86,7 +88,7 @@ public class SiteXPage extends MVCApplication
     private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_SITE = "site";
     private static final String MARK_DEPENDENCY_LIST_BY_SITE = "dependency_list_by_site";
-    private static final String MARK_LAST_RELEASE_MAP = "last_release_map";
+    private static final String MARK_LAST_RELEASE_LIST = "last_release_list";
     private static final String MARK_SITE_LIST_BY_NAME = "site_list_by_name";
     private static final String MARK_SITE_LIST_BY_VERSION = "site_list_by_version";
     private static final String MARK_SITE_LIST_BY_ARTIFACT_ID = "site_list_by_artifact_id";
@@ -265,16 +267,14 @@ public class SiteXPage extends MVCApplication
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
 
-        Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
-        Map<String, String> listVersion = new HashMap<>( );
+        Collection<Dependency> dependencyList = DependencyHome.getDependencysListBySiteId( nId );
+        Map<String, String> listRelease = new HashMap<>( );
         
         for ( Dependency list : dependencyList)
         {
-        	fr.paris.lutece.plugins.lutecetools.business.Dependency dependency = new fr.paris.lutece.plugins.lutecetools.business.Dependency( );
-            
-        	dependency.setArtifactId( list.getArtifactId ( ) );
-            MavenRepoService.setReleaseVersion( dependency );
-            listVersion.put( list.getArtifactId( ), dependency.getVersion( ) );
+        	Tools tools = ToolsHome.findByArtifactId( list.getArtifactId( ) );
+        	if ( tools != null )
+        		listRelease.put( tools.getArtifactId( ) , tools.getLastRelease( ));
         }
         
         if ( _site == null  || ( _site.getId( ) != nId ) )
@@ -285,7 +285,7 @@ public class SiteXPage extends MVCApplication
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE, _site );
         model.put( MARK_DEPENDENCY_LIST_BY_SITE, dependencyList );
-        model.put( MARK_LAST_RELEASE_MAP, listVersion );
+        model.put( MARK_LAST_RELEASE_LIST, listRelease );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }
@@ -407,32 +407,5 @@ public class SiteXPage extends MVCApplication
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
-    }
-    
-    
-    /*
-     * Dev Zone
-     */
-    // TODO delete
-    
-    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/tools.html";
-    private static final String VIEW_TOOLS = "tools";
-
-    @View( VIEW_TOOLS )
-    public XPage getTools( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
-
-        if ( _site == null  || ( _site.getId( ) != nId ))
-        {
-            _site = SiteHome.findByPrimaryKey( nId );
-        }
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_SITE, _site );
-        model.put( MARK_DEPENDENCY_LIST_BY_SITE, DependencyHome.getDependencysListBySiteId( nId ) );
-        
-        return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
-    }
-    
+    }  
 }
