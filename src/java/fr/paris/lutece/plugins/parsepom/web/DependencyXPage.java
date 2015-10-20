@@ -277,7 +277,7 @@ public class DependencyXPage extends MVCApplication
         
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
-        model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
+        model.put( MARK_SITES_LIST_BY_DEPENDENCY, DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }
