@@ -5,6 +5,7 @@
 	<div class="col-md-12">
 		<br />
 		<div class="jumbotron well">
+			<@messages infos=infos />
 			<h2>#i18n{parsepom.tools.title}</h2>
 			<br />
 			<form method="post"  action="jsp/site/Portal.jsp?page=tools">
@@ -12,11 +13,7 @@
 					#i18n{parsepom.tools.buttonUpdate}
 				</button>
 				<img src="css/img/ajax-loader3.gif" id="imgLoader" style="display:none" />
-				<#if tools??>
-					<img src="css/img/button_ok.png" style="width:2.5em;"/>
-				</#if>
  			</form>
-			
 		</div>
 	</div>
 </div>
