@@ -37,18 +37,18 @@ function handleHeaderClick( hdr ) {
 	
     var concat = hdr.concat(' i');
     
-    if ($(hdr).hasClass('sortUp') == true) {
-        $(hdr).removeClass('sortUp');
-        $(hdr).addClass('sortDown');
-        $(concat).removeClass('fa-sort fa-sort-asc').addClass('fa-sort-desc');
-    } else if ($(hdr).hasClass('sortDown') == true) {
-        $(hdr).removeClass('sortDown');
-        $(hdr).addClass('sortUp');
-        $(concat).removeClass('fa-sort fa-sort-desc').addClass('fa-sort-asc');
+    if ($( hdr ).hasClass( 'sortUp' ) == true) {
+        $( hdr ).removeClass( 'sortUp' );
+        $( hdr ).addClass( 'sortDown' );
+        $( concat ).removeClass( 'fa-sort fa-sort-asc' ).addClass( 'fa-sort-desc' );
+    } else if ($( hdr ).hasClass( 'sortDown' ) == true) {
+        $( hdr ).removeClass( 'sortDown' );
+        $( hdr ).addClass( 'sortUp' );
+        $( concat ).removeClass( 'fa-sort fa-sort-desc' ).addClass( 'fa-sort-asc' );
     } else {
-    	$(hdr).removeClass('sortUp sortDown');
-        $(hdr).addClass('sortUp');
-        $(concat).removeClass('fa-sort').addClass('fa-sort-asc');
+    	$( hdr ).removeClass( 'sortUp sortDown' );
+        $( hdr ).addClass( 'sortUp' );
+        $( concat ).removeClass( 'fa-sort' ).addClass( 'fa-sort-asc' );
     }
 }
 
@@ -76,7 +76,7 @@ function autoComplete(  ) {
 	}
 	
 	function availableTags ( ) {
-		$.getJSON("rest/parsepom/site/s?format=json", function( data ) {			
+		$.getJSON( "rest/parsepom/site/s?format=json", function( data ) {			
 			if ( isArray( data.sites.site ) )
 				data = data.sites.site;
 			else

@@ -67,6 +67,7 @@ public class ToolsXPage extends MVCApplication
 	    private static final String ACTION_TOOLS = "tools";
 	    
 	    // Infos
+	    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
 	   
 	    // Session variable to store working values
 	  
@@ -78,8 +79,7 @@ public class ToolsXPage extends MVCApplication
 	     */
 	    @View( value = VIEW_TOOLS, defaultView = true )
 	    public XPage getParse( HttpServletRequest request )
-	    {
-	    	
+	    {  	
 	    	return getXPage( TEMPLATE_TOOLS, request.getLocale(  ) );
 	    }
 	    
@@ -115,14 +115,9 @@ public class ToolsXPage extends MVCApplication
 		    		ToolsHome.update( base );
 		    	}
 	    	}
+	    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
 	    	
-	    	Map<String, Object> model = getModel(  );
-
-	    	Collection<Tools> listTools = ToolsHome.getToolsList( );
-	    	
-	    	model.put( MARK_TOOLS, listTools );
-	    	
-	    	return getXPage( TEMPLATE_TOOLS, request.getLocale(  ), model );
+	    	return redirectView( request, VIEW_TOOLS );
 	    }
 	   
 }
