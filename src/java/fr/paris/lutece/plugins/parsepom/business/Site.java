@@ -46,11 +46,11 @@ public class Site
     private int _nId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.site.ArtifactId.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{parsepom.validation.site.ArtifactId.size}" ) 
+    @Size( max = 255 , message = "#i18n{parsepom.validation.site.ArtifactId.size}" ) 
     private String _strArtifactId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.site.Name.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
+    @Size( max = 255 , message = "#i18n{parsepom.validation.site.Name.size}" ) 
     private String _strName;
     
     @NotEmpty( message = "#i18n{parsepom.validation.site.Version.notEmpty}" )
@@ -58,7 +58,7 @@ public class Site
     private String _strVersion;
  
     @NotEmpty( message = "#i18n{parsepom.validation.site.IdPlugins.notEmpty}" )
-    @Size( max = 20000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
+    @Size( max = 60000 , message = "#i18n{parsepom.validation.site.IdPlugins.size}" )
     private String _strIdPlugins;
     
     @NotEmpty( message = "#i18n{parsepom.validation.site.LastUpdate.notEmpty}" )

@@ -198,10 +198,12 @@ public class ParseXPage extends MVCApplication
 			itSite.remove( );
 	    }
 		
-	    Map<String, Object> model = getModel(  );
-	    model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
+//	    Map<String, Object> model = getModel(  );
+//	    model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
 	
-	    return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
+//	    return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
+		return redirectView( request, "site" );
+
     }
    
     /*

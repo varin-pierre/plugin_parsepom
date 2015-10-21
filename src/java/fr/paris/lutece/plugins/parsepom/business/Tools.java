@@ -47,7 +47,7 @@ public class Tools
     private int _nId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.tools.ArtifactId.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{parsepom.validation.tools.ArtifactId.size}" ) 
+    @Size( max = 255 , message = "#i18n{parsepom.validation.tools.ArtifactId.size}" ) 
     private String _strArtifactId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.tools.LastRealese.notEmpty}" )

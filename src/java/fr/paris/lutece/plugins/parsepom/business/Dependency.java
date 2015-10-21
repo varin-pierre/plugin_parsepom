@@ -46,11 +46,11 @@ public class Dependency
     private int _nId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.dependency.GroupId.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{parsepom.validation.dependency.GroupId.size}" ) 
+    @Size( max = 255 , message = "#i18n{parsepom.validation.dependency.GroupId.size}" ) 
     private String _strGroupId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.dependency.ArtifactId.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{parsepom.validation.dependency.ArtifactId.size}" ) 
+    @Size( max = 255 , message = "#i18n{parsepom.validation.dependency.ArtifactId.size}" ) 
     private String _strArtifactId;
     
     @NotEmpty( message = "#i18n{parsepom.validation.dependency.Version.notEmpty}" )
