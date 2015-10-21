@@ -9,7 +9,7 @@ id_site int(6) NOT NULL,
 artifact_id varchar(255) NOT NULL default '',
 name varchar(255) NOT NULL default '',
 version varchar(50) NOT NULL default '',
-id_plugins varchar(60000) NOT NULL default '',
+id_plugins varchar(20000) NOT NULL default '',
 last_update varchar(50) NOT NULL default '',
 PRIMARY KEY (id_site)
 );

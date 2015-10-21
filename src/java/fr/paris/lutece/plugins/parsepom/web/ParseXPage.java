@@ -78,6 +78,8 @@ public class ParseXPage extends MVCApplication
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_VALIDATE = "validate";
     private static final String VIEW_CHOOSE = "choose";
+    private static final String VIEW_SITE = "site";
+    
 
     // Actions
     private static final String ACTION_PARSE = "parse";
@@ -89,7 +91,8 @@ public class ParseXPage extends MVCApplication
     private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
     private static final String INFO_VALIDATE = "parsepom.info.validate";
     private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
-   
+    private static final String INFO_CANCEL = "parsepom.info.cancel";
+ 
     // Session variable to store working values
     private String path = "";
     private Extract ext = new Extract( );
@@ -126,9 +129,10 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_CHOOSE )
     public XPage doChoose( HttpServletRequest request )
     {		
-    	
     	path = FileChooser.chooserDir();
+    	
     	Map<String, Object> model = getModel(  );
+    	
     	model.put( MARK_PATH, path);
     	
     	return getXPage( TEMPLATE_PARSE, request.getLocale( ), model );
@@ -156,7 +160,7 @@ public class ParseXPage extends MVCApplication
     		return redirectView( request, VIEW_PARSE );
  	    }
  	    
-	return redirectView( request, VIEW_VALIDATE );
+    	return redirectView( request, VIEW_VALIDATE );
     }
     
     @View( value = VIEW_VALIDATE)
@@ -164,10 +168,10 @@ public class ParseXPage extends MVCApplication
     {
     	Map<String, Object> model = getModel(  );
 
-    	addInfo( INFO_VALIDATE, getLocale( request ) );
     	model.put( MARK_PARSE, path );
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
+    	
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
     }
     
@@ -197,12 +201,10 @@ public class ParseXPage extends MVCApplication
 			ext.createSite( currentSite );
 			itSite.remove( );
 	    }
-		
-//	    Map<String, Object> model = getModel(  );
-//	    model.put( MARK_SITE_LIST , SiteHome.getSitesList(  ) );
-	
-//	    return getXPage( TEMPLATE_SITE,request.getLocale(  ), model );
-		return redirectView( request, "site" );
+
+    	addInfo( INFO_VALIDATE, getLocale( request ) );
+    	
+		return redirectView( request, VIEW_SITE );
 
     }
    
@@ -215,8 +217,11 @@ public class ParseXPage extends MVCApplication
 		ext.setConflictClear( );
 		ext.setGlobaleDepClear( );
 		ext.setGlobaleSiteClear( );
-		return getXPage( TEMPLATE_PARSE, request.getLocale( ) );
-    }
+		
+		addInfo( INFO_CANCEL, getLocale( request ) );
+		
+		return redirectView( request, VIEW_PARSE );
+	}
 		
 }
 	
