@@ -1,0 +1,5 @@
+core_extensions.installed=1
+lucene.installed=1
+rest.installed=1
+lutecetools.installed=1
+parsepom.installed=1

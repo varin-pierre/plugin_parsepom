@@ -21,6 +21,7 @@ public class Extract {
 	
 	// Markers
     private static final String MARK_TAGS = "tags";
+    private static final String MARK_BRANCHES = "branches";
     
     // Session variable to store working values
     private Collection<Site> _globaleSites = new ArrayList<Site>();
@@ -86,7 +87,7 @@ public class Extract {
 	    	for ( File d : site )
 	    	{
 	    		String name = d.getName( );
-	    		if ( !name.equals( MARK_TAGS ) )
+	    		if ( !name.equals( MARK_TAGS ) && !name.equals( MARK_BRANCHES ) )
 	    			openDir( d, filter );
 	    	}
 		}
@@ -109,12 +110,12 @@ public class Extract {
 	 * and modify with formatDate
 	 * @return String date 
 	 */
-	private String extractdate(File pom) throws IOException
+	private String extractdate( File pom ) throws IOException
 	{
-		Path p = pom.toPath();
-	    BasicFileAttributes view = Files.getFileAttributeView(p, BasicFileAttributeView.class).readAttributes();
-	    String date =  view.lastAccessTime().toString();
-        date = formatDate(date);
+		Path p = pom.toPath( );
+	    BasicFileAttributes view = Files.getFileAttributeView( p, BasicFileAttributeView.class ).readAttributes( );
+	    String date =  view.lastAccessTime( ).toString( );
+        date = formatDate( date );
         
         return date;
 	}
