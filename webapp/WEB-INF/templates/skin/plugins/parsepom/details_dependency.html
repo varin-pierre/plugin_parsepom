@@ -20,19 +20,22 @@
             </thead>
             <tbody>
 				<#list sites_list_by_dependency?keys as key>
-				<tr>
-					<td>
+				<tr id="hover_tr">
+					<#assign z = 0>
+					<td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">
 						<#assign i = 0>
 						<#list sites_list_by_dependency[key] as k>
-							<#if i == 0>
+						
+							<#if i == 1>	
 								${k}
-							<#else>
+							<#elseif i == 2>
 								<font size="2">(${k})</font>
 							</#if>
 							<#assign i = i + 1>
 						</#list>
-					</td>
-					<td>${key}</td>				 
+					</a></td>
+					<td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">${key}</a></td>
+					<#assign z = z + 1>			 
 				<tr>
 				</#list>
             </tbody>

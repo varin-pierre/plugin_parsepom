@@ -60,7 +60,7 @@ public final class SiteDAO implements ISiteDAO
     private static final String SQL_QUERY_SELECT_BY_ARTIFACT_ID = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE artifact_id = ?";
     private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE name = ?";
     private static final String SQL_QUERY_SELECT_BY_VERSION = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE version = ?";
-    private static final String SQL_QUERY_SELECT_BY_LAST_UPDATE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM plugin_parsepom.parsepom_site WHERE cast(last_update as date) = ?";
+    private static final String SQL_QUERY_SELECT_BY_LAST_UPDATE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE cast(last_update as date) = ?";
     private static final String SQL_QUERY_SELECT_BY_ONE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE artifact_id = ? AND last_update = ?";
 
     /**

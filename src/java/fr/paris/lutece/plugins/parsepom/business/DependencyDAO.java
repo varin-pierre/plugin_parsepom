@@ -62,7 +62,7 @@ public final class DependencyDAO implements IDependencyDAO
     private static final String SQL_QUERY_SELECTALL = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_dependency FROM parsepom_dependency";
     private static final String SQL_QUERY_SELECTALL_BY_SITE_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE site_id = ?";
-    private static final String SQL_QUERY_SELECT_BY_DEPENDENCY_ID = "SELECT pd.artifact_id, pd.version, ps.artifact_id, ps.name FROM parsepom_dependency as pd JOIN parsepom_site as ps ON pd.site_id = ps.id_site WHERE id_dependency = ?";
+    private static final String SQL_QUERY_SELECT_BY_DEPENDENCY_ID = "SELECT pd.artifact_id, pd.version, ps.id_site, ps.artifact_id, ps.name FROM parsepom_dependency as pd JOIN parsepom_site as ps ON pd.site_id = ps.id_site WHERE id_dependency = ?";
     private static final String SQL_QUERY_SELECTALL_BY_ARTIFACT_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency WHERE artifact_id = ?";
     private static final String SQL_QUERY_SELECTALL_BY_UNIQUE_ARTIFACT_ID = "SELECT id_dependency, group_id, artifact_id, version, type, site_id FROM parsepom_dependency GROUP BY artifact_id";
 
@@ -263,10 +263,12 @@ public final class DependencyDAO implements IDependencyDAO
     	        	if (daoUtil.getString( 1 ).equals( strArtifactId ) )
     	        	{
     	        		String strDependencyVersion = daoUtil.getString( 2 );
-    	        		String strArtifactIdSite = daoUtil.getString( 3 );
-    	        		String strNameSite = daoUtil.getString( 4 );
+    	        		String strSiteId = Integer.toString( daoUtil.getInt( 3 ) );
+    	        		String strArtifactIdSite = daoUtil.getString( 4 );
+    	        		String strNameSite = daoUtil.getString( 5 );
     	        		ArrayList<String> site = new ArrayList<String>( );
     	        		
+    	        		site.add( strSiteId );
     	        		site.add( strArtifactIdSite );
     	        		site.add( strNameSite );
     	        		listSite.put( strDependencyVersion, site );
