@@ -37,6 +37,8 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.business.Tools;
+import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -45,6 +47,7 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
@@ -80,6 +83,8 @@ public class DependencyXPage extends MVCApplication
     private static final String MARK_DEPENDENCY = "dependency";
     private static final String MARK_SITES_LIST_BY_DEPENDENCY = "sites_list_by_dependency";
     private static final String MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES = "dependency_list_without_duplicates";
+    private static final String MARK_LAST_RELEASE_LIST = "last_release_list";
+    private static final String MARK_LAST_RELEASE_STRING = "last_release";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_DEPENDENCY = "parsepom.message.confirmRemoveDependency";
@@ -274,9 +279,15 @@ public class DependencyXPage extends MVCApplication
         
         String strArtifactId = _dependency.getArtifactId( );
         List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
+        String strRelease = "";
+        
+        Tools tools = ToolsHome.findByArtifactId( strArtifactId );
+    	if ( tools != null )
+    		strRelease = tools.getLastRelease( );
         
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
+        model.put( MARK_LAST_RELEASE_STRING, strRelease );
         model.put( MARK_SITES_LIST_BY_DEPENDENCY, DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
@@ -296,8 +307,17 @@ public class DependencyXPage extends MVCApplication
         if ( !dependencyList.isEmpty( ) )
         {
         	Map<String, Object> model = getModel(  );
+            Map<String, String> listRelease = new HashMap<>( );
+            
+            for ( Dependency list : dependencyList)
+            {
+            	Tools tools = ToolsHome.findByArtifactId( list.getArtifactId( ) );
+            	if ( tools != null )
+            		listRelease.put( tools.getArtifactId( ) , tools.getLastRelease( ));
+            }
         	model.put( MARK_DEPENDENCY_LIST, dependencyList );
-        
+        	model.put( MARK_LAST_RELEASE_LIST, listRelease );
+        	
         	return getXPage( TEMPLATE_LIST_DEPENDENCYS, request.getLocale(  ), model );
         }
         addError( ERROR_NOT_FOUND, getLocale( request ) );
