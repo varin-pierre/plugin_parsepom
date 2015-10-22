@@ -35,8 +35,6 @@
 package fr.paris.lutece.plugins.parsepom.web;
 
 import java.util.Collection;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
@@ -44,6 +42,7 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -58,7 +57,6 @@ public class ToolsXPage extends MVCApplication
 	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/tools.html";
 	 
 	    // Markers
-	    private static final String MARK_TOOLS = "tools";
 
 	    // Views
 	    private static final String VIEW_TOOLS = "tools";
@@ -95,6 +93,7 @@ public class ToolsXPage extends MVCApplication
 	        
 	    	for ( Dependency list : dependencyList)
 	    	{
+	    		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
 		    	fr.paris.lutece.plugins.lutecetools.business.Dependency dependency = new fr.paris.lutece.plugins.lutecetools.business.Dependency( );
 		    	dependency.setArtifactId( list.getArtifactId( ) );
 		    	MavenRepoService.setReleaseVersion( dependency );

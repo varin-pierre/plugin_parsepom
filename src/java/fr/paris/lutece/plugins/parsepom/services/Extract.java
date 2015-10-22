@@ -16,6 +16,7 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class Extract {
 	
@@ -164,7 +165,8 @@ public class Extract {
         
         if ( ( site = handler.getSite( ) ) == null )
         	return ;
-
+        
+        AppLogService.debug("Parse File : " + site.getName( ) );
         for ( Dependency d : lDep )
         {
         	d.setSiteId( maxIdSite );
@@ -319,7 +321,6 @@ public class Extract {
 		upSite.setName( strName );
 		upSite.setVersion( version );
 		upSite.setIdPlugins( strIdPlugins );
-//		upSite.setLastUpdate( strLastUpdate );
 		
 		SiteHome.update( upSite );
 	}

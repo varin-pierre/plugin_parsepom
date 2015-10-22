@@ -79,7 +79,6 @@ public class ParseXPage extends MVCApplication
     private static final String VIEW_VALIDATE = "validate";
     private static final String VIEW_CHOOSE = "choose";
     private static final String VIEW_SITE = "site";
-    
 
     // Actions
     private static final String ACTION_PARSE = "parse";
@@ -105,10 +104,12 @@ public class ParseXPage extends MVCApplication
     @View( value = VIEW_PARSE, defaultView = true )
     public XPage getParse( HttpServletRequest request )
     {
+    	Map<String, Object> model = getModel(  );
     	
-    	return getXPage( TEMPLATE_PARSE, request.getLocale(  ) );
+    	model.put( MARK_PATH, path);
+
+    	return getXPage( TEMPLATE_PARSE, request.getLocale(  ), model );
     }
-   
 
     /**
      * Returns the page to choose your depot.
@@ -129,13 +130,9 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_CHOOSE )
     public XPage doChoose( HttpServletRequest request )
     {		
-    	path = FileChooser.chooserDir();
+    	path = FileChooser.chooserDir( );
     	
-    	Map<String, Object> model = getModel(  );
-    	
-    	model.put( MARK_PATH, path);
-    	
-    	return getXPage( TEMPLATE_PARSE, request.getLocale( ), model );
+    	return redirectView( request, VIEW_PARSE );
     }
     
     @Action( ACTION_PARSE )
@@ -149,6 +146,7 @@ public class ParseXPage extends MVCApplication
     	if ( !dirs.isDirectory( ) )
 	    {
     		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
+    		path = "";
     		return redirectView( request, VIEW_PARSE );
 	    }
 
@@ -157,6 +155,7 @@ public class ParseXPage extends MVCApplication
     	if ( ext.getConflict( ).isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
  	    {
     		addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
+    		path = "";
     		return redirectView( request, VIEW_PARSE );
  	    }
  	    
@@ -171,7 +170,7 @@ public class ParseXPage extends MVCApplication
     	model.put( MARK_PARSE, path );
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
-    	
+
         return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
     }
     
@@ -202,10 +201,11 @@ public class ParseXPage extends MVCApplication
 			itSite.remove( );
 	    }
 
+		path = "";
+		
     	addInfo( INFO_VALIDATE, getLocale( request ) );
     	
 		return redirectView( request, VIEW_SITE );
-
     }
    
     /*
@@ -217,6 +217,8 @@ public class ParseXPage extends MVCApplication
 		ext.setConflictClear( );
 		ext.setGlobaleDepClear( );
 		ext.setGlobaleSiteClear( );
+		
+		path = "";
 		
 		addInfo( INFO_CANCEL, getLocale( request ) );
 		
