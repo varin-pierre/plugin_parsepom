@@ -28,7 +28,7 @@
 						</#if>
 					</#list>
 					<#if doublon == 0 >
-						<li class="list-group-item">${a.artifactId}</li>
+						<li class="list-group-item">${a.artifactId} <font size="2">(${a.name}) - v${a.version}</font></li>
 					</#if>
 				</#list>
 				<#if all??>
@@ -52,7 +52,7 @@
 			<ul class="list-group">
 				<#if conflict?has_content >
 					<#list conflict! as con>
-						<li class="list-group-item">${con.artifactId} - <font size="2">#i18n{parsepom.validate_parse.lastUpdate} : <em>${con.lastUpdate}</em></font></li>
+						<li class="list-group-item">${con.artifactId} <font size="2">(${con.name}) - #i18n{parsepom.validate_parse.lastUpdate} : <em>${con.lastUpdate}</em></font></li>
 					</#list>
 				<#else>
 					<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
