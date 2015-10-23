@@ -14,8 +14,9 @@
    			<table id="myTableDependency" class="table">
    				<thead>
                 <tr>
-                    <th id="first">#i18n{parsepom.details_dependency.columnSite}</th>
+                    <th id="first">#i18n{parsepom.details_dependency.columnSite} ${dependency.artifactId}</th>
                     <th id="second">#i18n{parsepom.details_dependency.columnDependencyVersion}</th>
+                    <th id="third">#i18n{parsepom.details_dependency.columnLatestRelease}</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,7 +33,12 @@
 								<#assign i = i + 1>
 							</#list>
 						</a></td>
-						<td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">${key}</a></td> 
+						<td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">${key}</a></td>
+						<#if last_release?has_content>
+		                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">${last_release}</a></td>
+		                <#else>
+	                    	<td>#i18n{parsepom.details_dependency.nonAvailable}</td>
+	                   	</#if> 
 					<tr>
 				</#list>
             </tbody>
