@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
+import fr.paris.lutece.plugins.parsepom.services.FileChooser;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -48,15 +49,31 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import javax.servlet.http.HttpServletRequest; 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+
+
+
 
 /**
  * This class provides the user interface to manage Site xpages ( manage, create, modify, remove )
@@ -113,11 +130,13 @@ public class SiteXPage extends MVCApplication
     private static final String ACTION_SEARCH_SITES_BY_NAME = "searchSiteByName";
     private static final String ACTION_SEARCH_SITES_BY_VERSION = "searchSiteByVersion";
     private static final String ACTION_SEARCH_SITES_BY_LAST_UPDATE = "searchSiteByLastUpdate";
+    private static final String ACTION_DOWNLOAD_POM = "downloadPom";
 
     // Infos
     private static final String INFO_SITE_CREATED = "parsepom.info.site.created";
     private static final String INFO_SITE_UPDATED = "parsepom.info.site.updated";
     private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
+    private static final String INFO_FILE_DOWNLOADED = "parsepom.info.site.fileDownloaded";
     
     // Errors
     private static final String ERROR_NOT_FOUND = "parsepom.error.site.notFound";
@@ -407,5 +426,57 @@ public class SiteXPage extends MVCApplication
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
-    }  
+    }
+    
+    /**
+     * Download a pom
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     * @throws IOException 
+     */
+    @Action( ACTION_DOWNLOAD_POM )
+    public XPage doDownloadPom( HttpServletRequest request ) throws IOException
+    {
+    	FileInputStream in = null;
+    	FileOutputStream out = null;
+    	
+    	try {
+    		String inputPath = "/home/hivian/Desktop/test/lutece-core/pom.xml";
+    		String filename = inputPath.substring(inputPath.lastIndexOf("/") + 1);
+    		String outputPath = FileChooser.chooserDir( );
+    		
+			in = new FileInputStream("/home/hivian/Desktop/test/lutece-core/pom.xml");
+			out = new FileOutputStream(new File(outputPath.concat("/").concat(filename)));
+			 
+			int read = 0;
+			byte[] bytes = new byte[1024];
+	
+			while ((read = in.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	} finally {
+    		if (in != null) {
+    			try {
+    				in.close();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    		if (out != null) {
+    			try {
+    				out.close();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+
+    		}
+    	}
+        
+    	addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
+    	
+        return redirectView( request, VIEW_MANAGE_SITES );
+    }
 }
