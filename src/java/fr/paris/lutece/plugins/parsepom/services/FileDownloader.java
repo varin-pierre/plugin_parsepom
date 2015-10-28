@@ -7,6 +7,12 @@ import java.io.IOException;
 
 public class FileDownloader 
 {
+	// Errors
+	private static final int VALUE_FILECHOOSER_CANCELLED = -2;
+	private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
+    private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
+    private static final int VALUE_SUCCESS = 1;
+    
 	public static Integer download( String fileInputPath )
 	{
 		FileInputStream in = null;
@@ -17,19 +23,19 @@ public class FileDownloader
     		File fin = new File( fileInputPath );
     		if ( !fin.exists( ) )
 			{
-				return -1;
+				return VALUE_INPUT_FILE_NOT_FOUND;
 			}
     		
     		String filename = fileInputPath.substring( fileInputPath.lastIndexOf( "/" ) + 1 );
     		String outputPath = FileChooser.chooserDir( );
     		if ( outputPath.isEmpty( ) )
-    			return 2;
+    			return VALUE_FILECHOOSER_CANCELLED;
 			String fileOutputPath = outputPath.concat( "/" ).concat( filename );
 			
 			File fout = new File( fileOutputPath );
 			if ( fout.exists( ) )
 			{
-				return 0;
+				return VALUE_OUTPUT_FILE_EXISTS;
 			}
 
 			System.out.println("------------------------");
@@ -76,6 +82,6 @@ public class FileDownloader
     			}
     		}
     	}
-    	return 1;
+    	return VALUE_SUCCESS;
 	}
 }

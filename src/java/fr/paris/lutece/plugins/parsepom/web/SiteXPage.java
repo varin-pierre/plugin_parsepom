@@ -144,9 +144,13 @@ public class SiteXPage extends MVCApplication
     private static final String ERROR_NOT_FOUND = "parsepom.error.site.notFound";
     private static final String ERROR_FILE_NOT_FOUND = "parsepom.error.site.fileNotFound";
     private static final String ERROR_FILE_EXISTS = "parsepom.error.site.fileExists";
+    private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
+    private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
+    private static final int VALUE_SUCCESS = 1;
     
     // Session variable to store working values
     private Site _site;
+    
     
     @View( value = VIEW_MANAGE_SITES, defaultView = true )
     public XPage getManageSites( HttpServletRequest request )
@@ -442,22 +446,22 @@ public class SiteXPage extends MVCApplication
     public XPage doDownloadPom( HttpServletRequest request )
     {
     	String fileInputPath = "/home/hivian/Desktop/test/lutece-core/pom.xml";
-    	Integer ret = FileDownloader.download( fileInputPath );
-    	if ( ret == -1 )
+    	Integer nReturn = FileDownloader.download( fileInputPath );
+    	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )
     	{
     		addError( ERROR_FILE_NOT_FOUND, getLocale( request ) );
     	}
-    	else if (ret == 0)
+    	else if ( nReturn == VALUE_OUTPUT_FILE_EXISTS )
     	{
     		addError( ERROR_FILE_EXISTS, getLocale( request ) );
     	}
-    	else if (ret == 1)
+    	else if ( nReturn == VALUE_SUCCESS )
     	{
     		addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
     	}
     	
     	String strId = request.getParameter( PARAMETER_ID_SITE );
         
-        return redirectView( request, VIEW_DETAILS_SITE.concat("&").concat( PARAMETER_ID_SITE ).concat( "=" ).concat( strId ) );
+        return redirectView( request, VIEW_DETAILS_SITE.concat( "&" ).concat( PARAMETER_ID_SITE ).concat( "=" ).concat( strId ) );
     }
 }
