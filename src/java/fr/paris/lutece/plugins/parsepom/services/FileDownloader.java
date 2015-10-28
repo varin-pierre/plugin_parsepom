@@ -37,10 +37,6 @@ public class FileDownloader
 			{
 				return VALUE_OUTPUT_FILE_EXISTS;
 			}
-
-			System.out.println("------------------------");
-			System.out.println(fileOutputPath);
-			System.out.println("------------------------");
 			
 			in = new FileInputStream( fileInputPath );
 			out = new FileOutputStream( fileOutputPath );
