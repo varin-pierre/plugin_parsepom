@@ -2,13 +2,15 @@
   	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>
   		<br /><br />
+  		<@messages errors=errors />
+	    <@messages infos=infos />
   		<div class="panel panel-info">
   			<div class="panel-heading">
      			<h3 class="panel-title">${site.artifactId}<font size="2"> (${site.name})</font> - ${site.version}</h3>
      			<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
      			<div class="pull-right">
      				<h3 class="panel-title">
-     					<a href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-primary btn-xs" role="button">Download pom.xml</a>
+     					<a href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-primary btn-xs" role="button"><font color="white">Download pom.xml</font></a>
      				</h3>
      			</div>
    			</div>

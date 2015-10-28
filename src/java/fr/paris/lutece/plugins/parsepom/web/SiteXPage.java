@@ -42,6 +42,7 @@ import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
+import fr.paris.lutece.plugins.parsepom.services.FileDownloader;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -69,6 +70,7 @@ import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.UIManager;
 
 import org.apache.commons.io.IOUtils;
 
@@ -140,6 +142,8 @@ public class SiteXPage extends MVCApplication
     
     // Errors
     private static final String ERROR_NOT_FOUND = "parsepom.error.site.notFound";
+    private static final String ERROR_FILE_NOT_FOUND = "parsepom.error.site.fileNotFound";
+    private static final String ERROR_FILE_EXISTS = "parsepom.error.site.fileExists";
     
     // Session variable to store working values
     private Site _site;
@@ -433,50 +437,27 @@ public class SiteXPage extends MVCApplication
      *
      * @param request The Http request
      * @return The HTML page to display infos
-     * @throws IOException 
      */
     @Action( ACTION_DOWNLOAD_POM )
-    public XPage doDownloadPom( HttpServletRequest request ) throws IOException
+    public XPage doDownloadPom( HttpServletRequest request )
     {
-    	FileInputStream in = null;
-    	FileOutputStream out = null;
-    	
-    	try {
-    		String inputPath = "/home/hivian/Desktop/test/lutece-core/pom.xml";
-    		String filename = inputPath.substring(inputPath.lastIndexOf("/") + 1);
-    		String outputPath = FileChooser.chooserDir( );
-    		
-			in = new FileInputStream("/home/hivian/Desktop/test/lutece-core/pom.xml");
-			out = new FileOutputStream(new File(outputPath.concat("/").concat(filename)));
-			 
-			int read = 0;
-			byte[] bytes = new byte[1024];
-	
-			while ((read = in.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	} finally {
-    		if (in != null) {
-    			try {
-    				in.close();
-    			} catch (IOException e) {
-    				e.printStackTrace();
-    			}
-    		}
-    		if (out != null) {
-    			try {
-    				out.close();
-    			} catch (IOException e) {
-    				e.printStackTrace();
-    			}
-
-    		}
+    	String fileInputPath = "/home/hivian/Desktop/test/lutece-core/pom.xml";
+    	Integer ret = FileDownloader.download( fileInputPath );
+    	if ( ret == -1 )
+    	{
+    		addError( ERROR_FILE_NOT_FOUND, getLocale( request ) );
     	}
-        
-    	addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
+    	else if (ret == 0)
+    	{
+    		addError( ERROR_FILE_EXISTS, getLocale( request ) );
+    	}
+    	else if (ret == 1)
+    	{
+    		addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
+    	}
     	
-        return redirectView( request, VIEW_MANAGE_SITES );
+    	String strId = request.getParameter( PARAMETER_ID_SITE );
+        
+        return redirectView( request, VIEW_DETAILS_SITE.concat("&").concat( PARAMETER_ID_SITE ).concat( "=" ).concat( strId ) );
     }
 }
