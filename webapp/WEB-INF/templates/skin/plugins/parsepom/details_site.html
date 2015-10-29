@@ -2,10 +2,17 @@
   	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   		<a href="jsp/site/Portal.jsp?page=site" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>
   		<br /><br />
+  		<@messages errors=errors />
+	    <@messages infos=infos />
   		<div class="panel panel-info">
   			<div class="panel-heading">
      			<h3 class="panel-title">${site.artifactId}<font size="2"> (${site.name})</font> - ${site.version}</h3>
      			<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
+     			<div class="pull-right">
+     				<h3 class="panel-title">
+     					<a style="margin-top:-15px;" href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-primary" role="button"><font color="white">#i18n{parsepom.details_site.downloadPom}</font></a>
+     				</h3>
+     			</div>
    			</div>
    			<div class="panel-body">
    				<#assign c = 0>
@@ -14,37 +21,52 @@
             	<#assign m = 0>
             	<#assign o = 0>
             	<#assign p = 0>
-            	<#assign y = []>
+            	<#assign s = 0>
+            	<#assign listArtifactId = []>
+            	<#assign listVersion = []>
             	<#list dependency_list_by_site as depend>
-	                <#assign y = y + [ "${depend.artifactId}" ]>
-	                <#assign len = "${depend.artifactId?length}"?number>
-	                <#if len gte 6>
-	                	<#if "${y[d]}" == "lutece-core">
+	                <#assign listArtifactId = listArtifactId + [ "${depend.artifactId}" ]>
+	                <#assign listVersion = listVersion + [ "${depend.version}" ]>
+	                <#assign lenArtifactId = "${depend.artifactId?length}"?number>
+	                <#assign lenVersion = "${depend.version?length}"?number>
+	                <#if lenArtifactId gte 6>
+	                	<#if "${listArtifactId[d]}" == "lutece-core">
 	                		<#assign c = c + 1/>
 	                	</#if>
-		                <#if "${y[d]?substring(0,6)}" == "plugin">
+		                <#if "${listArtifactId[d]?substring(0,6)}" == "plugin">
 		                	<#assign p = p + 1/>
 		                </#if>
-		                <#if "${y[d]?substring(0,6)}" == "module">
+		                <#if "${listArtifactId[d]?substring(0,6)}" == "module">
 		                	<#assign m = m + 1/>
 		                </#if>
 		            </#if>
-		            <#if len gte 7>
-		                <#if "${y[d]?substring(0,7)}" == "library">
+		            <#if lenArtifactId gte 7>
+		                <#if "${listArtifactId[d]?substring(0,7)}" == "library">
 		                	<#assign l = l + 1/>
 		                </#if>
 		            </#if>
-		            <#if "${y[d]?substring(0,3)}" != "lib" && "${y[d]?substring(0,3)}" != "mod" && "${y[d]?substring(0,3)}" != "plu" && "${y[d]?substring(0,3)}" != "lut">
+		            <#if lenVersion gte 8>
+		            	<#if "${listVersion[d]}"?index_of("SNAPSHOT") != -1>
+		            		<#assign index = "${listVersion[d]}"?index_of("SNAPSHOT")>
+			                <#if "${listVersion[d]?substring(index,index + 8)}" == "SNAPSHOT">
+			                	<#assign s = s + 1/>
+			                </#if>
+		                </#if>
+		            </#if>
+		            <#if "${listArtifactId[d]?substring(0,3)}" != "lib" && "${listArtifactId[d]?substring(0,3)}" != "mod" && 
+		            "${listArtifactId[d]?substring(0,3)}" != "plu" && "${listArtifactId[d]?substring(0,3)}" != "lut">
 		             	<#assign o = o + 1/>
 		            </#if>
 	                <#assign d = d + 1>
                 </#list>        
-				<p>- #i18n{parsepom.details_site.fieldNbTotalDependency} : ${d}</p>
-				<p>- #i18n{parsepom.details_site.fieldNbCore} : ${c}</p>
-				<p>- #i18n{parsepom.details_site.fieldNbPlugins} : ${p}</p>
-				<p>- #i18n{parsepom.details_site.fieldNbModules} : ${m}</p>
-				<p>- #i18n{parsepom.details_site.fieldNbLibraries} : ${l}</p>
-				<p>- #i18n{parsepom.details_site.fieldNbOthers} : ${o}</p>
+				<p>#i18n{parsepom.details_site.fieldNbTotalDependency} : ${d}<br />
+				-> #i18n{parsepom.details_site.fieldNbCore} : ${c}<br />
+				-> #i18n{parsepom.details_site.fieldNbPlugins} : ${p}<br />
+				-> #i18n{parsepom.details_site.fieldNbModules} : ${m}<br />
+				-> #i18n{parsepom.details_site.fieldNbLibraries} : ${l}<br />
+				-> #i18n{parsepom.details_site.fieldNbOthers} : ${o}<br /></p>
+				<#assign ratio = "${s}"?number / "${d}"?number * 100>
+				<p>#i18n{parsepom.details_site.fieldNbSnapshots} : ${s} (${ratio?round}%)</p>
 			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>

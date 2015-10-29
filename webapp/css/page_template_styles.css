@@ -21,17 +21,10 @@ img.thumblist-large{width:128px;height:128px;}
 .avatar-large{width:64px;height:64px;}
 .avatar-huge{width:128px;height:128px;}
 
-.align{display:inline-block;}
+/* autocompletion style */
+.ui-autocomplete {max-height:100px;overflow-y:auto;overflow-x: hidden;}
 
-.ui-autocomplete {
-    max-height: 100px;
-    overflow-y: auto;
-    /* prevent horizontal scrollbar */
-    overflow-x: hidden;
- }
- 
+/* lists style */
 #hover_tr:hover { background:#EEEEEE; }
-
 td a { display:block;color:black; }
-
-td a:hover { text-decoration: none;color:black; }
+td a:hover { text-decoration: none;color:black;background:#EEEEEE; }

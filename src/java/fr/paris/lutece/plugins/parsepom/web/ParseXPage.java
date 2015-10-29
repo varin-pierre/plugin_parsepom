@@ -42,6 +42,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
@@ -136,7 +139,7 @@ public class ParseXPage extends MVCApplication
     }
     
     @Action( ACTION_PARSE )
-    public XPage doParse( HttpServletRequest request ) throws IOException
+    public XPage doParse( HttpServletRequest request ) throws IOException, SAXException, ParserConfigurationException
     {		
     	path = request.getParameter( "path" );
 		

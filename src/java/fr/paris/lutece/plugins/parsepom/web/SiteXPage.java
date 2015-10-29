@@ -41,6 +41,8 @@ import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
+import fr.paris.lutece.plugins.parsepom.services.FileChooser;
+import fr.paris.lutece.plugins.parsepom.services.FileDownloader;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -48,15 +50,32 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import javax.servlet.http.HttpServletRequest; 
+import javax.servlet.http.HttpServletRequest;
+import javax.swing.UIManager;
+
+import org.apache.commons.io.IOUtils;
+
+
+
 
 /**
  * This class provides the user interface to manage Site xpages ( manage, create, modify, remove )
@@ -113,17 +132,25 @@ public class SiteXPage extends MVCApplication
     private static final String ACTION_SEARCH_SITES_BY_NAME = "searchSiteByName";
     private static final String ACTION_SEARCH_SITES_BY_VERSION = "searchSiteByVersion";
     private static final String ACTION_SEARCH_SITES_BY_LAST_UPDATE = "searchSiteByLastUpdate";
+    private static final String ACTION_DOWNLOAD_POM = "downloadPom";
 
     // Infos
     private static final String INFO_SITE_CREATED = "parsepom.info.site.created";
     private static final String INFO_SITE_UPDATED = "parsepom.info.site.updated";
     private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
+    private static final String INFO_FILE_DOWNLOADED = "parsepom.info.site.fileDownloaded";
     
     // Errors
     private static final String ERROR_NOT_FOUND = "parsepom.error.site.notFound";
+    private static final String ERROR_FILE_NOT_FOUND = "parsepom.error.site.fileNotFound";
+    private static final String ERROR_FILE_EXISTS = "parsepom.error.site.fileExists";
+    private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
+    private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
+    private static final int VALUE_SUCCESS = 1;
     
     // Session variable to store working values
     private Site _site;
+    
     
     @View( value = VIEW_MANAGE_SITES, defaultView = true )
     public XPage getManageSites( HttpServletRequest request )
@@ -407,5 +434,34 @@ public class SiteXPage extends MVCApplication
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
-    }  
+    }
+    
+    /**
+     * Download a pom
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     */
+    @Action( ACTION_DOWNLOAD_POM )
+    public XPage doDownloadPom( HttpServletRequest request )
+    {
+    	String fileInputPath = "/home/hivian/Desktop/test/lutece-core/pom.xml";
+    	Integer nReturn = FileDownloader.download( fileInputPath );
+    	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )
+    	{
+    		addError( ERROR_FILE_NOT_FOUND, getLocale( request ) );
+    	}
+    	else if ( nReturn == VALUE_OUTPUT_FILE_EXISTS )
+    	{
+    		addError( ERROR_FILE_EXISTS, getLocale( request ) );
+    	}
+    	else if ( nReturn == VALUE_SUCCESS )
+    	{
+    		addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
+    	}
+    	
+    	String strId = request.getParameter( PARAMETER_ID_SITE );
+        
+        return redirectView( request, VIEW_DETAILS_SITE.concat( "&" ).concat( PARAMETER_ID_SITE ).concat( "=" ).concat( strId ) );
+    }
 }

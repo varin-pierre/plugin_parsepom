@@ -52,7 +52,7 @@ public class Tools
     
     @NotEmpty( message = "#i18n{parsepom.validation.tools.LastRealese.notEmpty}" )
     @Size( max = 50 , message = "#i18n{parsepom.validation.tools.LastRealese.size}" ) 
-    private String _strLastRealese;
+    private String _strLastRelease;
     
     /**
      * Returns the Id
@@ -95,7 +95,7 @@ public class Tools
      */
     public String getLastRelease( )
     {
-        return _strLastRealese;
+        return _strLastRelease;
     }
 
     /**
@@ -104,7 +104,7 @@ public class Tools
      */ 
     public void setLastRelease( String strLastRealese )
     {
-        _strLastRealese = strLastRealese;
+        _strLastRelease = strLastRealese;
     }
    
 }
