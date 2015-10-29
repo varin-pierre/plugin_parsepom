@@ -13,14 +13,14 @@
 				<label for="Path">#i18n{parsepom.manage_parse.path} : </label><input class="form-control" type="text" id="path" name="path" value="${path!}" placeholder="/home/user/site"/>
 				<#if path?has_content >
 					<div class=".col-md-6 .col-md-offset-2">
-						 <button name="action_parse" class="btn btn-block btn-lg btn-success" type="submit">
+						 <button name="action_parse" class="btn btn-block btn-lg btn-success" type="submit" autofocus>
 							<span class="glyphicon glyphicon-plus"></span> 
 								#i18n{parsepom.manage_parse.go}
 						 </button>
 					</div>
 				<#else>
 					<div class=".col-md-6 .col-md-offset-2">
-						<button name="action_choose" class="btn btn-block btn-lg btn-primary" type="submit">
+						<button name="action_choose" class="btn btn-block btn-lg btn-primary" type="submit" autofocus>
 							<span class="glyphicon glyphicon-plus"></span> 
 								 #i18n{parsepom.manage_parse.browse}
 						</button>
