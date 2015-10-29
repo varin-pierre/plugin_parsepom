@@ -50,18 +50,18 @@ public final class SiteDAO implements ISiteDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_site ) FROM parsepom_site";
-    private static final String SQL_QUERY_SELECT = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE id_site = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, artifact_id, name, version, id_plugins, last_update ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site WHERE id_site = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO parsepom_site ( id_site, artifact_id, name, version, id_plugins, last_update, path ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM parsepom_site WHERE id_site = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, artifact_id = ?, name = ?, version = ?, id_plugins = ?, last_update = ? WHERE id_site = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site";
+    private static final String SQL_QUERY_UPDATE = "UPDATE parsepom_site SET id_site = ?, artifact_id = ?, name = ?, version = ?, id_plugins = ?, last_update = ?, path = ? WHERE id_site = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_site FROM parsepom_site";
     private static final String SQL_QUERY_UPDATE_PLUGIN_FIELD = "UPDATE parsepom_site SET id_plugins = ? WHERE id_site = ?";
-    private static final String SQL_QUERY_SELECT_BY_ARTIFACT_ID = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE artifact_id = ?";
-    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE name = ?";
-    private static final String SQL_QUERY_SELECT_BY_VERSION = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE version = ?";
-    private static final String SQL_QUERY_SELECT_BY_LAST_UPDATE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE cast(last_update as date) = ?";
-    private static final String SQL_QUERY_SELECT_BY_ONE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update FROM parsepom_site WHERE artifact_id = ? AND last_update = ?";
+    private static final String SQL_QUERY_SELECT_BY_ARTIFACT_ID = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site WHERE artifact_id = ?";
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site WHERE name = ?";
+    private static final String SQL_QUERY_SELECT_BY_VERSION = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site WHERE version = ?";
+    private static final String SQL_QUERY_SELECT_BY_LAST_UPDATE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site WHERE cast(last_update as date) = ?";
+    private static final String SQL_QUERY_SELECT_BY_ONE = "SELECT id_site, artifact_id, name, version, id_plugins, last_update, path FROM parsepom_site WHERE artifact_id = ? AND last_update = ?";
 
     /**
      * Generates a new primary key
@@ -101,6 +101,7 @@ public final class SiteDAO implements ISiteDAO
         daoUtil.setString( 4, site.getVersion( ) );
         daoUtil.setString( 5, site.getIdPlugins( ) );
         daoUtil.setString(6, site.getLastUpdate( ));
+        daoUtil.setString(7, site.getPath( ));
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -127,6 +128,7 @@ public final class SiteDAO implements ISiteDAO
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
         }
 
         daoUtil.free( );
@@ -159,7 +161,8 @@ public final class SiteDAO implements ISiteDAO
         daoUtil.setString( 4, site.getVersion( ) );
         daoUtil.setString( 5, site.getIdPlugins( ) );
         daoUtil.setString( 6, site.getLastUpdate( ) );
-        daoUtil.setInt( 7, site.getId( ) );
+        daoUtil.setString( 7, site.getPath( ) );
+        daoUtil.setInt( 8, site.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -185,6 +188,7 @@ public final class SiteDAO implements ISiteDAO
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
 
             siteList.add( site );
         }
@@ -322,6 +326,7 @@ public final class SiteDAO implements ISiteDAO
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
 
             siteList.add(site);
         }
@@ -351,6 +356,7 @@ public final class SiteDAO implements ISiteDAO
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
 
             siteList.add(site);
         }
@@ -380,6 +386,7 @@ public final class SiteDAO implements ISiteDAO
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
 
             siteList.add(site);
         }
@@ -402,12 +409,14 @@ public final class SiteDAO implements ISiteDAO
         while ( daoUtil.next( ) )
         {
         	Site site = new Site(  );
+        	
             site.setId( daoUtil.getInt( 1 ) );
             site.setArtifactId( daoUtil.getString( 2 ) );
             site.setName( daoUtil.getString( 3 ) );
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
             
             siteList.add(site);
         }
@@ -431,12 +440,14 @@ public final class SiteDAO implements ISiteDAO
         while ( daoUtil.next( ) )
         {
         	site = new Site(  );
+        	
             site.setId( daoUtil.getInt( 1 ) );
             site.setArtifactId( daoUtil.getString( 2 ) );
             site.setName( daoUtil.getString( 3 ) );
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
         }
 
         daoUtil.free( );
@@ -457,12 +468,14 @@ public final class SiteDAO implements ISiteDAO
         while ( daoUtil.next( ) )
         {
         	site = new Site(  );
+        	
             site.setId( daoUtil.getInt( 1 ) );
             site.setArtifactId( daoUtil.getString( 2 ) );
             site.setName( daoUtil.getString( 3 ) );
             site.setVersion( daoUtil.getString( 4 ) );
             site.setIdPlugins( daoUtil.getString( 5 ) );
             site.setLastUpdate( daoUtil.getString( 6 ) );
+            site.setPath( daoUtil.getString( 7 ) );
         }
 
         daoUtil.free( );

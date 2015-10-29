@@ -50,8 +50,8 @@ public class Tools
     @Size( max = 255 , message = "#i18n{parsepom.validation.tools.ArtifactId.size}" ) 
     private String _strArtifactId;
     
-    @NotEmpty( message = "#i18n{parsepom.validation.tools.LastRealese.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{parsepom.validation.tools.LastRealese.size}" ) 
+    @NotEmpty( message = "#i18n{parsepom.validation.tools.LastRelease.notEmpty}" )
+    @Size( max = 50 , message = "#i18n{parsepom.validation.tools.LastRelease.size}" ) 
     private String _strLastRelease;
     
     /**

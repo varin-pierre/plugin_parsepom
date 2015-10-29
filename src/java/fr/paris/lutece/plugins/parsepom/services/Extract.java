@@ -231,6 +231,7 @@ public class Extract {
         site.setId( maxIdSite );
         site.setIdPlugins( strIdPlugins.toString( ) );
         site.setLastUpdate( extractdate( pom ) );
+        site.setPath(pom.getAbsolutePath( ) );
         siteFiledNotNull( site );
       
         findConfilct( site );

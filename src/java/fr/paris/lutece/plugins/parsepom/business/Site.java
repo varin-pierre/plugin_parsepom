@@ -64,6 +64,10 @@ public class Site
     @NotEmpty( message = "#i18n{parsepom.validation.site.LastUpdate.notEmpty}" )
     @Size( max = 50 , message = "#i18n{parsepom.validation.site.LastUpdate.size}" )
     private String _strLastUpdate;
+    
+    @NotEmpty( message = "#i18n{parsepom.validation.site.Path.notEmpty}" )
+    @Size( max = 255 , message = "#i18n{parsepom.validation.site.Path.size}" )
+    private String _strPath;
 
     /**
      * Returns the Id
@@ -171,5 +175,23 @@ public class Site
     public void setLastUpdate( String strLastUpdate )
     {
         _strLastUpdate = strLastUpdate;
+    }
+    
+    /**
+     * Returns the Path
+     * @return The Path
+     */
+    public String getPath( )
+    {
+        return _strPath;
+    }
+
+    /**
+     * Sets the Path
+     * @param strPath The Path
+     */ 
+    public void setPath( String strPath )
+    {
+        _strPath = strPath;
     }
 }
