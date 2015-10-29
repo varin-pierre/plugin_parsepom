@@ -12,6 +12,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
@@ -70,8 +74,10 @@ public class Extract {
 	/**
     * open recursive directory
     * stop recursive at value of _nMaxDepth 
+	 * @throws ParserConfigurationException 
+	 * @throws SAXException 
     */
-	public void openDir( File dirs, FileFilter filter ) throws IOException
+	public void openDir( File dirs, FileFilter filter ) throws IOException, SAXException, ParserConfigurationException
     {
 		
 		FileFilter _pomFilter = new PomFilter(  );
@@ -155,16 +161,20 @@ public class Extract {
 	/**
 	 * Extract Data of pom.xml
 	 */
-	private void extratInfoPom( File pom ) throws IOException
+	private void extratInfoPom( File pom ) throws IOException, SAXException, ParserConfigurationException
 	{
-		PomHandler handler = new PomHandler(  );
-        handler.parse( pom );
-        List<Dependency> lDep = handler.getDependencies(  );
-        StringBuffer strIdPlugins = new StringBuffer( );
+	
+        PomHandlerDom p = new PomHandlerDom();
+       
+		p.parse(pom);
+	
         Site site = new Site( );
-        
-        if ( ( site = handler.getSite( ) ) == null )
+
+        if ( ( site = p.getSite( ) ) == null )
         	return ;
+        List<Dependency> lDep = p.getDependencies();
+        StringBuffer strIdPlugins = new StringBuffer( );
+
         
         AppLogService.debug("Parse File : " + site.getName( ) );
         for ( Dependency d : lDep )
@@ -178,6 +188,7 @@ public class Extract {
         site.setId( maxIdSite );
         site.setIdPlugins( strIdPlugins.toString( ) );
         site.setLastUpdate( extractdate( pom ) );
+        site.setPath(pom.getAbsolutePath( ) );
         siteFiledNotNull( site );
       
         findConfilct( site );

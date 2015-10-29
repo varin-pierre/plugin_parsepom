@@ -445,8 +445,11 @@ public class SiteXPage extends MVCApplication
     @Action( ACTION_DOWNLOAD_POM )
     public XPage doDownloadPom( HttpServletRequest request )
     {
-    	String fileInputPath = "/home/hivian/Desktop/test/lutece-core/pom.xml";
+    	String strId = request.getParameter( PARAMETER_ID_SITE );
+     	Site site = SiteHome.findByPrimaryKey( Integer.parseInt( strId ) );
+    	String fileInputPath = site.getPath( );
     	Integer nReturn = FileDownloader.download( fileInputPath );
+    	
     	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )
     	{
     		addError( ERROR_FILE_NOT_FOUND, getLocale( request ) );
@@ -459,8 +462,6 @@ public class SiteXPage extends MVCApplication
     	{
     		addInfo( INFO_FILE_DOWNLOADED, getLocale( request ) );
     	}
-    	
-    	String strId = request.getParameter( PARAMETER_ID_SITE );
         
         return redirectView( request, VIEW_DETAILS_SITE.concat( "&" ).concat( PARAMETER_ID_SITE ).concat( "=" ).concat( strId ) );
     }
