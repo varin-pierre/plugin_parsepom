@@ -21,7 +21,7 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-public class PomParse
+public class PomHandlerDom
 {
 	private   ArrayList<Dependency> _listDependencies = new ArrayList<Dependency>(  );
 	private   Site _site = new Site( );

@@ -163,61 +163,18 @@ public class Extract {
 	 */
 	private void extratInfoPom( File pom ) throws IOException, SAXException, ParserConfigurationException
 	{
-		PomHandler handler = new PomHandler(  );
-        handler.parse( pom );
-        // test dom parse 
-     
-        PomParse p = new PomParse();
+	
+        PomHandlerDom p = new PomHandlerDom();
        
 		p.parse(pom);
-		
-//        Site nSite = p.getSite();
+	
         Site site = new Site( );
 
         if ( ( site = p.getSite( ) ) == null )
         	return ;
-//        if ( nSite != null)
-//        {
-//        	System.out.println(" ");
-//        	System.out.println("//BEGIN -- SITE--- ");
-//
-//        	System.out.println("Name " + nSite.getName());
-//        	System.out.println("ArtifactId " + nSite.getArtifactId());
-//        	System.out.println("Version " + nSite.getVersion());
-//        	
-//        	System.out.println("//END --SITE--- ");
-//        }
-        
-//        List<Dependency> lDepDom = p.getDependencies();
-//        if (lDepDom.size() == 0 )
-//        {
-//        	System.out.println("lDepDom is NULL");
-//        }
-//        else
-//        {
-//        	int l = lDepDom.size();
-//        	for ( int i = 0; i < l; i++ )
-//        	{
-//        		System.out.println(" ");
-//	        	System.out.println("//BEGIN ----- ");
-//
-//	        	System.out.println("GroupId " + lDepDom.get(i).getGroupId());
-//	        	System.out.println("ArtifactId " + lDepDom.get(i).getArtifactId());
-//	        	System.out.println("Version " + lDepDom.get(i).getVersion());
-//	        	System.out.println("Type " + lDepDom.get(i).getType());
-//	        	
-//	        	System.out.println("//END ----- ");
-//
-//        	}
-//        	
-//        }
-//        List<Dependency> lDep = handler.getDependencies(  );
         List<Dependency> lDep = p.getDependencies();
         StringBuffer strIdPlugins = new StringBuffer( );
-//        Site site = new Site( );
-//        
-//        if ( ( site = handler.getSite( ) ) == null )
-//        	return ;
+
         
         AppLogService.debug("Parse File : " + site.getName( ) );
         for ( Dependency d : lDep )

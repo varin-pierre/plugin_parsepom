@@ -54,7 +54,7 @@ public class ToolsXPage extends MVCApplication
 {
 	
 	    // Templates
-	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/tools.html";
+	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/manage_tools.html";
 	 
 	    // Markers
 
