@@ -73,6 +73,7 @@ public class SiteRest
     private static final String KEY_VERSION = "version";
     private static final String KEY_ID_PLUGINS = "id_plugins";
     private static final String KEY_LAST_UPDATE = "last_update";
+    private static final String KEY_PATH = "path";
     
     @GET
     @Path( Constants.ALL_PATH )
@@ -252,7 +253,8 @@ public class SiteRest
     @FormParam( KEY_NAME ) String name,
     @FormParam( KEY_VERSION ) String version,
     @FormParam( KEY_ID_PLUGINS ) String id_plugins,
-    @FormParam( KEY_LAST_UPDATE ) String last_update, 
+    @FormParam( KEY_LAST_UPDATE ) String last_update,
+    @FormParam( KEY_PATH ) String path,
     @HeaderParam(HttpHeaders.ACCEPT) String accept, @QueryParam( Constants.FORMAT_QUERY ) String format) throws IOException
     {
         if( id != null )
@@ -268,6 +270,7 @@ public class SiteRest
                 site.setVersion( version );
                 site.setIdPlugins( id_plugins );
                 site.setLastUpdate( last_update );
+                site.setPath( path );
                 SiteHome.update( site );
             }
         }
@@ -280,6 +283,7 @@ public class SiteRest
             site.setVersion( version );
             site.setIdPlugins( id_plugins );
             site.setLastUpdate( last_update );
+            site.setPath( path );
             SiteHome.create( site );
         }
         return getSites(accept, format);
@@ -299,6 +303,7 @@ public class SiteRest
         XmlUtil.addElement( sbXML, KEY_VERSION , site.getVersion( ) );
         XmlUtil.addElement( sbXML, KEY_ID_PLUGINS , site.getIdPlugins( ) );
         XmlUtil.addElement( sbXML, KEY_LAST_UPDATE , site.getLastUpdate( ) );
+        XmlUtil.addElement( sbXML, KEY_PATH , site.getPath( ) );
         XmlUtil.endElement( sbXML, KEY_SITE );
     }
     
@@ -316,6 +321,7 @@ public class SiteRest
         jsonSite.accumulate( KEY_VERSION, site.getVersion( ) );
         jsonSite.accumulate( KEY_ID_PLUGINS, site.getIdPlugins( ) );
         jsonSite.accumulate( KEY_LAST_UPDATE, site.getLastUpdate( ) );
+        jsonSite.accumulate( KEY_PATH, site.getPath( ) );
         json.accumulate( KEY_SITE, jsonSite );
     }
 }

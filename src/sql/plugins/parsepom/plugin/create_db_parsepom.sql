@@ -11,6 +11,7 @@ name varchar(255) NOT NULL default '',
 version varchar(50) NOT NULL default '',
 id_plugins varchar(20000) NOT NULL default '',
 last_update varchar(50) NOT NULL default '',
+path varchar(255) NOT NULL default '',
 PRIMARY KEY (id_site)
 );
 
