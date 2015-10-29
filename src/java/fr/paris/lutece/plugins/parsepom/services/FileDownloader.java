@@ -29,7 +29,9 @@ public class FileDownloader
     		String filename = fileInputPath.substring( fileInputPath.lastIndexOf( "/" ) + 1 );
     		String outputPath = FileChooser.chooserDir( );
     		if ( outputPath.isEmpty( ) )
+    		{
     			return VALUE_FILECHOOSER_CANCELLED;
+    		}
 			String fileOutputPath = outputPath.concat( "/" ).concat( filename );
 			
 			File fout = new File( fileOutputPath );
