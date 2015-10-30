@@ -126,8 +126,8 @@ public class Extract {
 	    
         date = formatDate( date );
         
-        if (OS.contains("win") == true)
-        	date = date.substring(0, date.indexOf("."));
+        if ( OS.contains( "win" ) == true )
+        	date = date.substring( 0, date.indexOf( "." ) );
         
         return date;
 	}
