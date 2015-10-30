@@ -122,7 +122,12 @@ public class Extract {
 		Path p = pom.toPath( );
 	    BasicFileAttributes view = Files.getFileAttributeView( p, BasicFileAttributeView.class ).readAttributes( );
 	    String date =  view.lastAccessTime( ).toString( );
+	    String OS = System.getProperty("os.name").toLowerCase();
+	    
         date = formatDate( date );
+        
+        if (OS.contains("win") == true)
+        	date = date.substring(0, date.indexOf("."));
         
         return date;
 	}

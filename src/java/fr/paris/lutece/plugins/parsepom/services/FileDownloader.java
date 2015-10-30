@@ -17,7 +17,7 @@ public class FileDownloader
 	{
 		FileInputStream in = null;
     	FileOutputStream out = null;
-    	
+    		
     	try 
     	{
     		File fin = new File( fileInputPath );
@@ -26,14 +26,14 @@ public class FileDownloader
 				return VALUE_INPUT_FILE_NOT_FOUND;
 			}
     		
-    		String filename = fileInputPath.substring( fileInputPath.lastIndexOf( "/" ) + 1 );
+    		String filename = fileInputPath.substring( fileInputPath.lastIndexOf( File.separator ) + 1 );
     		String outputPath = FileChooser.chooserDir( );
     		if ( outputPath.isEmpty( ) )
     		{
     			return VALUE_FILECHOOSER_CANCELLED;
     		}
-			String fileOutputPath = outputPath.concat( "/" ).concat( filename );
-			
+    		
+			String fileOutputPath = outputPath.concat( File.separator ).concat( filename );
 			File fout = new File( fileOutputPath );
 			if ( fout.exists( ) )
 			{
