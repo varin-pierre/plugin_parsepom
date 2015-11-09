@@ -34,8 +34,17 @@
 
 package fr.paris.lutece.plugins.parsepom.web;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
@@ -48,6 +57,9 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+import fr.paris.lutece.util.httpaccess.HttpAccess;
+import fr.paris.lutece.util.httpaccess.HttpAccessException;
+import net.sf.json.util.JSONTokener;
 
 @Controller( xpageName = "tools" , pageTitleI18nKey = "parsepom.xpage.tools.pageTitle" , pagePathI18nKey = "parsepom.xpage.tools.pagePathLabel" )
 public class ToolsXPage extends MVCApplication
@@ -85,34 +97,69 @@ public class ToolsXPage extends MVCApplication
 	     * 
 	     * @param request
 	     * @return XPage
+	     * @throws IOException 
+	     * @throws MalformedURLException 
+	     * @throws JSONException 
+	     * @throws HttpAccessException 
 	     */
 	    @Action( ACTION_TOOLS )
-	    public XPage doUpdate( HttpServletRequest request )
+	    public XPage doUpdate( HttpServletRequest request ) throws MalformedURLException, IOException, JSONException, HttpAccessException
 	    {		
 	    	Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
-	        
+	    	/*HttpAccess httpAccess = new HttpAccess(  );
+	    	
+            String strHtml = httpAccess.doGet( "http://dev.lutece.paris.fr/incubator/rest/lutecetools/component/plugin-extend?format=json" );
+            
+            JSONObject json = new JSONObject(strHtml);
+            String version = json.getJSONObject("component").getString("version");
+	    	System.out.println("--------------------------");
+	    	System.out.println(strHtml);
+	    	System.out.println("--------------------------");
+	    	System.out.println("--------------------------");
+	    	System.out.println(version);
+	    	System.out.println("--------------------------");*/
+	    	
+	    	HttpAccess httpAccess = new HttpAccess(  );
 	    	for ( Dependency list : dependencyList)
 	    	{
 	    		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
-		    	fr.paris.lutece.plugins.lutecetools.business.Dependency dependency = new fr.paris.lutece.plugins.lutecetools.business.Dependency( );
-		    	dependency.setArtifactId( list.getArtifactId( ) );
-		    	MavenRepoService.setReleaseVersion( dependency );
-		    	
-		    	Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) ); 
-		    	
-		    	if (  base == null)
+
+	    		String path = "http://dev.lutece.paris.fr/incubator/rest/lutecetools/component/".concat(list.getArtifactId()).concat("?format=json");
+		    	String strHtml = httpAccess.doGet( path );
+		    	System.out.println("--------------------------");
+		    	System.out.println(path );
+		    	System.out.println(strHtml );
+		    	System.out.println("--------------------------");
+		    	JSONObject json = new JSONObject(strHtml);
+		    	try
 		    	{
-		    		base = new Tools( );
-		    		base.setArtifactId( dependency.getArtifactId( ) );
-			    	base.setLastRelease( dependency.getVersion( ) );
-		    	
-		    		ToolsHome.create( base );
+		    		String version = json.getJSONObject("component").getString("version");
+		    		Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) ); 
+			    	
+			    	if (  base == null)
+			    	{
+			    		base = new Tools( );
+			    		base.setArtifactId( list.getArtifactId( ) );
+			    		if ( !version.isEmpty( ) )
+			    			base.setLastRelease( version );
+			    		else
+			    			base.setLastRelease( "Not found" );
+			    		ToolsHome.create( base );
+			    	}
+			    	else
+			    	{
+			    		if ( !version.isEmpty( ) )
+			    			base.setLastRelease( version );
+			    		else
+			    			base.setLastRelease( "Not found" );
+			    		ToolsHome.update( base );
+			    	}
 		    	}
-		    	else
+		    	catch (JSONException e)
 		    	{
-		    		base.setLastRelease( dependency.getVersion( ) );
-		    		ToolsHome.update( base );
+		    		AppLogService.error(e.getMessage());
 		    	}
+		    	
 	    	}
 	    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
 	    	
