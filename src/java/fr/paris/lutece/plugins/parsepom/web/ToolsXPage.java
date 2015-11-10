@@ -135,7 +135,7 @@ public class ToolsXPage extends MVCApplication
 			    		ToolsHome.update( base );
 			    	}
 		    	}
-		    	catch (JSONException e)
+		    	catch ( JSONException e )
 		    	{
 		    		if ( base == null )
 			    	{
@@ -150,7 +150,7 @@ public class ToolsXPage extends MVCApplication
 			    		ToolsHome.update( base );
 			    	}
 
-		    		AppLogService.error(e.getMessage());
+		    		AppLogService.error( e.getMessage( ) );
 		    	}
 		    	
 	    	}
