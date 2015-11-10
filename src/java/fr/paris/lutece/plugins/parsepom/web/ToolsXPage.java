@@ -79,7 +79,9 @@ public class ToolsXPage extends MVCApplication
 	    // Infos
 	    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
 	   
-	    // Session variable to store working values
+	    // URL
+	    private static final String PATH_URL = "http://dev.lutece.paris.fr/incubator/rest/lutecetools/component/";
+	    private static final String PATH_PARAM = "?format=json";
 	  
 	    
 	    /**
@@ -106,57 +108,48 @@ public class ToolsXPage extends MVCApplication
 	    public XPage doUpdate( HttpServletRequest request ) throws MalformedURLException, IOException, JSONException, HttpAccessException
 	    {		
 	    	Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
-	    	/*HttpAccess httpAccess = new HttpAccess(  );
-	    	
-            String strHtml = httpAccess.doGet( "http://dev.lutece.paris.fr/incubator/rest/lutecetools/component/plugin-extend?format=json" );
-            
-            JSONObject json = new JSONObject(strHtml);
-            String version = json.getJSONObject("component").getString("version");
-	    	System.out.println("--------------------------");
-	    	System.out.println(strHtml);
-	    	System.out.println("--------------------------");
-	    	System.out.println("--------------------------");
-	    	System.out.println(version);
-	    	System.out.println("--------------------------");*/
-	    	
 	    	HttpAccess httpAccess = new HttpAccess(  );
+	    	
 	    	for ( Dependency list : dependencyList)
 	    	{
 	    		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
 
-	    		String path = "http://dev.lutece.paris.fr/incubator/rest/lutecetools/component/".concat(list.getArtifactId()).concat("?format=json");
+	    		Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) );
+	    		String path = PATH_URL.concat( list.getArtifactId( ) ).concat( PATH_PARAM );
 		    	String strHtml = httpAccess.doGet( path );
-		    	System.out.println("--------------------------");
-		    	System.out.println(path );
-		    	System.out.println(strHtml );
-		    	System.out.println("--------------------------");
-		    	JSONObject json = new JSONObject(strHtml);
+		    	JSONObject json = new JSONObject( strHtml );
 		    	try
 		    	{
-		    		String version = json.getJSONObject("component").getString("version");
-		    		Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) ); 
-			    	
-			    	if (  base == null)
+		    		String version = json.getJSONObject( "component" ).getString( "version" );
+		    		 	
+			    	if ( base == null )
 			    	{
 			    		base = new Tools( );
 			    		base.setArtifactId( list.getArtifactId( ) );
-			    		if ( !version.isEmpty( ) )
-			    			base.setLastRelease( version );
-			    		else
-			    			base.setLastRelease( "Not found" );
+			    		base.setLastRelease( version );
 			    		ToolsHome.create( base );
 			    	}
 			    	else
 			    	{
-			    		if ( !version.isEmpty( ) )
-			    			base.setLastRelease( version );
-			    		else
-			    			base.setLastRelease( "Not found" );
+			    		base.setLastRelease( version );
 			    		ToolsHome.update( base );
 			    	}
 		    	}
 		    	catch (JSONException e)
 		    	{
+		    		if ( base == null )
+			    	{
+			    		base = new Tools( );
+			    		base.setArtifactId( list.getArtifactId( ) );
+			    		base.setLastRelease( "Release not found" );
+			    		ToolsHome.create( base );
+			    	}
+			    	else
+			    	{
+			    		base.setLastRelease( "Release not found" );
+			    		ToolsHome.update( base );
+			    	}
+
 		    		AppLogService.error(e.getMessage());
 		    	}
 		    	
