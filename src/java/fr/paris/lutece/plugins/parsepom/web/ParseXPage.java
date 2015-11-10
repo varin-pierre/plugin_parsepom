@@ -47,7 +47,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import fr.paris.lutece.plugins.parsepom.business.Site;
-import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.services.Extract;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -58,21 +57,24 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 
 
 /**
- * This class provides the user interface to manage Site xpages ( manage, create, modify, remove )
+ * This class provides the user interface to manage Site xpages ( manage, create, modify, remove, etc. )
  */
  
 @Controller( xpageName = "parse" , pageTitleI18nKey = "parsepom.xpage.parse.pageTitle" , pagePathI18nKey = "parsepom.xpage.parse.pagePathLabel" )
 public class ParseXPage extends MVCApplication
 {
-    // Templates
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	// Templates
     private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/manage_parse.html";
     private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
-    private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_CHOOSE="/skin/plugins/parsepom/choose.html";
  
     // Markers
     private static final String MARK_PARSE = "parse";
-    private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_PATH = "path";
     private static final String MARK_CONFLICT = "conflict";
     private static final String MARK_ALLSITE = "all";
@@ -98,6 +100,7 @@ public class ParseXPage extends MVCApplication
     // Session variable to store working values
     private String path = "";
     private Extract ext = new Extract( );
+    
     
     /**
      * Returns the page home.

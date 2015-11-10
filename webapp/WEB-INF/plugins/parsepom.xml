@@ -29,6 +29,10 @@
 
     <!-- XPages parameters -->
     <applications>
+    	<application>
+            <application-id>parsepom</application-id>
+            <application-class>fr.paris.lutece.plugins.parsepom.web.ParsepomXPage</application-class>
+        </application>
         <application>
             <application-id>dependency</application-id>
             <application-class>fr.paris.lutece.plugins.parsepom.web.DependencyXPage</application-class>

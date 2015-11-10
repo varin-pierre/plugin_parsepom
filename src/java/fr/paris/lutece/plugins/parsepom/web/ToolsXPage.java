@@ -35,18 +35,13 @@
 package fr.paris.lutece.plugins.parsepom.web;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
@@ -59,13 +54,22 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
-import net.sf.json.util.JSONTokener;
+
+
+/**
+ * This class provides the user interface to manage Tools xpages.
+ */
 
 @Controller( xpageName = "tools" , pageTitleI18nKey = "parsepom.xpage.tools.pageTitle" , pagePathI18nKey = "parsepom.xpage.tools.pagePathLabel" )
 public class ToolsXPage extends MVCApplication
 {
 	
-	    // Templates
+	   /**
+	    * 
+	    */
+		private static final long serialVersionUID = 1L;
+
+		// Templates
 	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/manage_tools.html";
 	 
 	    // Markers

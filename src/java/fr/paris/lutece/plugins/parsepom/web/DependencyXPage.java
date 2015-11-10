@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.parsepom.web;
  
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
-import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
@@ -62,7 +61,12 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "dependency" , pageTitleI18nKey = "parsepom.xpage.dependency.pageTitle" , pagePathI18nKey = "parsepom.xpage.dependency.pagePathLabel" )
 public class DependencyXPage extends MVCApplication
 {
-    // Templates
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	// Templates
     private static final String TEMPLATE_MANAGE_DEPENDENCYS="/skin/plugins/parsepom/manage_dependencys.html";
     private static final String TEMPLATE_CREATE_DEPENDENCY="/skin/plugins/parsepom/create_dependency.html";
     private static final String TEMPLATE_MODIFY_DEPENDENCY="/skin/plugins/parsepom/modify_dependency.html";
