@@ -70,6 +70,7 @@ public class ToolsXPage extends MVCApplication
 		private static final long serialVersionUID = 1L;
 
 		// Templates
+		private static final String TEMPLATE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
 	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/manage_tools.html";
 	 
 	    // Markers
@@ -160,7 +161,6 @@ public class ToolsXPage extends MVCApplication
 	    	}
 	    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
 	    	
-	    	return redirectView( request, VIEW_TOOLS );
+	    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ) );
 	    }
-	   
 }

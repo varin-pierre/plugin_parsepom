@@ -1,12 +1,12 @@
-<#include "parsepom_tabs.html" />
-<@tabs tab="parsepom" />
-
-<h1>Pom parser <small>Outil d'extraction et d'analyse de données pour les poms de sites</small></h1>
+<@messages errors=errors />
+<@messages infos=infos />
+<h1>Parser de pom.xml <small>Outil d'extraction et d'analyse de données des poms de sites</small></h1>
+<br />
 <div class=row>
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
 			<h3>Analyse (OBLIGATOIRE)</h3>
-            <p class="description"><small>Récupération à partir d'un dépôt local du/des pom de site pour en extraire les données (dépendances, stats ...)</small></p>
+            <p class="p_description"><small>Analyse récursive d'un dépôt local, contenant un ou plusieurs pom de site, pour en extraire des informations détaillées concernant le site et ses dépendances.</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=parse">
             <span class="glyphicon glyphicon-plus"></span>
                 Accéder au parsing
@@ -16,8 +16,8 @@
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
 			<h3>Mise à jour (FACULTATIF)</h3>
-            <p class="description"><small>Récupération sur serveur, des dernières versions disponibles des dépendances listées dans les sites, à partir du JSON de lutecetools.
-            Si cette action n'est pas executée, le champ "Dernière version disponible" affichera N/A. Si cette action a déjà été executée le champ sera mis à jour</small></p>
+            <p class="p_description"><small>Récupération des dernières versions disponibles des dépendances listées dans les sites, à partir des données JSON de lutecetools.
+            <br />Si cette action n'est pas executée, le champ "Dernière version disponible" affichera N/A.</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=tools">
             <span class="glyphicon glyphicon-refresh"></span>
                 Accéder à la mise à jour
@@ -29,7 +29,8 @@
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
 			<h3>Consultation des sites</h3>
-            <p class="description"><small>Consultations et recherches (par ArtifactId, nom, version ou date de dernière modification) à partir de la liste des sites</small></p>
+            <p class="p_description"><small>Consultations et recherches (par ArtifactId, nom, version ou date de dernière modification) à partir de la liste des sites.
+            <br />Permet aussi de détailler le contenu du POM ainsi que d'afficher quelques statistiques</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=site">
             <span class="glyphicon glyphicon-th-list"></span>
                 Accéder aux sites
@@ -39,8 +40,8 @@
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
 			<h3>Consultation des dépendances</h3>
-            <p class="description"><small>Consultations et recherche (par ArtifactId) à partir de la liste des dépendances. 
-            Permet aussi de pouvoir détailler la présence de telle dépendance dans tel site et à quelle version cette dépendance se trouve</small></p>
+            <p class="p_description"><small>Consultations et recherche (par ArtifactId) à partir de la liste des dépendances. 
+            <br />Permet aussi de détailler quelle dépendance se trouve dans quel site et à quelle version.</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=dependency">
             <span class="glyphicon glyphicon-list-alt"></span>
                 Accéder aux dépendances

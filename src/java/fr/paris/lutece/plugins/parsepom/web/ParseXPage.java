@@ -69,6 +69,7 @@ public class ParseXPage extends MVCApplication
 	private static final long serialVersionUID = 1L;
 	
 	// Templates
+	private static final String TEMPLATE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
     private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/manage_parse.html";
     private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
     private static final String TEMPLATE_CHOOSE="/skin/plugins/parsepom/choose.html";
@@ -83,7 +84,6 @@ public class ParseXPage extends MVCApplication
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_VALIDATE = "validate";
     private static final String VIEW_CHOOSE = "choose";
-    private static final String VIEW_SITE = "site";
 
     // Actions
     private static final String ACTION_PARSE = "parse";
@@ -177,7 +177,7 @@ public class ParseXPage extends MVCApplication
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
 
-        return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
+        return getXPage( TEMPLATE_VALIDATE, request.getLocale( ), model );
     }
     
     @Action( ACTION_VALIDATE )
@@ -211,7 +211,7 @@ public class ParseXPage extends MVCApplication
 		
     	addInfo( INFO_VALIDATE, getLocale( request ) );
     	
-		return redirectView( request, VIEW_SITE );
+    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ));
     }
    
     /*
@@ -232,4 +232,3 @@ public class ParseXPage extends MVCApplication
 	}
 		
 }
-	

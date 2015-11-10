@@ -56,9 +56,6 @@ public class ParsepomXPage extends MVCApplication
 	// Templates
     private static final String TEMPLATE_MANAGE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
 	
-	// Markers
-    private static final String MARK_SITE_LIST = "site_list";
-	
 	// Views
     private static final String VIEW_MANAGE_PARSEPOM = "manageParsepom";
     
