@@ -34,26 +34,20 @@
 
 package fr.paris.lutece.plugins.parsepom.web;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Collection;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
-import fr.paris.lutece.plugins.parsepom.business.Tools;
-import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
-import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.plugins.parsepom.services.Global;
+import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
-import fr.paris.lutece.util.httpaccess.HttpAccess;
-import fr.paris.lutece.util.httpaccess.HttpAccessException;
 
 
 /**
@@ -74,7 +68,8 @@ public class ToolsXPage extends MVCApplication
 	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/manage_tools.html";
 	 
 	    // Markers
-
+	    private static final String MARK_DATA_EXIST="exist";
+	    
 	    // Views
 	    private static final String VIEW_TOOLS = "tools";
 
@@ -83,10 +78,6 @@ public class ToolsXPage extends MVCApplication
 	    
 	    // Infos
 	    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
-	   
-	    // URL
-	    private static final String PATH_URL = "http://dev.lutece.paris.fr/incubator/rest/lutecetools/component/";
-	    private static final String PATH_PARAM = "?format=json";
 	  
 	    
 	    /**
@@ -104,63 +95,19 @@ public class ToolsXPage extends MVCApplication
 	     * 
 	     * @param request
 	     * @return XPage
-	     * @throws IOException 
-	     * @throws MalformedURLException 
-	     * @throws JSONException 
-	     * @throws HttpAccessException 
 	     */
 	    @Action( ACTION_TOOLS )
-	    public XPage doUpdate( HttpServletRequest request ) throws MalformedURLException, IOException, JSONException, HttpAccessException
+	    public XPage doUpdate( HttpServletRequest request )
 	    {		
 	    	Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
-	    	HttpAccess httpAccess = new HttpAccess(  );
 	    	
-	    	for ( Dependency list : dependencyList)
-	    	{
-	    		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
-
-	    		Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) );
-	    		String path = PATH_URL.concat( list.getArtifactId( ) ).concat( PATH_PARAM );
-		    	String strHtml = httpAccess.doGet( path );
-		    	JSONObject json = new JSONObject( strHtml );
-		    	try
-		    	{
-		    		String version = json.getJSONObject( "component" ).getString( "version" );
-		    		 	
-			    	if ( base == null )
-			    	{
-			    		base = new Tools( );
-			    		base.setArtifactId( list.getArtifactId( ) );
-			    		base.setLastRelease( version );
-			    		ToolsHome.create( base );
-			    	}
-			    	else
-			    	{
-			    		base.setLastRelease( version );
-			    		ToolsHome.update( base );
-			    	}
-		    	}
-		    	catch ( JSONException e )
-		    	{
-		    		if ( base == null )
-			    	{
-			    		base = new Tools( );
-			    		base.setArtifactId( list.getArtifactId( ) );
-			    		base.setLastRelease( "Release not found" );
-			    		ToolsHome.create( base );
-			    	}
-			    	else
-			    	{
-			    		base.setLastRelease( "Release not found" );
-			    		ToolsHome.update( base );
-			    	}
-
-		    		AppLogService.error( e.getMessage( ) );
-		    	}
-		    	
-	    	}
+	    	HttpProcess.getLastReleases( dependencyList );
+	    	
+	    	Map<String, Object> model = getModel(  );
+	        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
+	    	
 	    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
 	    	
-	    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ) );
+	    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ), model );
 	    }
 }

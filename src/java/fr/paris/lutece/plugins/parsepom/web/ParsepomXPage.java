@@ -35,8 +35,16 @@ package fr.paris.lutece.plugins.parsepom.web;
 
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
+import fr.paris.lutece.plugins.parsepom.business.Dependency;
+import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
+import fr.paris.lutece.plugins.parsepom.business.Site;
+import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.services.Global;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
+
+import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,6 +63,9 @@ public class ParsepomXPage extends MVCApplication
 	
 	// Templates
     private static final String TEMPLATE_MANAGE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
+    
+    // Markers
+    private static final String MARK_DATA_EXIST="exist";
 	
 	// Views
     private static final String VIEW_MANAGE_PARSEPOM = "manageParsepom";
@@ -71,6 +82,21 @@ public class ParsepomXPage extends MVCApplication
 	@View( value = VIEW_MANAGE_PARSEPOM, defaultView = true )
     public XPage getManageSites( HttpServletRequest request )
     {
-        return getXPage( TEMPLATE_MANAGE_PARSEPOM, request.getLocale(  ) );
+		Collection<Site> siteList = SiteHome.getSitesList(  );
+		Collection<Dependency> dependencyList = DependencyHome.getDependencysList(  );
+		
+		if (!siteList.isEmpty( ) && !dependencyList.isEmpty( ))
+		{
+			Global._boolNotEmptyDB = true;
+		}
+		else
+		{
+			Global._boolNotEmptyDB = false;
+		}
+		
+        Map<String, Object> model = getModel(  );
+        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
+        
+        return getXPage( TEMPLATE_MANAGE_PARSEPOM, request.getLocale(  ), model );
     }
 }

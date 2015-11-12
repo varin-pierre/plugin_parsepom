@@ -341,17 +341,23 @@ public class DependencyXPage extends MVCApplication
     	String strName = request.getParameter( PARAMETER_ARTIFACT_ID_DEPENDENCY ).toLowerCase( );        
         Collection<Dependency> list = DependencyHome.getDependencysListWithoutDuplicates(  );
         
-        for (Dependency depend : list)
+        for (Dependency _dependency : list)
         {
-        	if ( depend.getArtifactId( ).equals( strName ) )
+        	String strArtifactId = _dependency.getArtifactId( );
+        	
+        	if ( strArtifactId.equals( strName ) )
         	{
-        		_dependency = depend;
+        		String strRelease = "";
         		
-        		String strArtifactId = _dependency.getArtifactId( );
+        		Tools tools = ToolsHome.findByArtifactId( strArtifactId );
+            	if ( tools != null )
+            		strRelease = tools.getLastRelease( );
+        		
                 List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
                  
                 Map<String, Object> model = getModel(  );
                 model.put( MARK_DEPENDENCY, _dependency );
+                model.put( MARK_LAST_RELEASE_STRING, strRelease );
                 model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
                 
                 return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );

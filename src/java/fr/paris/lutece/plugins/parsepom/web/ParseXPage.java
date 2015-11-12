@@ -49,6 +49,7 @@ import org.xml.sax.SAXException;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.services.Extract;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
+import fr.paris.lutece.plugins.parsepom.services.Global;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -79,6 +80,7 @@ public class ParseXPage extends MVCApplication
     private static final String MARK_PATH = "path";
     private static final String MARK_CONFLICT = "conflict";
     private static final String MARK_ALLSITE = "all";
+    private static final String MARK_DATA_EXIST="exist";
 
     // Views
     private static final String VIEW_PARSE = "parse";
@@ -164,7 +166,7 @@ public class ParseXPage extends MVCApplication
     		path = "";
     		return redirectView( request, VIEW_PARSE );
  	    }
- 	    
+		
     	return redirectView( request, VIEW_VALIDATE );
     }
     
@@ -208,10 +210,14 @@ public class ParseXPage extends MVCApplication
 	    }
 
 		path = "";
+		Global._boolNotEmptyDB = true;
+		
+		Map<String, Object> model = getModel(  );
+        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
 		
     	addInfo( INFO_VALIDATE, getLocale( request ) );
     	
-    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ));
+    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ), model );
     }
    
     /*

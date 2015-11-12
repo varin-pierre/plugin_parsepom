@@ -1,26 +1,25 @@
 <@messages errors=errors />
 <@messages infos=infos />
-<h1>Parser de pom.xml <small>Outil d'extraction et d'analyse de données des poms de sites</small></h1>
+<h1>#i18n{parsepom.manage_parsepom.title}</h1>
 <br />
 <div class=row>
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
-			<h3>Analyse (OBLIGATOIRE)</h3>
-            <p class="p_description"><small>Analyse récursive d'un dépôt local, contenant un ou plusieurs pom de site, pour en extraire des informations détaillées concernant le site et ses dépendances.</small></p>
+			<h3>#i18n{parsepom.manage_parsepom.parserTitle}</h3>
+            <p class="p_description"><small>#i18n{parsepom.manage_parsepom.parserDescription}</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=parse">
             <span class="glyphicon glyphicon-plus"></span>
-                Accéder au parsing
+            	#i18n{parsepom.manage_parsepom.buttonParser}
             </a>
 		</div>
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
-			<h3>Mise à jour (FACULTATIF)</h3>
-            <p class="p_description"><small>Récupération des dernières versions disponibles des dépendances listées dans les sites, à partir des données JSON de lutecetools.
-            <br />Si cette action n'est pas executée, le champ "Dernière version disponible" affichera N/A.</small></p>
-            <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=tools">
+			<h3>#i18n{parsepom.manage_parsepom.updateTitle}</h3>
+            <p class="p_description"><small>#i18n{parsepom.manage_parsepom.updateDescription}</small></p>
+            <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=tools" <#if exist == false>disabled="disabled"</#if> >
             <span class="glyphicon glyphicon-refresh"></span>
-                Accéder à la mise à jour
+                #i18n{parsepom.manage_parsepom.buttonUpdate}
             </a>
 		</div>
 	</div>
@@ -28,23 +27,21 @@
 <div class=row>
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
-			<h3>Consultation des sites</h3>
-            <p class="p_description"><small>Consultations et recherches (par ArtifactId, nom, version ou date de dernière modification) à partir de la liste des sites.
-            <br />Permet aussi de détailler le contenu du POM ainsi que d'afficher quelques statistiques</small></p>
-            <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=site">
+			<h3>#i18n{parsepom.manage_parsepom.siteTitle}</h3>
+            <p class="p_description"><small>#i18n{parsepom.manage_parsepom.siteDescription}</small></p>
+            <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=site" <#if exist == false>disabled="disabled"</#if> >
             <span class="glyphicon glyphicon-th-list"></span>
-                Accéder aux sites
+                #i18n{parsepom.manage_parsepom.buttonSite}
             </a>
 		</div>
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="jumbotron well">
-			<h3>Consultation des dépendances</h3>
-            <p class="p_description"><small>Consultations et recherche (par ArtifactId) à partir de la liste des dépendances. 
-            <br />Permet aussi de détailler quelle dépendance se trouve dans quel site et à quelle version.</small></p>
-            <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=dependency">
+			<h3>#i18n{parsepom.manage_parsepom.dependencyTitle}</h3>
+            <p class="p_description"><small>#i18n{parsepom.manage_parsepom.dependencyDescription}</small></p>
+            <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=dependency" <#if exist == false>disabled="disabled"</#if> >
             <span class="glyphicon glyphicon-list-alt"></span>
-                Accéder aux dépendances
+                #i18n{parsepom.manage_parsepom.buttonDependency}
             </a>
 		</div>
 	</div>
