@@ -67,6 +67,23 @@
 				-> #i18n{parsepom.details_site.fieldNbOthers} : ${o}<br /></p>
 				<#assign ratio = "${s}"?number / "${d}"?number * 100>
 				<p>#i18n{parsepom.details_site.fieldNbSnapshots} : ${s} (${ratio?round}%)</p>
+				<p>Date de dernière mise à jour du pom : 
+				<#if "${last_update_time_interval}"?number == 0>
+				il y'a moins d'1 mois
+				<#elseif "${last_update_time_interval}"?number lt 12>
+					il y'a ${last_update_time_interval} mois
+				<#elseif "${last_update_time_interval}"?number == 12>
+					il y'a 1 an
+				<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
+					<#assign result = "${last_update_time_interval}"?number - 12>
+					il y'a un an et ${result} mois
+				<#elseif "${last_update_time_interval}"?number == 24>
+					il y'a 2 ans
+				<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
+					il y'a plus de 2 ans
+				<#elseif "${last_update_time_interval}"?number gte 60>
+					il y'a plus de 5 ans
+				</#if></p>
 			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>

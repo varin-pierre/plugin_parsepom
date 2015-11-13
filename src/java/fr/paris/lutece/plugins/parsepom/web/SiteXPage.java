@@ -40,6 +40,7 @@ import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
 import fr.paris.lutece.plugins.parsepom.services.FileDownloader;
+import fr.paris.lutece.plugins.parsepom.services.TimeInterval;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -47,6 +48,8 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +58,12 @@ import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import javax.servlet.http.HttpServletRequest;
+
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
+import org.joda.time.Months;
 
 
 /**
@@ -97,6 +106,7 @@ public class SiteXPage extends MVCApplication
     private static final String MARK_SITE_LIST_BY_VERSION = "site_list_by_version";
     private static final String MARK_SITE_LIST_BY_ARTIFACT_ID = "site_list_by_artifact_id";
     private static final String MARK_SITE_LIST_BY_LAST_UPDATE = "site_list_by_last_update";
+    private static final String MARK_LAST_UPDATE_TIME_INTERVAL = "last_update_time_interval";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
@@ -293,11 +303,19 @@ public class SiteXPage extends MVCApplication
         {
             _site = SiteHome.findByPrimaryKey( nId );
         }
-
+        
+        int nMonths = TimeInterval.getMonthDiff( _site.getLastUpdate( ) );
+        
+        /*System.out.println("==================");
+        System.out.println(monthsResult);
+        System.out.println(hoursResult);
+        System.out.println("==================");*/
+        
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE, _site );
         model.put( MARK_DEPENDENCY_LIST_BY_SITE, dependencyList );
         model.put( MARK_LAST_RELEASE_LIST, listRelease );
+        model.put( MARK_LAST_UPDATE_TIME_INTERVAL, nMonths );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }
