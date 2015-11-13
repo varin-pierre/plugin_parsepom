@@ -46,10 +46,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import fr.paris.lutece.plugins.parsepom.business.Dependency;
+import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.services.Extract;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
 import fr.paris.lutece.plugins.parsepom.services.Global;
+import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -208,8 +211,10 @@ public class ParseXPage extends MVCApplication
 			ext.createSite( currentSite );
 			itSite.remove( );
 	    }
-
 		path = "";
+		
+		Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
+    	HttpProcess.getLastReleases( dependencyList );
 		Global._boolNotEmptyDB = true;
 		
 		Map<String, Object> model = getModel(  );

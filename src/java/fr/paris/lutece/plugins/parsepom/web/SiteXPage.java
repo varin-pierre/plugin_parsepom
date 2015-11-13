@@ -48,8 +48,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,12 +56,6 @@ import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import javax.servlet.http.HttpServletRequest;
-
-import org.joda.time.DateTime;
-import org.joda.time.Hours;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
-import org.joda.time.Months;
 
 
 /**
