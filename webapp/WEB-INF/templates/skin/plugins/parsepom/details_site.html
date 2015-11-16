@@ -58,34 +58,77 @@
 		             	<#assign o = o + 1/>
 		            </#if>
 	                <#assign d = d + 1>
-                </#list>        
-				<p>#i18n{parsepom.details_site.fieldNbTotalDependency} : ${d}<br />
-				-> #i18n{parsepom.details_site.fieldNbCore} : ${c}<br />
-				-> #i18n{parsepom.details_site.fieldNbPlugins} : ${p}<br />
-				-> #i18n{parsepom.details_site.fieldNbModules} : ${m}<br />
-				-> #i18n{parsepom.details_site.fieldNbLibraries} : ${l}<br />
-				-> #i18n{parsepom.details_site.fieldNbOthers} : ${o}<br /></p>
-				<#assign ratio = "${s}"?number / "${d}"?number * 100>
-				<p>#i18n{parsepom.details_site.fieldNbSnapshots} : ${s} (${ratio?round}%)</p>
-				<p>Date de dernière mise à jour du pom : 
-				<#if "${last_update_time_interval}"?number == 0>
-				il y'a moins d'1 mois
-				<#elseif "${last_update_time_interval}"?number lt 12>
-					il y'a ${last_update_time_interval} mois
-				<#elseif "${last_update_time_interval}"?number == 12>
-					il y'a 1 an
-				<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
-					<#assign result = "${last_update_time_interval}"?number - 12>
-					il y'a un an et ${result} mois
-				<#elseif "${last_update_time_interval}"?number == 24>
-					il y'a 2 ans
-				<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
-					il y'a plus de 2 ans
-				<#elseif "${last_update_time_interval}"?number gte 60>
-					il y'a plus de 5 ans
-				</#if></p>
+                </#list>
+                <table id="table_stats">
+	                <thead>
+						<tr>        
+							<th>#i18n{parsepom.details_site.fieldNbTotalDependency}</th>
+							<th>${d}</th>
+						</tr>
+					</thead>
+	   				<tbody>
+						<tr>
+							<td>#i18n{parsepom.details_site.fieldNbCore}</td>
+							<td align="center">${c}</td>
+						</tr>
+						<tr>
+							<td>#i18n{parsepom.details_site.fieldNbPlugins}</td>
+							<td>${p}</td>
+						</tr>
+						<tr>
+							<td>#i18n{parsepom.details_site.fieldNbModules}</td>
+							<td>${m}</td>
+						</tr>
+						<tr>
+							<td>#i18n{parsepom.details_site.fieldNbLibraries}</td>
+							<td>${l}</td>
+						</tr>
+						<tr>
+							<td>#i18n{parsepom.details_site.fieldNbOthers}</td>
+							<td>${o}</td>
+						</tr>
+					</tbody>
+				</table>
+				<br/>
+				<table id="table_stats">
+	                <thead>
+						<tr>        
+							<th>#i18n{parsepom.details_site.fieldMark}</th>
+						</tr>
+					</thead>
+	   				<tbody>
+						<tr>
+							<#assign ratio = "${s}"?number / "${d}"?number * 100>
+							<td>#i18n{parsepom.details_site.fieldNbSnapshots}</td>
+							<td>${s} (${ratio?round}%)</td>
+						</tr>
+						<tr>
+							<td>#i18n{parsepom.details_site.fieldLastUpdate}</td>
+							<td>
+								<#if "${last_update_time_interval}"?number == 0>
+									#i18n{parsepom.details_site.fieldDate1}
+								<#elseif "${last_update_time_interval}"?number lt 12>
+									#i18n{parsepom.details_site.fieldDate2}
+								<#elseif "${last_update_time_interval}"?number == 12>
+									#i18n{parsepom.details_site.fieldDate3}
+								<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
+									<#assign result = "${last_update_time_interval}"?number - 12>
+									#i18n{parsepom.details_site.fieldDate4}
+								<#elseif "${last_update_time_interval}"?number == 24>
+									#i18n{parsepom.details_site.fieldDate5}
+								<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
+									#i18n{parsepom.details_site.fieldDate6}
+								<#elseif "${last_update_time_interval}"?number gte 60>
+									#i18n{parsepom.details_site.fieldDate7}
+								</#if>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<br />
 			</div>
-   			<table id="myTableSite" class="table"> 
+			<h3><center><u>#i18n{parsepom.details_site.titleDependency}</u></center></h3>
+   			<table id="myTableSite" class="table">
    				<thead>
                 <tr>
                     <th id="first">#i18n{parsepom.details_site.columnGroupId}</th>
@@ -115,7 +158,6 @@
                 </#list>                      
             </tbody>
    			</table>
-   			
   		</div>
   		<a href="jsp/site/Portal.jsp?page=parsepom" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>
   	</div>

@@ -32,3 +32,9 @@ td a:hover{text-decoration: none;color:black;background:#EEEEEE;}
 
 /* p style */
 .p_description{text-align:justify;height:160px;}
+
+#table_stats{width:100%;}
+#table_stats th {border:1px solid black;padding:2px;}
+#table_stats th:nth-child(2) {text-align:center;}
+#table_stats td {border:1px solid black;padding:2px;}
+#table_stats td:nth-child(2) {text-align:center;}
