@@ -26,21 +26,25 @@
         <dependency>
             <groupId>fr.paris.lutece</groupId>
             <artifactId>lutece-core</artifactId>
-            <version>5.1.0-RC-03</version>
+            <version>[5.1.0-RC-03,)</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-rest</artifactId>
-            <version>3.1.0</version>
+            <version>[3.1.0,)</version>
             <type>lutece-plugin</type>
         </dependency>
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-lutecetools</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-            <type>lutece-plugin</type>
+            <artifactId>library-httpaccess</artifactId>
+            <version>[2.3.0,)</version>
         </dependency>
+        <dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>[2.9.1,)</version>
+		</dependency>
     </dependencies>
 
     <properties>

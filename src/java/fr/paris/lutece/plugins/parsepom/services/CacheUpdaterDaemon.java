@@ -17,7 +17,7 @@ public class CacheUpdaterDaemon extends Daemon
     {
         long t1 = new Date(  ).getTime(  );
         //MavenRepoService.instance(  ).updateCache(  );
-
+        instance( );
         long t2 = new Date(  ).getTime(  );
         AppLogService.debug( "LOLOLOLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO : " + UPDATE_DELAY );
         setLastRunLogs( "Lutece Tools - Cache for Maven info updated : duration = " + ( t2 - t1 ) + "ms" );
@@ -33,5 +33,12 @@ public class CacheUpdaterDaemon extends Daemon
         long lNow = new Date(  ).getTime(  );
 
         return ( lNow - 5 ) > UPDATE_DELAY;
+    }
+    
+    public static synchronized void instance( )
+    {
+    	System.out.println("======================");
+        System.out.println("YES");
+        System.out.println("======================");
     }
 }
