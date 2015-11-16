@@ -188,25 +188,25 @@ public class ParseXPage extends MVCApplication
     @Action( ACTION_VALIDATE )
     public XPage doValidate( HttpServletRequest request )
     {
-		Collection<Site> _globaleSites  = ext.getGlobaleSite( );
-		Collection<Site> _conflict =  ext.getConflict( );
+    	Collection<Site> _globaleSites  = ext.getGlobaleSite( );
+    	Collection<Site> _conflict =  ext.getConflict( );
 	        
-		Iterator<Site> itSite;
-		Iterator<Site> itConflict;
+    	Iterator<Site> itSite;
+    	Iterator<Site> itConflict;
 		if ( !_conflict.isEmpty( ) )
-	    {
+		{
 			itConflict = _conflict.iterator( );
 			while ( itConflict.hasNext( ) )
 			{
-			    Site siteConflict = itConflict.next( );
-			    ext.conflictSite(  siteConflict ) ;
-			    
-			    itConflict.remove( );
-			} 
-	    }
+				Site siteConflict = itConflict.next( );
+				ext.conflictSite(  siteConflict ) ;
+
+				itConflict.remove( );
+				}
+		}
 		itSite = _globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
-	    {
+		{
 			Site currentSite = itSite.next( );
 			ext.createSite( currentSite );
 			itSite.remove( );
@@ -215,10 +215,11 @@ public class ParseXPage extends MVCApplication
 		
 		Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
     	HttpProcess.getLastReleases( dependencyList );
+
 		Global._boolNotEmptyDB = true;
 		
-		Map<String, Object> model = getModel(  );
-        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
+    	Map<String, Object> model = getModel(  );
+		model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
 		
     	addInfo( INFO_VALIDATE, getLocale( request ) );
     	
