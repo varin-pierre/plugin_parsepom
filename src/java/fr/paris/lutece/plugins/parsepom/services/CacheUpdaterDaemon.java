@@ -15,7 +15,9 @@ public class CacheUpdaterDaemon extends Daemon
     @Override
     public void run(  )
     {
-        DaemonWorkflowService.chooseAction(  );
+    	System.out.println("======================");
+        System.out.println("YES");
+        System.out.println("======================");
     }
     
     
@@ -25,12 +27,5 @@ public class CacheUpdaterDaemon extends Daemon
         long lNow = new Date(  ).getTime(  );
 
         return ( lNow - 5 ) > UPDATE_DELAY;
-    }
-    
-    public static synchronized void instance( )
-    {
-    	System.out.println("======================");
-        System.out.println("YES");
-        System.out.println("======================");
     }
 }

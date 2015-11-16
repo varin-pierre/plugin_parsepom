@@ -40,6 +40,9 @@ import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.services.Global;
+import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
+import fr.paris.lutece.plugins.parsepom.services.PopupMessage;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 
@@ -62,24 +65,27 @@ public class ParsepomXPage extends MVCApplication
 	private static final long serialVersionUID = 1L;
 	
 	// Templates
-    private static final String TEMPLATE_MANAGE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
+    private static final String TEMPLATE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
     
     // Markers
     private static final String MARK_DATA_EXIST="exist";
 	
 	// Views
-    private static final String VIEW_MANAGE_PARSEPOM = "manageParsepom";
+    private static final String VIEW_PARSEPOM = "parsepom";
     
-    // Session variable to store working values
-    //private Parsepom _parsepom;
+    // Actions
+    private static final String ACTION_UPDATE = "doUpdate";
     
+    // Infos
+    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated"; 
+
     
     /**
      * Returns the page home.
      * @param request The HTTP request
      * @return The view
      */
-	@View( value = VIEW_MANAGE_PARSEPOM, defaultView = true )
+	@View( value = VIEW_PARSEPOM, defaultView = true )
     public XPage getManageSites( HttpServletRequest request )
     {
 		Collection<Site> siteList = SiteHome.getSitesList(  );
@@ -97,6 +103,25 @@ public class ParsepomXPage extends MVCApplication
         Map<String, Object> model = getModel(  );
         model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
         
-        return getXPage( TEMPLATE_MANAGE_PARSEPOM, request.getLocale(  ), model );
+        return getXPage( TEMPLATE_PARSEPOM, request.getLocale(  ), model );
     }
+	
+	/**
+     * Update the last releases"
+     * @param request The HTTP request
+     * @return The view
+     */
+	@Action( value = ACTION_UPDATE )
+	public XPage doUpdate( HttpServletRequest request )
+	{
+		Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
+    	HttpProcess.getLastReleases( dependencyList );
+    	
+    	Map<String, Object> model = getModel(  );
+        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
+    	
+    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
+    	
+    	return redirectView( request, VIEW_PARSEPOM );
+	}
 }

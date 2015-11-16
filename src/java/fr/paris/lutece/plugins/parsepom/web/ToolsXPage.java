@@ -43,6 +43,7 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.services.Global;
 import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
+import fr.paris.lutece.plugins.parsepom.services.PopupMessage;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -78,6 +79,7 @@ public class ToolsXPage extends MVCApplication
 	    
 	    // Infos
 	    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
+	    private static final String POPUP_UPDATED = "Updated";
 	  
 	    
 	    /**
@@ -107,6 +109,7 @@ public class ToolsXPage extends MVCApplication
 	        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
 	    	
 	    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
+	    	PopupMessage.infoBox( POPUP_UPDATED );
 	    	
 	    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ), model );
 	    }

@@ -53,6 +53,7 @@ import fr.paris.lutece.plugins.parsepom.services.Extract;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
 import fr.paris.lutece.plugins.parsepom.services.Global;
 import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
+import fr.paris.lutece.plugins.parsepom.services.PopupMessage;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -101,6 +102,7 @@ public class ParseXPage extends MVCApplication
     private static final String INFO_VALIDATE = "parsepom.info.validate";
     private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
     private static final String INFO_CANCEL = "parsepom.info.cancel";
+    private static final String POPUP_SUCCESS = "Success";
  
     // Session variable to store working values
     private String path = "";
@@ -222,6 +224,7 @@ public class ParseXPage extends MVCApplication
 		model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
 		
     	addInfo( INFO_VALIDATE, getLocale( request ) );
+    	PopupMessage.infoBox( POPUP_SUCCESS );
     	
     	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ), model );
     }
