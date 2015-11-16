@@ -15,15 +15,7 @@ public class CacheUpdaterDaemon extends Daemon
     @Override
     public void run(  )
     {
-        long t1 = new Date(  ).getTime(  );
-        //MavenRepoService.instance(  ).updateCache(  );
-        instance( );
-        long t2 = new Date(  ).getTime(  );
-        AppLogService.debug( "LOLOLOLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO : " + UPDATE_DELAY );
-        setLastRunLogs( "Lutece Tools - Cache for Maven info updated : duration = " + ( t2 - t1 ) + "ms" );
-        System.out.println("======================");
-        System.out.println(UPDATE_DELAY);
-        System.out.println("======================");
+        DaemonWorkflowService.chooseAction(  );
     }
     
     
