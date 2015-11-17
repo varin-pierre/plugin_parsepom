@@ -68,8 +68,6 @@ public class DependencyXPage extends MVCApplication
 	
 	// Templates
     private static final String TEMPLATE_MANAGE_DEPENDENCYS="/skin/plugins/parsepom/manage_dependencys.html";
-    private static final String TEMPLATE_CREATE_DEPENDENCY="/skin/plugins/parsepom/create_dependency.html";
-    private static final String TEMPLATE_MODIFY_DEPENDENCY="/skin/plugins/parsepom/modify_dependency.html";
     private static final String TEMPLATE_DETAILS_DEPENDENCY="/skin/plugins/parsepom/details_dependency.html";
     private static final String TEMPLATE_LIST_DEPENDENCYS="/skin/plugins/parsepom/list_dependencys.html";
     
@@ -127,23 +125,6 @@ public class DependencyXPage extends MVCApplication
         model.put( MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES, DependencyHome.getDependencysListWithoutDuplicates(  ) );
 
         return getXPage( TEMPLATE_MANAGE_DEPENDENCYS, request.getLocale(  ), model );
-    }
-
-    /**
-     * Returns the form to create a dependency
-     *
-     * @param request The Http request
-     * @return the html code of the dependency form
-     */
-    @View( VIEW_CREATE_DEPENDENCY )
-    public XPage getCreateDependency( HttpServletRequest request )
-    {
-        _dependency = ( _dependency != null ) ? _dependency : new Dependency(  );
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_DEPENDENCY, _dependency );
-           
-        return getXPage( TEMPLATE_CREATE_DEPENDENCY, request.getLocale(  ), model );
     }
 
     /**
@@ -218,28 +199,6 @@ public class DependencyXPage extends MVCApplication
         addInfo( INFO_DEPENDENCY_REMOVED, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
-    }
-
-    /**
-     * Returns the form to update info about a dependency
-     *
-     * @param request The Http request
-     * @return The HTML form to update info
-     */
-    @View( VIEW_MODIFY_DEPENDENCY )
-    public XPage getModifyDependency( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
-
-        if ( _dependency == null  || ( _dependency.getId( ) != nId ))
-        {
-            _dependency = DependencyHome.findByPrimaryKey( nId );
-        }
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_DEPENDENCY, _dependency );
-        
-        return getXPage( TEMPLATE_MODIFY_DEPENDENCY, request.getLocale(  ), model );
     }
 
     /**

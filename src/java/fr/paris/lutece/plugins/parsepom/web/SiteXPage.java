@@ -72,8 +72,6 @@ public class SiteXPage extends MVCApplication
 	
 	// Templates
     private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
-    private static final String TEMPLATE_CREATE_SITE="/skin/plugins/parsepom/create_site.html";
-    private static final String TEMPLATE_MODIFY_SITE="/skin/plugins/parsepom/modify_site.html";
     private static final String TEMPLATE_DETAILS_SITE="/skin/plugins/parsepom/details_site.html";
     private static final String TEMPLATE_LIST_SITES="/skin/plugins/parsepom/list_sites.html";
     
@@ -150,23 +148,6 @@ public class SiteXPage extends MVCApplication
     }
 
     /**
-     * Returns the form to create a site
-     *
-     * @param request The Http request
-     * @return the html code of the site form
-     */
-    @View( VIEW_CREATE_SITE )
-    public XPage getCreateSite( HttpServletRequest request )
-    {
-        _site = ( _site != null ) ? _site : new Site(  );
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_SITE, _site );
-           
-        return getXPage( TEMPLATE_CREATE_SITE, request.getLocale(  ), model );
-    }
-
-    /**
      * Process the data capture form of a new site
      *
      * @param request The Http Request
@@ -223,28 +204,6 @@ public class SiteXPage extends MVCApplication
         addInfo( INFO_SITE_REMOVED, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_SITES );
-    }
-
-    /**
-     * Returns the form to update info about a site
-     *
-     * @param request The Http request
-     * @return The HTML form to update info
-     */
-    @View( VIEW_MODIFY_SITE )
-    public XPage getModifySite( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
-
-        if ( _site == null  || ( _site.getId( ) != nId ))
-        {
-            _site = SiteHome.findByPrimaryKey( nId );
-        }
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_SITE, _site );
-        
-        return getXPage( TEMPLATE_MODIFY_SITE, request.getLocale(  ), model );
     }
 
     /**

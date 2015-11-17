@@ -41,26 +41,6 @@
             <application-id>site</application-id>
             <application-class>fr.paris.lutece.plugins.parsepom.web.SiteXPage</application-class>
         </application>
-        <application>
-            <application-id>parse</application-id>
-            <application-class>fr.paris.lutece.plugins.parsepom.web.ParseXPage</application-class>
-        </application>
-         <application>
-            <application-id>tools</application-id>
-            <application-class>fr.paris.lutece.plugins.parsepom.web.ToolsXPage</application-class>
-        </application>
     </applications>
 
-	<daemons>
-        <daemon>
-            <daemon-id>parsepomCacheUpdater</daemon-id>
-            <daemon-name>parsepom.daemon.cacheUpdater.name</daemon-name>
-            <daemon-description>parsepom.daemon.cacheUpdater.description</daemon-description>
-            <daemon-class>fr.paris.lutece.plugins.parsepom.services.CacheUpdaterDaemon</daemon-class>
-        </daemon>
-    </daemons>
-
-    <!-- Portlet parameters -->
-    <portlets>
-   </portlets>
 </plug-in>

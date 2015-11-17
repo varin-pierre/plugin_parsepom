@@ -39,17 +39,25 @@ import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
+import fr.paris.lutece.plugins.parsepom.services.Extract;
+import fr.paris.lutece.plugins.parsepom.services.FileChooser;
 import fr.paris.lutece.plugins.parsepom.services.Global;
 import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
-import fr.paris.lutece.plugins.parsepom.services.PopupMessage;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 
 /**
@@ -66,19 +74,37 @@ public class ParsepomXPage extends MVCApplication
 	
 	// Templates
     private static final String TEMPLATE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
+    private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
     
     // Markers
     private static final String MARK_DATA_EXIST="exist";
+    private static final String MARK_PARSE = "parse";
+    private static final String MARK_PATH = "path";
+    private static final String MARK_CONFLICT = "conflict";
+    private static final String MARK_ALLSITE = "all";
 	
 	// Views
     private static final String VIEW_PARSEPOM = "parsepom";
+    private static final String VIEW_VALIDATE = "validate";
     
     // Actions
-    private static final String ACTION_UPDATE = "doUpdate";
+    private static final String ACTION_UPDATE = "update";
+    private static final String ACTION_CHOOSE = "choose";
+    private static final String ACTION_PARSE = "parse";
+    private static final String ACTION_VALIDATE = "validate";
+    private static final String ACTION_CLEAN = "clean";
     
     // Infos
-    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated"; 
+    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
+    private static final String ERROR_PATH_NOT_FOUND = "parsepom.error.path.notFound";
+    private static final String INFO_VALIDATE_UPTODATE = "parsepom.info.validate.uptodate";
+    private static final String INFO_VALIDATE = "parsepom.info.validate";
+    private static final String INFO_CANCEL = "parsepom.info.cancel";
 
+    // Session variable to store working values
+    private String path = "";
+    private Extract ext = new Extract( );
+    
     
     /**
      * Returns the page home.
@@ -102,6 +128,7 @@ public class ParsepomXPage extends MVCApplication
 		
         Map<String, Object> model = getModel(  );
         model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
+        model.put( MARK_PATH, path);
         
         return getXPage( TEMPLATE_PARSEPOM, request.getLocale(  ), model );
     }
@@ -123,5 +150,115 @@ public class ParsepomXPage extends MVCApplication
     	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
     	
     	return redirectView( request, VIEW_PARSEPOM );
+	}
+	
+	/**
+     * 
+     * @param request
+     * @return XPage
+     */
+    @Action( ACTION_CHOOSE )
+    public XPage doChoose( HttpServletRequest request )
+    {		
+    	path = FileChooser.chooserDir( );
+    	
+    	return redirectView( request, VIEW_PARSEPOM );
+    }
+    
+    @View( value = VIEW_VALIDATE)
+    public XPage getValidate( HttpServletRequest request )
+    {
+    	Map<String, Object> model = getModel(  );
+
+    	model.put( MARK_PARSE, path );
+    	model.put( MARK_CONFLICT, ext.getConflict( ) );
+    	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
+
+        return getXPage( TEMPLATE_VALIDATE, request.getLocale( ), model );
+    }
+    
+    /**
+     * 
+     * @param request
+     * @return XPage
+     */
+    @Action( ACTION_PARSE )
+    public XPage doParse( HttpServletRequest request ) throws IOException, SAXException, ParserConfigurationException
+    {		
+    	path = request.getParameter( "path" );
+		
+    	FileFilter filter = new Extract.DirFilter( );
+    	File dirs = new File( path );
+    	ext.initMaxInt( );
+    	if ( !dirs.isDirectory( ) )
+	    {
+    		addError( ERROR_PATH_NOT_FOUND, getLocale( request ) );
+    		path = "";
+    		return redirectView( request, VIEW_PARSEPOM );
+	    }
+
+    	ext.openDir( dirs, filter );
+    	
+    	if ( ext.getConflict( ).isEmpty( ) && ext.getGlobaleSite().isEmpty( ) )
+ 	    {
+    		addInfo( INFO_VALIDATE_UPTODATE, getLocale( request ) );
+    		path = "";
+    		return redirectView( request, VIEW_PARSEPOM );
+ 	    }
+		
+    	return redirectView( request, VIEW_VALIDATE );
+    }
+    
+    @Action( ACTION_VALIDATE )
+    public XPage doValidate( HttpServletRequest request )
+    {
+    	Collection<Site> _globaleSites  = ext.getGlobaleSite( );
+    	Collection<Site> _conflict =  ext.getConflict( );
+	        
+    	Iterator<Site> itSite;
+    	Iterator<Site> itConflict;
+		if ( !_conflict.isEmpty( ) )
+		{
+			itConflict = _conflict.iterator( );
+			while ( itConflict.hasNext( ) )
+			{
+				Site siteConflict = itConflict.next( );
+				ext.conflictSite(  siteConflict ) ;
+
+				itConflict.remove( );
+				}
+		}
+		itSite = _globaleSites.iterator( );
+		while ( itSite.hasNext( ) )
+		{
+			Site currentSite = itSite.next( );
+			ext.createSite( currentSite );
+			itSite.remove( );
+	    }
+		path = "";
+		
+		Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
+    	HttpProcess.getLastReleases( dependencyList );
+		
+    	addInfo( INFO_VALIDATE, getLocale( request ) );
+    	
+    	return redirectView( request, VIEW_PARSEPOM );
+    }
+   
+    /*
+     * Cancel parsing of all pom.xml file
+     */
+    @Action( ACTION_CLEAN )
+    public XPage doClean( HttpServletRequest request )
+    {
+		ext.setConflictClear( );
+		ext.setGlobaleDepClear( );
+		ext.setGlobaleSiteClear( );
+		
+		path = "";
+		
+		addInfo( INFO_CANCEL, getLocale( request ) );
+		
+		return redirectView( request, VIEW_PARSEPOM );
 	}
 }
