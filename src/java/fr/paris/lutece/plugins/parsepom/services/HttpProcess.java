@@ -28,7 +28,7 @@ public class HttpProcess
 	
 	public static void getLastReleases( Collection<Dependency> dependencyList )
 	{
-		HttpAccess httpAccess = new HttpAccess(  );
+		HttpAccess httpAccess = new HttpAccess( );
     	
     	for ( Dependency list : dependencyList )
     	{
@@ -56,7 +56,7 @@ public class HttpProcess
 		    		ToolsHome.update( base );
 		    	}
 	    	}
-	    	catch (HttpAccessException e1)
+	    	catch ( HttpAccessException e1 )
 	    	{
 	    		setErrorMessage( base, list.getArtifactId(), HTTP_ERROR );
 	    		AppLogService.error( e1.getMessage( ) );
