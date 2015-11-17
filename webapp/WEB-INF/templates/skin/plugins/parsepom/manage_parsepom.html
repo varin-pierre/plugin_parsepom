@@ -43,7 +43,7 @@
             <p class="p_description"><small>#i18n{parsepom.manage_parsepom.siteDescription}</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=site" <#if exist == false>disabled="disabled"</#if> >
             <span class="glyphicon glyphicon-th-list"></span>
-                #i18n{parsepom.manage_parsepom.buttonSite}
+                #i18n{parsepom.manage_parsepom.buttonSite} (${nbSites})
             </a>
 		</div>
 	</div>
@@ -53,7 +53,7 @@
             <p class="p_description"><small>#i18n{parsepom.manage_parsepom.dependencyDescription}</small></p>
             <a class="btn btn-primary" href="jsp/site/Portal.jsp?page=dependency" <#if exist == false>disabled="disabled"</#if> >
             <span class="glyphicon glyphicon-list-alt"></span>
-                #i18n{parsepom.manage_parsepom.buttonDependency}
+                #i18n{parsepom.manage_parsepom.buttonDependency} (${nbDependencies})
             </a>
 		</div>
 	</div>

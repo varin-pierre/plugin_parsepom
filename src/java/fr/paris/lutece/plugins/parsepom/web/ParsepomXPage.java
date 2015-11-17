@@ -82,6 +82,8 @@ public class ParsepomXPage extends MVCApplication
     private static final String MARK_PATH = "path";
     private static final String MARK_CONFLICT = "conflict";
     private static final String MARK_ALLSITE = "all";
+    private static final String MARK_NB_SITES = "nbSites";
+    private static final String MARK_NB_DEPENDENCIES = "nbDependencies";
 	
 	// Views
     private static final String VIEW_PARSEPOM = "parsepom";
@@ -115,7 +117,7 @@ public class ParsepomXPage extends MVCApplication
     public XPage getManageSites( HttpServletRequest request )
     {
 		Collection<Site> siteList = SiteHome.getSitesList(  );
-		Collection<Dependency> dependencyList = DependencyHome.getDependencysList(  );
+		Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates(  );
 		
 		if (!siteList.isEmpty( ) && !dependencyList.isEmpty( ))
 		{
@@ -126,9 +128,21 @@ public class ParsepomXPage extends MVCApplication
 			Global._boolNotEmptyDB = false;
 		}
 		
+		Integer nSites = 0;
+		for ( nSites = 0; nSites < siteList.size( ); nSites++ )
+		{
+		}
+		
+		Integer nDependencies = 0;
+		for ( nDependencies = 0; nDependencies < dependencyList.size( ); nDependencies++ )
+		{
+		}
+		
         Map<String, Object> model = getModel(  );
         model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
         model.put( MARK_PATH, path);
+        model.put( MARK_NB_SITES, nSites);
+        model.put( MARK_NB_DEPENDENCIES, nDependencies);
         
         return getXPage( TEMPLATE_PARSEPOM, request.getLocale(  ), model );
     }
