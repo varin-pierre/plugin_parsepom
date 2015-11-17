@@ -18,29 +18,28 @@
    			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>
-                <tr>
-                    <th id="first">#i18n{parsepom.manage_dependencys.columnArtifactId}</th>
-                    <th id="second">#i18n{parsepom.manage_dependencys.columnLastRelease}</th>
-                </tr>
-            </thead>
-            <tbody>
-            	<#list dependency_list_without_duplicates! as depend>
-                <tr id="hover_tr"> 
-                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
-                    <#if last_release_list?has_content>
-	                    <#list last_release_list?keys as key>
-	                    	<#if "${key}" == "${depend.artifactId}">
-	                    		<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
-	                    	</#if>
-	                    </#list>
-	                <#else>
-                    	<td>#i18n{parsepom.manage_dependencys.nonAvailable}</td>
-                   	</#if>
-                </tr>
-                </#list>                      
-            </tbody>
+	                <tr>
+	                    <th id="first">#i18n{parsepom.manage_dependencys.columnArtifactId}</th>
+	                    <th id="second">#i18n{parsepom.manage_dependencys.columnLastRelease}</th>
+	                </tr>
+            	</thead>
+	            <tbody>
+	            	<#list dependency_list_without_duplicates! as depend>
+	                <tr id="hover_tr"> 
+	                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
+	                    <#if last_release_list?has_content>
+		                    <#list last_release_list?keys as key>
+		                    	<#if "${key}" == "${depend.artifactId}">
+		                    		<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
+		                    	</#if>
+		                    </#list>
+		                <#else>
+	                    	<td>#i18n{parsepom.manage_dependencys.nonAvailable}</td>
+	                   	</#if>
+	                </tr>
+	                </#list>                      
+	            </tbody>
    			</table>
-   			
   		</div>
   		<a href="jsp/site/Portal.jsp?page=parsepom" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>
   	</div>
