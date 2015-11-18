@@ -8,18 +8,21 @@
 			<h3>#i18n{parsepom.manage_parsepom.parserTitle}</h3>
             <p class="p_description"><small>#i18n{parsepom.manage_parsepom.parserDescription}</small></p>
             <form method="post" class="form-inline" role="form" action="jsp/site/Portal.jsp?page=parsepom">
-		  		<div class="form-group">
+		  		<div class="form-group has-success has-feedback">
 		    		<label for="path"></label>
-		    		<input type="text" class="form-control" id="path" name="path" value="${path!}" placeholder="/home/user/site">
+		    		<input type="text" class="form-control" name="path" value="${path!}" placeholder="/home/user/site" 
+		    			<#if path?has_content == false>disabled</#if> >
+		    		<#if path?has_content>
+		    			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+		    		</#if>
 		 		</div>
+		 		<button name="action_choose" class="btn btn-primary" type="submit" autofocus>
+				<span class="glyphicon glyphicon-plus"></span> 
+						#i18n{parsepom.manage_parsepom.browse}	
 		  		<#if path?has_content>
-					<button name="action_parse" class="btn btn-success" type="submit" autofocus>
-					<span class="glyphicon glyphicon-plus"></span> 
+		  			<button name="action_parse" class="btn btn-success" type="submit" autofocus>
+					<span class="glyphicon glyphicon-wrench"></span> 
 						#i18n{parsepom.manage_parsepom.go}
-				<#else>
-					<button name="action_choose" class="btn btn-primary" type="submit" autofocus>
-					<span class="glyphicon glyphicon-plus"></span> 
-						#i18n{parsepom.manage_parsepom.browse}
 				</#if>
 			</form>
 		</div>
