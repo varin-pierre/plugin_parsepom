@@ -16,13 +16,15 @@
 		    			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
 		    		</#if>
 		 		</div>
-		 		<button name="action_choose" class="btn btn-primary" type="submit" autofocus>
-				<span class="glyphicon glyphicon-plus"></span> 
-						#i18n{parsepom.manage_parsepom.browse}	
+		 		<button id="margin_button" name="action_choose" class="btn btn-primary" type="submit" autofocus>
+					<span class="glyphicon glyphicon-plus"></span> 
+					#i18n{parsepom.manage_parsepom.browse}
+				</button>
 		  		<#if path?has_content>
 		  			<button name="action_parse" class="btn btn-success" type="submit" autofocus>
 					<span class="glyphicon glyphicon-wrench"></span> 
 						#i18n{parsepom.manage_parsepom.go}
+					</button>
 				</#if>
 			</form>
 		</div>
