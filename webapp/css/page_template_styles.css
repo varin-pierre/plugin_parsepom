@@ -25,9 +25,10 @@ img.thumblist-large{width:128px;height:128px;}
 .ui-autocomplete{max-height:100px;overflow-y:auto;overflow-x:hidden;}
 
 /* lists style */
-#hover_tr:hover{background:#EEEEEE;}
+#altern_color{background:#EEEEEE;}
+.hover_tr:hover{background:#D0D0D0 !important;}
 td a{display:block;color:black;}
-td a:hover{text-decoration: none;color:black;background:#EEEEEE;}
+td a:hover{text-decoration: none;color:black;}
 .list-group{overflow-y:scroll; height:500px;}
 
 /* p style */

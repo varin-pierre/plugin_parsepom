@@ -20,17 +20,18 @@
                 </tr>
             </thead>
             <tbody>
+            	<#assign i = 0>
 				<#list sites_list_by_dependency?keys as key>
-					<tr id="hover_tr">
+					<tr class="hover_tr" <#if i % 2 == 0>id="altern_color"</#if> >
 						<td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">
-							<#assign i = 0>
+							<#assign j = 0>
 							<#list sites_list_by_dependency[key] as k>			
-								<#if i == 1>	
+								<#if j == 1>	
 									${k}
-								<#elseif i == 2>
+								<#elseif j == 2>
 									<font size="2">(${k})</font>
 								</#if>
-								<#assign i = i + 1>
+								<#assign j = j + 1>
 							</#list>
 						</a></td>
 						<td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${sites_list_by_dependency[key][0]}">${key}</a></td>
@@ -40,6 +41,7 @@
 	                    	<td>#i18n{parsepom.details_dependency.nonAvailable}</td>
 	                   	</#if> 
 					<tr>
+				<#assign i = i + 1>
 				</#list>
             </tbody>
    			</table>
