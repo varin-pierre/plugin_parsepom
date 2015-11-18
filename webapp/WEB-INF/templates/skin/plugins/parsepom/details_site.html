@@ -59,17 +59,16 @@
 		            </#if>
 	                <#assign d = d + 1>
                 </#list>
-                <table id="table_stats">
+                <table class="table_stats">
 	                <thead>
-						<tr>        
-							<th>#i18n{parsepom.details_site.fieldNbTotalDependency}</th>
-							<th>${d}</th>
+						<tr >        
+							<th>#i18n{parsepom.details_site.fieldTypeDependency}</th>
 						</tr>
 					</thead>
 	   				<tbody>
 						<tr>
 							<td>#i18n{parsepom.details_site.fieldNbCore}</td>
-							<td align="center">${c}</td>
+							<td>${c}</td>
 						</tr>
 						<tr>
 							<td>#i18n{parsepom.details_site.fieldNbPlugins}</td>
@@ -87,20 +86,27 @@
 							<td>#i18n{parsepom.details_site.fieldNbOthers}</td>
 							<td>${o}</td>
 						</tr>
+						<tr>
+							<td id="last_row">#i18n{parsepom.details_site.fieldNbTotalDependency}</td>
+							<td id="last_row">${d}</td>
+						</tr>
 					</tbody>
 				</table>
 				<br/>
-				<table id="table_stats">
+				<table class="table_stats">
 	                <thead>
 						<tr>        
-							<th>#i18n{parsepom.details_site.fieldMark}</th>
+							<th>#i18n{parsepom.details_site.fieldStats}</th>
 						</tr>
 					</thead>
 	   				<tbody>
 						<tr>
-							<#assign ratio = "${s}"?number / "${d}"?number * 100>
+							<#assign ratioSS = "${s}"?number / "${d}"?number * 100>
+							<#assign nbWithoutSS = "${d}"?number - "${s}"?number>
+							<#assign ratioWithoutSS = nbWithoutSS / "${d}"?number * 100>
+							<#assign snapshotMark = (ratioWithoutSS / 10)?round>
 							<td>#i18n{parsepom.details_site.fieldNbSnapshots}</td>
-							<td>${s} (${ratio?round}%)</td>
+							<td>${s} (${ratioSS?round}%)</td>
 						</tr>
 						<tr>
 							<td>#i18n{parsepom.details_site.fieldLastUpdate}</td>
@@ -122,6 +128,10 @@
 									#i18n{parsepom.details_site.fieldDate7}
 								</#if>
 							</td>
+						</tr>
+						<tr>
+							<td id="last_row">#i18n{parsepom.details_site.fieldMark}</td>
+							<td id="last_row">${snapshotMark} / 10</td>
 						</tr>
 					</tbody>
 				</table>
