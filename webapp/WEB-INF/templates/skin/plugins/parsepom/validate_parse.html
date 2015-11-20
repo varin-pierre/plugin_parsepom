@@ -6,10 +6,10 @@
 				<#assign i = 0>
 				<#assign j = 0>
 				<#list all! as a>
-					<#list conflict! as con>
-						<#assign j = j + 1>
-					</#list>
 					<#assign i = i + 1>
+				</#list>
+				<#list conflict! as con>
+					<#assign j = j + 1>
 				</#list>
 				<#assign i = i - j>
 				<#if i lt 0>
@@ -19,23 +19,21 @@
 			</div>
 			<ul class="list-group">
 				<#assign notEmpty = 0>
+				<#assign isNew = 0>
  				<#list all! as a>
-	 	 			<#assign doublon = 0>
+	 	 			<#assign isConflict = 0>
 					<#list conflict! as con>
 						<#if "${con.artifactId}" == "${a.artifactId}">
-							<#assign doublon = 1>
+							<#assign isConflict = 1>
 							<#assign notEmpty = 1>
 						</#if>
 					</#list>
-					<#if doublon == 0 >
+					<#if isConflict == 0 >
+						<#assign isNew = 1>
 						<li class="list-group-item">${a.artifactId} <font size="2">(${a.name}) - v${a.version}</font></li>
 					</#if>
 				</#list>
-				<#if all??>
-					<#if all?has_content && notEmpty == 0>
-					<#else>
-						<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
-					</#if>
+				<#if all?has_content && isNew == 1>
 				<#else>
 					<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
 				</#if>

@@ -25,17 +25,17 @@ public class HttpProcess
 	// URL
 	private static final String PROPERTY_MAVEN_LUTECECORE_URL = "parsepom.maven.lutececore.url";
 	private static final String URL_MAVEN_LUTECORE = AppPropertiesService.getProperty( PROPERTY_MAVEN_LUTECECORE_URL );
-    private static final String PROPERTY_LUTECETOOLS_REST_URL = "parsepom.lutecetools.rest.url";
-    private static final String URL_LUTECETOOLS_REST = AppPropertiesService.getProperty( PROPERTY_LUTECETOOLS_REST_URL );
-    private static final String PROPERTY_LUTECETOOLS_JSON_PARAM = "parsepom.lutecetools.json.param";
-    private static final String PARAM_LUTECETOOLS_JSON = AppPropertiesService.getProperty( PROPERTY_LUTECETOOLS_JSON_PARAM );
-    private static final String PATTERN_VERSION = "[0-9]+.[0-9]+.[0-9]+";
-    private static final String TAG_HTML_SELECT = "td a";
-    private static final String LUTECE_CORE = "lutece-core";
-    private static final String TAG_COMPONENT = "component";
-    private static final String ELEMENT_VERSION = "version";
-    private static final String RELEASE_NOT_FOUND = "Release not found";
-    private static final String HTTP_ERROR = "HTTP error";
+	private static final String PROPERTY_LUTECETOOLS_REST_URL = "parsepom.lutecetools.rest.url";
+	private static final String URL_LUTECETOOLS_REST = AppPropertiesService.getProperty( PROPERTY_LUTECETOOLS_REST_URL );
+	private static final String PROPERTY_LUTECETOOLS_JSON_PARAM = "parsepom.lutecetools.json.param";
+	private static final String PARAM_LUTECETOOLS_JSON = AppPropertiesService.getProperty( PROPERTY_LUTECETOOLS_JSON_PARAM );
+	private static final String PATTERN_VERSION = "[0-9]+.[0-9]+.[0-9]+";
+	private static final String TAG_HTML_SELECT = "td a";
+	private static final String LUTECE_CORE = "lutece-core";
+	private static final String TAG_COMPONENT = "component";
+	private static final String ELEMENT_VERSION = "version";
+	private static final String RELEASE_NOT_FOUND = "Release not found";
+	private static final String HTTP_ERROR = "HTTP error";
     
 	
 	public static void getLastReleases( Collection<Dependency> dependencyList )
@@ -67,14 +67,13 @@ public class HttpProcess
 	    	{
 	    		String strHtml = httpAccess.doGet( JSONPath );
 	    		JSONObject json = new JSONObject( strHtml );
-	    		if ( version.isEmpty( ))
+	    		if ( version.isEmpty( ) )
 	    		{
 	    			version = json.getJSONObject( TAG_COMPONENT ).getString( ELEMENT_VERSION );
 	    		}
 
 		    	if ( base == null )
 		    	{
-		    		
 		    		base = new Tools( );
 		    		base.setArtifactId( list.getArtifactId( ) );
 		    		base.setLastRelease( version );

@@ -187,7 +187,7 @@ public class ParsepomXPage extends MVCApplication
     	model.put( MARK_PARSE, path );
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
-
+    	
         return getXPage( TEMPLATE_VALIDATE, request.getLocale( ), model );
     }
     
