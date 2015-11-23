@@ -56,7 +56,7 @@ public class HttpProcess
     		{
     			try
     			{
-    				version = getLuteceCoreFromMavenRepo( httpAccess );
+    				version = getLastVersionFromCore( httpAccess );
     			}
     			catch ( HttpAccessException e1 )
     	    	{
@@ -71,7 +71,7 @@ public class HttpProcess
 	    		//JSONObject json = new JSONObject( strHtml );
 	    		if ( version.isEmpty( ) )
 	    		{
-	    			version = getPluginsFromMavenRepo( list.getArtifactId( ), httpAccess );
+	    			version = getLastVersionFromPlugin( list.getArtifactId( ), httpAccess );
 	    			//json.getJSONObject( TAG_COMPONENT ).getString( ELEMENT_VERSION );
 	    		}
 
@@ -97,7 +97,7 @@ public class HttpProcess
     	}
 	}
 	
-	public static String getLuteceCoreFromMavenRepo( HttpAccess httpAccess ) throws HttpAccessException
+	public static String getLastVersionFromCore( HttpAccess httpAccess ) throws HttpAccessException
 	{
 		String strHtml = httpAccess.doGet( URL_MAVEN_LUTECORE );
 		Document doc = Jsoup.parse( strHtml );
@@ -116,12 +116,12 @@ public class HttpProcess
 				strArr.add( linkText );
 			}
 		}
-		String strVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
+		String strLastVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
 
-		return ( strVersion );
+		return ( strLastVersion );
 	}
 	
-	public static String getPluginsFromMavenRepo( String strArtifactId, HttpAccess httpAccess ) throws HttpAccessException
+	public static String getLastVersionFromPlugin( String strArtifactId, HttpAccess httpAccess ) throws HttpAccessException
 	{
 		String strHtml = httpAccess.doGet( URL_MAVEN_PLUGINS.concat( strArtifactId ) );
 		Document doc = Jsoup.parse( strHtml );
@@ -140,9 +140,9 @@ public class HttpProcess
 				strArr.add( linkText );
 			}
 		}
-		String strVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
+		String strLastVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
 
-		return ( strVersion );
+		return ( strLastVersion );
 	}
 	
 	private static void setErrorMessage( Tools base, String strArtifactId, String strErrorMessage )
