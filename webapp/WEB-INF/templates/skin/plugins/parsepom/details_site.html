@@ -104,7 +104,7 @@
 							<#assign ratioSS = "${s}"?number / "${d}"?number * 100>
 							<#assign nbWithoutSS = "${d}"?number - "${s}"?number>
 							<#assign ratioWithoutSS = nbWithoutSS / "${d}"?number * 100>
-							<#assign snapshotMark = (ratioWithoutSS / 10)?round>
+							<#assign finalMark = (ratioWithoutSS / 10)?round>
 							<td>#i18n{parsepom.details_site.fieldNbSnapshots}</td>
 							<td>${s} (${ratioSS?round}%)</td>
 						</tr>
@@ -112,26 +112,38 @@
 							<td>#i18n{parsepom.details_site.fieldLastUpdate}</td>
 							<td>
 								<#if "${last_update_time_interval}"?number == 0>
+									<#assign finalMark = finalMark + 10>
 									#i18n{parsepom.details_site.fieldDate1}
 								<#elseif "${last_update_time_interval}"?number lt 12>
+									<#assign finalMark = finalMark + 8>
 									#i18n{parsepom.details_site.fieldDate2}
 								<#elseif "${last_update_time_interval}"?number == 12>
+									<#assign finalMark = finalMark + 5>
 									#i18n{parsepom.details_site.fieldDate3}
 								<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
 									<#assign result = "${last_update_time_interval}"?number - 12>
+									<#assign finalMark = finalMark + 1>
 									#i18n{parsepom.details_site.fieldDate4}
 								<#elseif "${last_update_time_interval}"?number == 24>
 									#i18n{parsepom.details_site.fieldDate5}
 								<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
+									<#assign finalMark = finalMark - 1>
 									#i18n{parsepom.details_site.fieldDate6}
 								<#elseif "${last_update_time_interval}"?number gte 60>
+									<#assign finalMark = finalMark - 2>
 									#i18n{parsepom.details_site.fieldDate7}
 								</#if>
 							</td>
 						</tr>
 						<tr>
 							<td id="last_row">#i18n{parsepom.details_site.fieldMark}</td>
-							<td id="last_row">${snapshotMark} / 10</td>
+							<#if finalMark gt 20>
+								<#assign finalMark = 20>
+							</#if>
+							<#if finalMark lt 0>
+								<#assign finalMark = 0>
+							</#if>
+							<td id="last_row">${finalMark} / 20</td>
 						</tr>
 					</tbody>
 				</table>
