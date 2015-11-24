@@ -271,7 +271,7 @@ public class SiteXPage extends MVCApplication
     	String strId = request.getParameter( PARAMETER_ID_SITE );
      	Site site = SiteHome.findByPrimaryKey( Integer.parseInt( strId ) );
     	String fileInputPath = site.getPath( );
-    	Integer nReturn = FileDownloader.download( fileInputPath );
+    	Integer nReturn = FileDownloader.updateAndDownload( fileInputPath );
     	
     	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )
     	{

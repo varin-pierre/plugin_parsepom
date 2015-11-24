@@ -37,7 +37,6 @@ public class HttpProcess
 	//private static final String TAG_COMPONENT = "component";
 	//private static final String ELEMENT_VERSION = "version";
 	private static final String RELEASE_NOT_FOUND = "Release not found";
-	private static final String HTTP_ERROR = "HTTP error";
     
 	
 	public static void getLastReleases( Collection<Dependency> dependencyList )
@@ -60,7 +59,7 @@ public class HttpProcess
     			}
     			catch ( HttpAccessException e1 )
     	    	{
-    	    		setErrorMessage( base, list.getArtifactId( ), HTTP_ERROR );
+    	    		setErrorMessage( base, list.getArtifactId( ), RELEASE_NOT_FOUND );
     	    		AppLogService.error( e1.getMessage( ) );
     	    	}
     		}

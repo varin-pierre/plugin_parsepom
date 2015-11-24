@@ -142,7 +142,9 @@ public class DependencyXPage extends MVCApplication
         
         Tools tools = ToolsHome.findByArtifactId( strArtifactId );
     	if ( tools != null )
+    	{
     		strRelease = tools.getLastRelease( );
+    	}
         
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
@@ -175,7 +177,9 @@ public class DependencyXPage extends MVCApplication
         		
         		Tools tools = ToolsHome.findByArtifactId( strArtifactId );
             	if ( tools != null )
+            	{
             		strRelease = tools.getLastRelease( );
+            	}
         		
                 List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
                  
