@@ -20,6 +20,16 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class PomHandlerDom
 {
+	// Tags
+	private static final String TAG_DEPENDENCY = "dependency";
+	private static final String TAG_GROUP_ID = "groupId";
+	private static final String TAG_ARTIFACT_ID = "artifactId";
+	private static final String TAG_NAME = "name";
+	private static final String TAG_VERSION = "version";
+	private static final String TAG_TYPE = "type";
+	private static final String TAG_EXCLUSIONS = "exclusions";
+	private static final String TAG_MAIN_NODE = "project";
+		
 	private   ArrayList<Dependency> _listDependencies = new ArrayList<Dependency>(  );
 	private   Site _site = new Site( );
 	
@@ -46,13 +56,13 @@ public class PomHandlerDom
 
 			filledSite(nlSite);
 			
-			NodeList nlDenpendency = doc.getElementsByTagName( "dependency" );
+			NodeList nlDenpendency = doc.getElementsByTagName( TAG_DEPENDENCY );
 
 			for ( int i = 0; i < nlDenpendency.getLength( ); i++ )
 			{
 				Node n = nlDenpendency.item( i );
 				// test if node dependency is not in configuration node
-				if ( n.getNodeType( ) == Node.ELEMENT_NODE && n.getParentNode( ).getParentNode( ).getNodeName( ).equals( "project" ) )
+				if ( n.getNodeType( ) == Node.ELEMENT_NODE && n.getParentNode( ).getParentNode( ).getNodeName( ).equals( TAG_MAIN_NODE ) )
 				{
 					filledDependency( n );
 				}
@@ -80,15 +90,15 @@ public class PomHandlerDom
 			Node p = nlSite.item( i );
 			if ( p.getNodeType( ) == Node.ELEMENT_NODE )
 			{
-				if (p.getNodeName( ).equals( "artifactId" ) )
+				if (p.getNodeName( ).equals( TAG_ARTIFACT_ID ) )
 				{
 					_site.setArtifactId( p.getTextContent( ) );
 				}
-				if (p.getNodeName( ).equals( "version" ) )
+				if (p.getNodeName( ).equals( TAG_VERSION ) )
 				{
 					_site.setVersion( p.getTextContent( ) );
 				}
-				if (p.getNodeName( ).equals( "name" ) )
+				if (p.getNodeName( ).equals( TAG_NAME ) )
 				{
 					_site.setName( p.getTextContent( ) );
 				}
@@ -106,23 +116,23 @@ public class PomHandlerDom
 			Node t = n.getChildNodes().item(i);
 			if ( t.getNodeType( ) == Node.ELEMENT_NODE)
 			{
-				if ( t.getNodeName( ).equals( "artifactId" ) )
+				if ( t.getNodeName( ).equals( TAG_ARTIFACT_ID ) )
 				{
 					dep.setArtifactId(t.getTextContent( ) );
 				}
-				if ( t.getNodeName( ).equals( "version" ) )
+				if ( t.getNodeName( ).equals( TAG_VERSION ) )
 				{
 					dep.setVersion( t.getTextContent( ) );
 				}
-				if ( t.getNodeName( ).equals( "groupId" ) )
+				if ( t.getNodeName( ).equals( TAG_GROUP_ID ) )
 				{
 					dep.setGroupId( t.getTextContent( ) );
 				}
-				if ( t.getNodeName( ).equals( "type" ) )
+				if ( t.getNodeName( ).equals( TAG_TYPE ) )
 				{
 					dep.setType( t.getTextContent( ) );
 				}
-				if ( t.getNodeName( ).equals( "exclusions" ) )
+				if ( t.getNodeName( ).equals( TAG_EXCLUSIONS ) )
 				{
 					//TODO add Object exclusion
 				}
