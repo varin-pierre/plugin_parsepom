@@ -25,7 +25,7 @@ img.thumblist-large{width:128px;height:128px;}
 .ui-autocomplete{max-height:100px;overflow-y:auto;overflow-x:hidden;}
 
 /* lists style */
-#altern_color{background:#EEEEEE;}
+table .hover_tr:nth-child(odd){background:#EEEEEE;}
 .hover_tr:hover{background:#D0D0D0 !important;}
 td a{display:block;color:black;}
 td a:hover{text-decoration:none;color:black;}

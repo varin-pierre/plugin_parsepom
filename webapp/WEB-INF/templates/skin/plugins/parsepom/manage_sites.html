@@ -68,15 +68,13 @@
             	<#elseif site_list_by_last_update??>
             		<#assign selected_sites = site_list_by_last_update>
             	</#if>
-            	<#assign i = 0>
             	<#list selected_sites! as site>
-	                <tr class="hover_tr" <#if i % 2 == 0>id="altern_color"</#if> >
+	                <tr class="hover_tr">
 	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId}</a></td>
 	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.name}</a></td>
 	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.version}</a></td>
 	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.lastUpdate}</a></td>
 	                </tr>
-                <#assign i = i + 1>
                 </#list>                      
             </tbody>
    			</table>

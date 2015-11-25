@@ -116,14 +116,18 @@
 									#i18n{parsepom.details_site.fieldDate1}
 								<#elseif "${last_update_time_interval}"?number lt 12>
 									<#assign finalMark = finalMark + 8>
-									#i18n{parsepom.details_site.fieldDate2}
+									<#if .locale?starts_with("fr")>
+										#i18n{parsepom.details_site.fieldDate2a} ${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2b}
+									<#else>
+										${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2}
+									</#if>
 								<#elseif "${last_update_time_interval}"?number == 12>
 									<#assign finalMark = finalMark + 5>
 									#i18n{parsepom.details_site.fieldDate3}
 								<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
 									<#assign result = "${last_update_time_interval}"?number - 12>
 									<#assign finalMark = finalMark + 1>
-									#i18n{parsepom.details_site.fieldDate4}
+									#i18n{parsepom.details_site.fieldDate4a} ${result} #i18n{parsepom.details_site.fieldDate4b}
 								<#elseif "${last_update_time_interval}"?number == 24>
 									#i18n{parsepom.details_site.fieldDate5}
 								<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
@@ -152,35 +156,33 @@
 			<h3><center><u>#i18n{parsepom.details_site.titleDependency}</u></center></h3>
    			<table id="myTableSite" class="table">
    				<thead>
-                <tr>
-                    <th id="first">#i18n{parsepom.details_site.columnGroupId}</th>
-                    <th id="second">#i18n{parsepom.details_site.columnArtifactId}</th>
-                    <th id="third">#i18n{parsepom.details_site.columnVersion}</th>
-                    <th id="fourth">#i18n{parsepom.details_site.columnType}</th>
-                    <th id="fifth">#i18n{parsepom.details_site.columnLastRelease}</th>
-                </tr>
-            </thead>
-            <tbody>
-            	<#assign i = 0>
-            	<#list dependency_list_by_site as depend>
-	                <tr class="hover_tr" <#if i % 2 == 0>id="altern_color"</#if> >
-	                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
-	                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
-	                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.version}</a></td>
-	                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
-	                    <#if last_release_list?has_content>
-		                    <#list last_release_list?keys as key>
-		                    	<#if "${key}" == "${depend.artifactId}">
-		                    		<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
-		                    	</#if>
-		                    </#list>
-		                <#else>
-	                    	<td>#i18n{parsepom.details_site.nonAvailable}</td>
-	                   	</#if>
+	                <tr>
+	                    <th id="first">#i18n{parsepom.details_site.columnGroupId}</th>
+	                    <th id="second">#i18n{parsepom.details_site.columnArtifactId}</th>
+	                    <th id="third">#i18n{parsepom.details_site.columnVersion}</th>
+	                    <th id="fourth">#i18n{parsepom.details_site.columnType}</th>
+	                    <th id="fifth">#i18n{parsepom.details_site.columnLastRelease}</th>
 	                </tr>
-                <#assign i = i + 1>
-                </#list>                      
-            </tbody>
+            	</thead>
+            	<tbody>
+	            	<#list dependency_list_by_site as depend>
+		                <tr class="hover_tr">
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.version}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
+		                    <#if last_release_list?has_content>
+			                    <#list last_release_list?keys as key>
+			                    	<#if "${key}" == "${depend.artifactId}">
+										<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
+			                    	</#if>
+			                    </#list>
+			                <#else>
+		                    	<td>#i18n{parsepom.details_site.nonAvailable}</td>
+		                   	</#if>
+		                </tr>
+	                </#list>                      
+            	</tbody>
    			</table>
   		</div>
   		<a href="jsp/site/Portal.jsp?page=parsepom" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>

@@ -24,9 +24,8 @@
 	                </tr>
             	</thead>
 	            <tbody>
-	            	<#assign i = 0>
 	            	<#list dependency_list_without_duplicates! as depend>
-		                <tr class="hover_tr" <#if i % 2 == 0>id="altern_color"</#if> > 
+		                <tr class="hover_tr"> 
 		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
 		                    <#if last_release_list?has_content>
 			                    <#list last_release_list?keys as key>
@@ -38,7 +37,6 @@
 		                    	<td>#i18n{parsepom.manage_dependencys.nonAvailable}</td>
 		                   	</#if>
 		                </tr>
-	                <#assign i = i + 1>
 	                </#list>                      
 	            </tbody>
    			</table>
