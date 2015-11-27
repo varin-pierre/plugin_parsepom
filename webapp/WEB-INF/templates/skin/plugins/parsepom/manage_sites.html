@@ -11,7 +11,7 @@
 		  		<label for="siteArtifactId"></label>
 		   		<input type="search" class="form-control" id="siteArtifactId" name="siteArtifactId" placeholder="#i18n{parsepom.manage_sites.placeholderArtifactId}">
 			</div>
-			<button name="action_searchSiteByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSearch}</button>
+			<button name="action_searchSiteByArtifactId" type="submit" class="btn btn-info">#i18n{parsepom.manage_sites.buttonSearch}</button>
 		</form>
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
@@ -20,7 +20,7 @@
 		   		<label for="siteName"></label>
 		   		<input type="search" class="form-control" id="siteName" name="siteName" placeholder="#i18n{parsepom.manage_sites.placeholderName}">
 			</div>
-			<button name="action_searchSiteByName" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSearch}</button>
+			<button name="action_searchSiteByName" type="submit" class="btn btn-info">#i18n{parsepom.manage_sites.buttonSearch}</button>
 		</form>
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
@@ -29,7 +29,7 @@
 		  		<label for="siteVersion"></label>
 		   		<input type="search" class="form-control" id="siteVersion" name="siteVersion" placeholder="#i18n{parsepom.manage_sites.placeholderVersion}">
 			</div>
-			<button name="action_searchSiteByVersion" type="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSearch}</button>
+			<button name="action_searchSiteByVersion" type="submit" class="btn btn-info">#i18n{parsepom.manage_sites.buttonSearch}</button>
 		</form>
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
@@ -38,14 +38,20 @@
 		       	<label for="siteLastUpdate"></label>
 		        <input type='search' class="form-control" id="datepicker" name="siteLastUpdate" placeholder="#i18n{parsepom.manage_sites.placeholderLastUpdate}"/>
 		    </div>
-		    <button name="action_searchSiteByLastUpdate" type="submit" id="submit" class="btn btn-success">#i18n{parsepom.manage_sites.buttonSearch}</button>
+		    <button name="action_searchSiteByLastUpdate" type="submit" id="submit" class="btn btn-info">#i18n{parsepom.manage_sites.buttonSearch}</button>
 		</form>
 		<br />
 	</div>
   	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   		<div class="panel panel-primary">
   			<div class="panel-heading">
-     			<h3 class="panel-title">#i18n{parsepom.manage_sites.title}</h3>
+     			<h3 class="panel-title">#i18n{parsepom.manage_sites.title}
+     				<div class="pull-right">
+     					<a href="jsp/site/Portal.jsp?page=site&action=searchAllSites" class="btn btn-info btn-sm" id="pullright_button">
+          					<span class="glyphicon glyphicon-refresh"></span> Refresh
+        				</a>
+     				</div>
+     			</h3>
    			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>

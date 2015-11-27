@@ -67,8 +67,8 @@ public class SiteXPage extends MVCApplication
 	private static final long serialVersionUID = 1L;
 	
 	// Templates
+	private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_DETAILS_SITE="/skin/plugins/parsepom/details_site.html";
-    private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
     
     // Parameters
     private static final String PARAMETER_ID_SITE="id";
@@ -93,6 +93,7 @@ public class SiteXPage extends MVCApplication
     private static final String VIEW_DETAILS_SITE = "detailsSite";
 
     // Actions
+    private static final String ACTION_SEARCH_ALL_SITES = "searchAllSites";
     private static final String ACTION_SEARCH_SITES_BY_ARTIFACT_ID = "searchSiteByArtifactId";
     private static final String ACTION_SEARCH_SITES_BY_NAME = "searchSiteByName";
     private static final String ACTION_SEARCH_SITES_BY_VERSION = "searchSiteByVersion";
@@ -160,6 +161,30 @@ public class SiteXPage extends MVCApplication
         model.put( MARK_LAST_UPDATE_TIME_INTERVAL, nMonths );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
+    }
+    
+    
+    /**
+     * Returns the infos about all sites
+     *
+     * @param request The Http request
+     * @return The HTML page to display infos
+     */
+    @Action( ACTION_SEARCH_ALL_SITES )
+    public XPage doSearchAllSites( HttpServletRequest request )
+    {
+        Collection<Site> siteList = SiteHome.getSitesList( );
+
+        if ( !siteList.isEmpty( ) )
+        {
+        	Map<String, Object> model = getModel(  );
+        	model.put( MARK_SITE_LIST, siteList );
+        
+        	return getXPage( TEMPLATE_MANAGE_SITES, request.getLocale(  ), model );
+        }
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_SITES );
     }
     
     

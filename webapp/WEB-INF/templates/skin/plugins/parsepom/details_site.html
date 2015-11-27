@@ -6,13 +6,13 @@
 	    <@messages infos=infos />
   		<div class="panel panel-info">
   			<div class="panel-heading">
-     			<h3 class="panel-title">${site.artifactId}<font size="2"> (${site.name})</font> - ${site.version}</h3>
-     			<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
-     			<div class="pull-right">
-     				<h3 class="panel-title">
-     					<a style="margin-top:-15px;" href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-primary" role="button"><font color="white">#i18n{parsepom.details_site.downloadPom}</font></a>
-     				</h3>
-     			</div>
+     			<h3 class="panel-title"><font size="4">${site.artifactId}</font><font size="2"> (${site.name})</font> - ${site.version}
+     				<div class="pull-right">
+     					<h3 class="panel-title">
+     						<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
+     					</h3>
+     				</div>
+     			</h3>	
    			</div>
    			<div class="panel-body">
    				<#assign c = 0>
@@ -59,99 +59,105 @@
 		            </#if>
 	                <#assign d = d + 1>
                 </#list>
-                <table class="table_stats">
-	                <thead>
-						<tr >        
-							<th>#i18n{parsepom.details_site.fieldTypeDependency}</th>
-						</tr>
-					</thead>
-	   				<tbody>
-						<tr>
-							<td>#i18n{parsepom.details_site.fieldNbCore}</td>
-							<td>${c}</td>
-						</tr>
-						<tr>
-							<td>#i18n{parsepom.details_site.fieldNbPlugins}</td>
-							<td>${p}</td>
-						</tr>
-						<tr>
-							<td>#i18n{parsepom.details_site.fieldNbModules}</td>
-							<td>${m}</td>
-						</tr>
-						<tr>
-							<td>#i18n{parsepom.details_site.fieldNbLibraries}</td>
-							<td>${l}</td>
-						</tr>
-						<tr>
-							<td>#i18n{parsepom.details_site.fieldNbOthers}</td>
-							<td>${o}</td>
-						</tr>
-						<tr>
-							<td id="last_row">#i18n{parsepom.details_site.fieldNbTotalDependency}</td>
-							<td id="last_row">${d}</td>
-						</tr>
-					</tbody>
-				</table>
-				<br/>
-				<table class="table_stats">
-	                <thead>
-						<tr>        
-							<th>#i18n{parsepom.details_site.fieldStats}</th>
-						</tr>
-					</thead>
-	   				<tbody>
-						<tr>
-							<#assign ratioSS = "${s}"?number / "${d}"?number * 100>
-							<#assign nbWithoutSS = "${d}"?number - "${s}"?number>
-							<#assign ratioWithoutSS = nbWithoutSS / "${d}"?number * 100>
-							<#assign finalMark = (ratioWithoutSS / 10)?round>
-							<td>#i18n{parsepom.details_site.fieldNbSnapshots}</td>
-							<td>${s} (${ratioSS?round}%)</td>
-						</tr>
-						<tr>
-							<td>#i18n{parsepom.details_site.fieldLastUpdate}</td>
-							<td>
-								<#if "${last_update_time_interval}"?number == 0>
-									<#assign finalMark = finalMark + 10>
-									#i18n{parsepom.details_site.fieldDate1}
-								<#elseif "${last_update_time_interval}"?number lt 12>
-									<#assign finalMark = finalMark + 8>
-									<#if .locale?starts_with("fr")>
-										#i18n{parsepom.details_site.fieldDate2a} ${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2b}
-									<#else>
-										${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2}
-									</#if>
-								<#elseif "${last_update_time_interval}"?number == 12>
-									<#assign finalMark = finalMark + 5>
-									#i18n{parsepom.details_site.fieldDate3}
-								<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
-									<#assign result = "${last_update_time_interval}"?number - 12>
-									<#assign finalMark = finalMark + 1>
-									#i18n{parsepom.details_site.fieldDate4a} ${result} #i18n{parsepom.details_site.fieldDate4b}
-								<#elseif "${last_update_time_interval}"?number == 24>
-									#i18n{parsepom.details_site.fieldDate5}
-								<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
-									<#assign finalMark = finalMark - 1>
-									#i18n{parsepom.details_site.fieldDate6}
-								<#elseif "${last_update_time_interval}"?number gte 60>
-									<#assign finalMark = finalMark - 2>
-									#i18n{parsepom.details_site.fieldDate7}
-								</#if>
-							</td>
-						</tr>
-						<tr>
-							<td id="last_row">#i18n{parsepom.details_site.fieldMark}</td>
-							<#if finalMark gt 20>
-								<#assign finalMark = 20>
-							</#if>
-							<#if finalMark lt 0>
-								<#assign finalMark = 0>
-							</#if>
-							<td id="last_row">${finalMark} / 20</td>
-						</tr>
-					</tbody>
-				</table>
+                <br />
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+	                <table class="table_stats">
+		                <thead>
+							<tr >        
+								<th>#i18n{parsepom.details_site.fieldTypeDependency}</th>
+							</tr>
+						</thead>
+		   				<tbody>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbCore}</td>
+								<td>${c}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbPlugins}</td>
+								<td>${p}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbModules}</td>
+								<td>${m}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbLibraries}</td>
+								<td>${l}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbOthers}</td>
+								<td>${o}</td>
+							</tr>
+							<tr>
+								<td id="last_row">#i18n{parsepom.details_site.fieldNbTotalDependency}</td>
+								<td id="last_row">${d}</td>
+							</tr>
+						</tbody>
+					</table>
 				<br />
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<table class="table_stats">
+		                <thead>
+							<tr>        
+								<th>#i18n{parsepom.details_site.fieldStats}</th>
+							</tr>
+						</thead>
+		   				<tbody>
+							<tr>
+								<#assign ratioSS = "${s}"?number / "${d}"?number * 100>
+								<#assign nbWithoutSS = "${d}"?number - "${s}"?number>
+								<#assign ratioWithoutSS = nbWithoutSS / "${d}"?number * 100>
+								<#assign finalMark = (ratioWithoutSS / 10)?round>
+								<td>#i18n{parsepom.details_site.fieldNbSnapshots}</td>
+								<td>${s} (${ratioSS?round}%)</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldLastUpdate}</td>
+								<td>
+									<#if "${last_update_time_interval}"?number == 0>
+										<#assign finalMark = finalMark + 10>
+										#i18n{parsepom.details_site.fieldDate1}
+									<#elseif "${last_update_time_interval}"?number lt 12>
+										<#assign finalMark = finalMark + 8>
+										<#if .locale?starts_with("fr")>
+											#i18n{parsepom.details_site.fieldDate2a} ${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2b}
+										<#else>
+											${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2}
+										</#if>
+									<#elseif "${last_update_time_interval}"?number == 12>
+										<#assign finalMark = finalMark + 5>
+										#i18n{parsepom.details_site.fieldDate3}
+									<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
+										<#assign result = "${last_update_time_interval}"?number - 12>
+										<#assign finalMark = finalMark + 1>
+										#i18n{parsepom.details_site.fieldDate4a} ${result} #i18n{parsepom.details_site.fieldDate4b}
+									<#elseif "${last_update_time_interval}"?number == 24>
+										#i18n{parsepom.details_site.fieldDate5}
+									<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
+										<#assign finalMark = finalMark - 1>
+										#i18n{parsepom.details_site.fieldDate6}
+									<#elseif "${last_update_time_interval}"?number gte 60>
+										<#assign finalMark = finalMark - 2>
+										#i18n{parsepom.details_site.fieldDate7}
+									</#if>
+								</td>
+							</tr>
+							<tr>
+								<td id="last_row">#i18n{parsepom.details_site.fieldMark}</td>
+								<#if finalMark gt 20>
+									<#assign finalMark = 20>
+								</#if>
+								<#if finalMark lt 0>
+									<#assign finalMark = 0>
+								</#if>
+								<td id="last_row">${finalMark} / 20</td>
+							</tr>
+						</tbody>
+					</table>
+					<br /><br />
+					<a href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-success btn-block" role="button"><font color="white">#i18n{parsepom.details_site.downloadPom}</font></a>
+				</div>
 			</div>
 			<h3><center><u>#i18n{parsepom.details_site.titleDependency}</u></center></h3>
    			<table id="myTableSite" class="table">
@@ -183,8 +189,8 @@
 		                </tr>
 	                </#list>                      
             	</tbody>
+            	</div>
    			</table>
-  		</div>
   		<a href="jsp/site/Portal.jsp?page=parsepom" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>
   	</div>
 </div>

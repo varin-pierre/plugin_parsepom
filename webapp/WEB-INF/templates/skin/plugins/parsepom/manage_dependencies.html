@@ -9,7 +9,7 @@
 	    		<label for="dependencyArtifactId"></label>
 	    		<input type="search" class="form-control" id="dependencyArtifactId" name="dependencyArtifactId" placeholder="#i18n{parsepom.manage_dependencys.placeholder}">
 	 		</div>
-	  		<button name="action_searchDependencyByArtifactId" type="submit" class="btn btn-success">#i18n{parsepom.manage_dependencys.buttonSearch}</button>
+	  		<button name="action_searchDependencyByArtifactId" type="submit" class="btn btn-info">#i18n{parsepom.manage_dependencys.buttonSearch}</button>
 		</form>
 		<br />
   		<div class="panel panel-primary">
@@ -20,13 +20,17 @@
    				<thead>
 	                <tr>
 	                    <th id="first">#i18n{parsepom.manage_dependencys.columnArtifactId}</th>
-	                    <th id="second">#i18n{parsepom.manage_dependencys.columnLastRelease}</th>
+	                    <th id="second">#i18n{parsepom.manage_dependencys.columnGroupId}</th>
+	                    <th id="third">#i18n{parsepom.manage_dependencys.columnType}</th>
+	                    <th id="fourth">#i18n{parsepom.manage_dependencys.columnLastRelease}</th>
 	                </tr>
             	</thead>
 	            <tbody>
 	            	<#list dependency_list_without_duplicates! as depend>
 		                <tr class="hover_tr"> 
 		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
 		                    <#if last_release_list?has_content>
 			                    <#list last_release_list?keys as key>
 			                    	<#if "${key}" == "${depend.artifactId}">
