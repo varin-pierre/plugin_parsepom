@@ -25,8 +25,8 @@ img.thumblist-large{width:128px;height:128px;}
 .ui-autocomplete{max-height:100px;overflow-y:auto;overflow-x:hidden;}
 
 /* Panel style */
-.panel-info > .panel-heading {color:#000000;background-color:#BDB76B;background-image:none;}
-.panel-info {border-color:#BDB76B;}
+.panel-info > .panel-heading{color:#000000;background-color:#BDB76B;background-image:none;border-color:#BDB76B;}
+.panel-info{border-color:#BDB76B;}
 
 /* lists style */
 table .hover_tr:nth-child(odd){background:#EEEEEE;}
