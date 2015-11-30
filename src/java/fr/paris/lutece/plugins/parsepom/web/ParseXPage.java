@@ -47,9 +47,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import fr.paris.lutece.plugins.parsepom.business.Site;
-import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.services.Extract;
 import fr.paris.lutece.plugins.parsepom.services.FileChooser;
+import fr.paris.lutece.plugins.parsepom.services.Global;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -58,30 +58,34 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 
 
 /**
- * This class provides the user interface to manage Site xpages ( manage, create, modify, remove )
+ * This class provides the user interface to manage Site xpages ( manage, create, modify, remove, etc. )
  */
  
 @Controller( xpageName = "parse" , pageTitleI18nKey = "parsepom.xpage.parse.pageTitle" , pagePathI18nKey = "parsepom.xpage.parse.pagePathLabel" )
 public class ParseXPage extends MVCApplication
 {
-    // Templates
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	// Templates
+	private static final String TEMPLATE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
     private static final String TEMPLATE_PARSE="/skin/plugins/parsepom/manage_parse.html";
     private static final String TEMPLATE_VALIDATE="/skin/plugins/parsepom/validate_parse.html";
-    private static final String TEMPLATE_SITE="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_CHOOSE="/skin/plugins/parsepom/choose.html";
  
     // Markers
     private static final String MARK_PARSE = "parse";
-    private static final String MARK_SITE_LIST = "site_list";
     private static final String MARK_PATH = "path";
     private static final String MARK_CONFLICT = "conflict";
     private static final String MARK_ALLSITE = "all";
+    private static final String MARK_DATA_EXIST="exist";
 
     // Views
     private static final String VIEW_PARSE = "parse";
     private static final String VIEW_VALIDATE = "validate";
     private static final String VIEW_CHOOSE = "choose";
-    private static final String VIEW_SITE = "site";
 
     // Actions
     private static final String ACTION_PARSE = "parse";
@@ -98,6 +102,7 @@ public class ParseXPage extends MVCApplication
     // Session variable to store working values
     private String path = "";
     private Extract ext = new Extract( );
+    
     
     /**
      * Returns the page home.
@@ -161,7 +166,7 @@ public class ParseXPage extends MVCApplication
     		path = "";
     		return redirectView( request, VIEW_PARSE );
  	    }
- 	    
+		
     	return redirectView( request, VIEW_VALIDATE );
     }
     
@@ -174,7 +179,7 @@ public class ParseXPage extends MVCApplication
     	model.put( MARK_CONFLICT, ext.getConflict( ) );
     	model.put( MARK_ALLSITE, ext.getGlobaleSite( ) );
 
-        return getXPage( TEMPLATE_VALIDATE,request.getLocale(  ), model );
+        return getXPage( TEMPLATE_VALIDATE, request.getLocale( ), model );
     }
     
     @Action( ACTION_VALIDATE )
@@ -205,10 +210,14 @@ public class ParseXPage extends MVCApplication
 	    }
 
 		path = "";
+		Global._boolNotEmptyDB = true;
+		
+		Map<String, Object> model = getModel(  );
+        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
 		
     	addInfo( INFO_VALIDATE, getLocale( request ) );
     	
-		return redirectView( request, VIEW_SITE );
+    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ), model );
     }
    
     /*
@@ -229,4 +238,3 @@ public class ParseXPage extends MVCApplication
 	}
 		
 }
-	

@@ -35,29 +35,41 @@
 package fr.paris.lutece.plugins.parsepom.web;
 
 import java.util.Collection;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
-import fr.paris.lutece.plugins.parsepom.business.Tools;
-import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
-import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.plugins.parsepom.services.Global;
+import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
+
+/**
+ * This class provides the user interface to manage Tools xpages.
+ */
+
 @Controller( xpageName = "tools" , pageTitleI18nKey = "parsepom.xpage.tools.pageTitle" , pagePathI18nKey = "parsepom.xpage.tools.pagePathLabel" )
 public class ToolsXPage extends MVCApplication
 {
 	
-	    // Templates
+	   /**
+	    * 
+	    */
+		private static final long serialVersionUID = 1L;
+
+		// Templates
+		private static final String TEMPLATE_PARSEPOM="/skin/plugins/parsepom/manage_parsepom.html";
 	    private static final String TEMPLATE_TOOLS="/skin/plugins/parsepom/manage_tools.html";
 	 
 	    // Markers
-
+	    private static final String MARK_DATA_EXIST="exist";
+	    
 	    // Views
 	    private static final String VIEW_TOOLS = "tools";
 
@@ -66,8 +78,6 @@ public class ToolsXPage extends MVCApplication
 	    
 	    // Infos
 	    private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
-	   
-	    // Session variable to store working values
 	  
 	    
 	    /**
@@ -90,33 +100,14 @@ public class ToolsXPage extends MVCApplication
 	    public XPage doUpdate( HttpServletRequest request )
 	    {		
 	    	Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates( );
-	        
-	    	for ( Dependency list : dependencyList)
-	    	{
-	    		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
-		    	fr.paris.lutece.plugins.lutecetools.business.Dependency dependency = new fr.paris.lutece.plugins.lutecetools.business.Dependency( );
-		    	dependency.setArtifactId( list.getArtifactId( ) );
-		    	MavenRepoService.setReleaseVersion( dependency );
-		    	
-		    	Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) ); 
-		    	
-		    	if (  base == null)
-		    	{
-		    		base = new Tools( );
-		    		base.setArtifactId( dependency.getArtifactId( ) );
-			    	base.setLastRelease( dependency.getVersion( ) );
-		    	
-		    		ToolsHome.create( base );
-		    	}
-		    	else
-		    	{
-		    		base.setLastRelease( dependency.getVersion( ) );
-		    		ToolsHome.update( base );
-		    	}
-	    	}
+	    	
+	    	HttpProcess.getLastReleases( dependencyList );
+	    	
+	    	Map<String, Object> model = getModel(  );
+	        model.put( MARK_DATA_EXIST, Global._boolNotEmptyDB );
+	    	
 	    	addInfo( INFO_TOOLS_UPDATED, getLocale( request ) );
 	    	
-	    	return redirectView( request, VIEW_TOOLS );
+	    	return getXPage( TEMPLATE_PARSEPOM, request.getLocale( ), model );
 	    }
-	   
 }

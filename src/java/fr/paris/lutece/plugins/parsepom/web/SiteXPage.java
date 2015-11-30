@@ -33,16 +33,15 @@
  */
 package fr.paris.lutece.plugins.parsepom.web;
 
-import fr.paris.lutece.plugins.lutecetools.service.DependenciesService;
-import fr.paris.lutece.plugins.lutecetools.service.MavenRepoService;
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
-import fr.paris.lutece.plugins.parsepom.services.FileChooser;
 import fr.paris.lutece.plugins.parsepom.services.FileDownloader;
+import fr.paris.lutece.plugins.parsepom.services.TimeInterval;
+import fr.paris.lutece.plugins.parsepom.services.VersionNote;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -50,41 +49,38 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.util.url.UrlItem;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.UIManager;
 
-import org.apache.commons.io.IOUtils;
-
-
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
+import org.joda.time.Months;
 
 
 /**
- * This class provides the user interface to manage Site xpages ( manage, create, modify, remove )
+ * This class provides the user interface to manage Site xpages ( manage, create, modify, remove, etc. )
  */
  
 @Controller( xpageName = "site" , pageTitleI18nKey = "parsepom.xpage.site.pageTitle" , pagePathI18nKey = "parsepom.xpage.site.pagePathLabel" )
 public class SiteXPage extends MVCApplication
 {
-    // Templates
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	// Templates
     private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_CREATE_SITE="/skin/plugins/parsepom/create_site.html";
     private static final String TEMPLATE_MODIFY_SITE="/skin/plugins/parsepom/modify_site.html";
@@ -112,6 +108,7 @@ public class SiteXPage extends MVCApplication
     private static final String MARK_SITE_LIST_BY_VERSION = "site_list_by_version";
     private static final String MARK_SITE_LIST_BY_ARTIFACT_ID = "site_list_by_artifact_id";
     private static final String MARK_SITE_LIST_BY_LAST_UPDATE = "site_list_by_last_update";
+    private static final String MARK_LAST_UPDATE_TIME_INTERVAL = "last_update_time_interval";
     
     // Message
     private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
@@ -308,11 +305,19 @@ public class SiteXPage extends MVCApplication
         {
             _site = SiteHome.findByPrimaryKey( nId );
         }
-
+        
+        int nMonths = TimeInterval.getMonthDiff( _site.getLastUpdate( ) );
+        
+        /*System.out.println("==================");
+        System.out.println(monthsResult);
+        System.out.println(hoursResult);
+        System.out.println("==================");*/
+        
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE, _site );
         model.put( MARK_DEPENDENCY_LIST_BY_SITE, dependencyList );
         model.put( MARK_LAST_RELEASE_LIST, listRelease );
+        model.put( MARK_LAST_UPDATE_TIME_INTERVAL, nMonths );
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }
@@ -330,9 +335,22 @@ public class SiteXPage extends MVCApplication
 
         if ( !siteList.isEmpty( ) )
         {
+        	VersionNote  n = new VersionNote();
+        	List<Integer> lNote = n.listNote( siteList );
+        	if ( lNote.isEmpty())
+        		System.out.println("\n\nlNote is empty\n\n");
+        	else
+        	{
+        		for ( int note : lNote )
+        		{
+            		System.out.println( "note = " + note );
+        		}
+        	}
+        	
         	Map<String, Object> model = getModel(  );
         	model.put( MARK_SITE_LIST, siteList );
-        
+        	model.put( "note", lNote );
+
         	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
         }
         addError( ERROR_NOT_FOUND, getLocale( request ) );

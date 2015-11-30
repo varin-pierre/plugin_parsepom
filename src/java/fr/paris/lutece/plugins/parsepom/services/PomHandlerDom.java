@@ -10,12 +10,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import com.sun.xml.bind.v2.model.core.Element;
 
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.Site;
@@ -51,11 +48,17 @@ public class PomHandlerDom
 			
 			NodeList nlDenpendency = doc.getElementsByTagName( "dependency" );
 			
-			for ( int i = 0; i < nlDenpendency.getLength(); i++ )
-			{
-				Node n = nlDenpendency.item(i);
+//			for ( int i = 0; i < nlDenpendency.getLength(); i++ )
+//			{
+//				Node n = nlDenpendency.item(i);
+//
+//				if ( n.getNodeType() == Node.ELEMENT_NODE )
 
-				if ( n.getNodeType() == Node.ELEMENT_NODE )
+			for ( int i = 0; i < nlDenpendency.getLength( ); i++ )
+			{
+				Node n = nlDenpendency.item( i );
+				// test if node dependency is not in configuration node
+				if ( n.getNodeType( ) == Node.ELEMENT_NODE && n.getParentNode( ).getParentNode( ).getNodeName( ).equals( "project" ) )
 				{
 					filledDependency( n );
 				}
@@ -101,8 +104,10 @@ public class PomHandlerDom
 	
 	private  void filledDependency( Node n )
 	{
-		Dependency dep = new Dependency();
-		NodeList nl = n.getChildNodes();
+//		Dependency dep = new Dependency();
+//		NodeList nl = n.getChildNodes();
+		Dependency dep = new Dependency( );
+		NodeList nl = n.getChildNodes( );
 		
 		for ( int i = 0; i < nl.getLength(); i++ )
 		{
@@ -131,6 +136,6 @@ public class PomHandlerDom
 				}
 			}
 		}
-		_listDependencies.add(dep);
+		_listDependencies.add( dep );
 	}
 }

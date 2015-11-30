@@ -19,20 +19,20 @@
         <max-core-version/>	
     </core-version-dependency>
 
-    <!-- Admin features parameters -->
-    <admin-features>
-        <admin-feature>
-            <feature-id>PARSEPOM_MANAGEMENT</feature-id>
-            <feature-title>parsepom.adminFeature.ManageParsepom.name</feature-title>
-            <feature-description>parsepom.adminFeature.ManageParsepom.description</feature-description>
-            <feature-level>0</feature-level>
-            <feature-url>jsp/admin/plugins/parsepom/ManageDependencys.jsp</feature-url>
-            <feature-icon-url></feature-icon-url>
-      </admin-feature>
-    </admin-features>    
+	 <javascript-files>
+        <javascript-files-scope>xpage</javascript-files-scope>
+        <javascript-file>parsepom/custom.js</javascript-file>
+        <javascript-file>parsepom/jquery.metadata.js</javascript-file>
+        <javascript-file>parsepom/jquery.tablesorter.js</javascript-file>
+        <javascript-file>parsepom/jquery-ui.js</javascript-file>
+    </javascript-files>
 
     <!-- XPages parameters -->
     <applications>
+    	<application>
+            <application-id>parsepom</application-id>
+            <application-class>fr.paris.lutece.plugins.parsepom.web.ParsepomXPage</application-class>
+        </application>
         <application>
             <application-id>dependency</application-id>
             <application-class>fr.paris.lutece.plugins.parsepom.web.DependencyXPage</application-class>

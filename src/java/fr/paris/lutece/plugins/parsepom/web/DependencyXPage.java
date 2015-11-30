@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.parsepom.web;
  
 import fr.paris.lutece.plugins.parsepom.business.Dependency;
 import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
-import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
@@ -62,7 +61,12 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "dependency" , pageTitleI18nKey = "parsepom.xpage.dependency.pageTitle" , pagePathI18nKey = "parsepom.xpage.dependency.pagePathLabel" )
 public class DependencyXPage extends MVCApplication
 {
-    // Templates
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	// Templates
     private static final String TEMPLATE_MANAGE_DEPENDENCYS="/skin/plugins/parsepom/manage_dependencys.html";
     private static final String TEMPLATE_CREATE_DEPENDENCY="/skin/plugins/parsepom/create_dependency.html";
     private static final String TEMPLATE_MODIFY_DEPENDENCY="/skin/plugins/parsepom/modify_dependency.html";
@@ -337,17 +341,23 @@ public class DependencyXPage extends MVCApplication
     	String strName = request.getParameter( PARAMETER_ARTIFACT_ID_DEPENDENCY ).toLowerCase( );        
         Collection<Dependency> list = DependencyHome.getDependencysListWithoutDuplicates(  );
         
-        for (Dependency depend : list)
+        for (Dependency _dependency : list)
         {
-        	if ( depend.getArtifactId( ).equals( strName ) )
+        	String strArtifactId = _dependency.getArtifactId( );
+        	
+        	if ( strArtifactId.equals( strName ) )
         	{
-        		_dependency = depend;
+        		String strRelease = "";
         		
-        		String strArtifactId = _dependency.getArtifactId( );
+        		Tools tools = ToolsHome.findByArtifactId( strArtifactId );
+            	if ( tools != null )
+            		strRelease = tools.getLastRelease( );
+        		
                 List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
                  
                 Map<String, Object> model = getModel(  );
                 model.put( MARK_DEPENDENCY, _dependency );
+                model.put( MARK_LAST_RELEASE_STRING, strRelease );
                 model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
                 
                 return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
