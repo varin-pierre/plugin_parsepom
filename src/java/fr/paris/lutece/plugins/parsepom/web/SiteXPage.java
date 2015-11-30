@@ -47,25 +47,13 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-import fr.paris.lutece.util.url.UrlItem;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.paris.lutece.portal.service.message.SiteMessageService;
-import fr.paris.lutece.portal.service.message.SiteMessage;
-import fr.paris.lutece.portal.service.message.SiteMessageException;
 import javax.servlet.http.HttpServletRequest;
-
-import org.joda.time.DateTime;
-import org.joda.time.Hours;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
-import org.joda.time.Months;
 
 
 /**
@@ -81,19 +69,11 @@ public class SiteXPage extends MVCApplication
 	private static final long serialVersionUID = 1L;
 	
 	// Templates
-    private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
-    private static final String TEMPLATE_CREATE_SITE="/skin/plugins/parsepom/create_site.html";
-    private static final String TEMPLATE_MODIFY_SITE="/skin/plugins/parsepom/modify_site.html";
+	private static final String TEMPLATE_MANAGE_SITES="/skin/plugins/parsepom/manage_sites.html";
     private static final String TEMPLATE_DETAILS_SITE="/skin/plugins/parsepom/details_site.html";
-    private static final String TEMPLATE_LIST_SITES="/skin/plugins/parsepom/list_sites.html";
-    
-    // JSP
-    private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
     
     // Parameters
     private static final String PARAMETER_ID_SITE="id";
-    private static final String PARAM_ACTION = "action";
-    private static final String PARAM_PAGE = "page";
     private static final String PARAMETER_ARTIFACT_ID_SITE = "siteArtifactId";
     private static final String PARAMETER_NAME_SITE = "siteName";
     private static final String PARAMETER_VERSION_SITE = "siteVersion";
@@ -110,21 +90,11 @@ public class SiteXPage extends MVCApplication
     private static final String MARK_SITE_LIST_BY_LAST_UPDATE = "site_list_by_last_update";
     private static final String MARK_LAST_UPDATE_TIME_INTERVAL = "last_update_time_interval";
     
-    // Message
-    private static final String MESSAGE_CONFIRM_REMOVE_SITE = "parsepom.message.confirmRemoveSite";
-    
     // Views
     private static final String VIEW_MANAGE_SITES = "manageSites";
-    private static final String VIEW_CREATE_SITE = "createSite";
-    private static final String VIEW_MODIFY_SITE = "modifySite";
     private static final String VIEW_DETAILS_SITE = "detailsSite";
 
     // Actions
-    private static final String ACTION_CREATE_SITE = "createSite";
-    private static final String ACTION_MODIFY_SITE= "modifySite";
-    private static final String ACTION_REMOVE_SITE = "removeSite";
-    private static final String ACTION_CONFIRM_REMOVE_SITE = "confirmRemoveSite";
-    private static final String ACTION_SEARCH_ALL_SITES = "searchAllSites";
     private static final String ACTION_SEARCH_SITES_BY_ARTIFACT_ID = "searchSiteByArtifactId";
     private static final String ACTION_SEARCH_SITES_BY_NAME = "searchSiteByName";
     private static final String ACTION_SEARCH_SITES_BY_VERSION = "searchSiteByVersion";
@@ -132,9 +102,6 @@ public class SiteXPage extends MVCApplication
     private static final String ACTION_DOWNLOAD_POM = "downloadPom";
 
     // Infos
-    private static final String INFO_SITE_CREATED = "parsepom.info.site.created";
-    private static final String INFO_SITE_UPDATED = "parsepom.info.site.updated";
-    private static final String INFO_SITE_REMOVED = "parsepom.info.site.removed";
     private static final String INFO_FILE_DOWNLOADED = "parsepom.info.site.fileDownloaded";
     
     // Errors
@@ -158,127 +125,7 @@ public class SiteXPage extends MVCApplication
 
         return getXPage( TEMPLATE_MANAGE_SITES, request.getLocale(  ), model );
     }
-
-    /**
-     * Returns the form to create a site
-     *
-     * @param request The Http request
-     * @return the html code of the site form
-     */
-    @View( VIEW_CREATE_SITE )
-    public XPage getCreateSite( HttpServletRequest request )
-    {
-        _site = ( _site != null ) ? _site : new Site(  );
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_SITE, _site );
-           
-        return getXPage( TEMPLATE_CREATE_SITE, request.getLocale(  ), model );
-    }
-
-    /**
-     * Process the data capture form of a new site
-     *
-     * @param request The Http Request
-     * @return The Jsp URL of the process result
-     */
-    @Action( ACTION_CREATE_SITE )
-    public XPage doCreateSite( HttpServletRequest request )
-    {
-        populate( _site, request );
-
-        // Check constraints
-        if ( !validateBean( _site, getLocale( request ) ) )
-        {
-            return redirectView( request, VIEW_CREATE_SITE );
-        }
-
-        SiteHome.create( _site );
-        addInfo( INFO_SITE_CREATED, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_SITES );
-    }
-
-    /**
-     * Manages the removal form of a site whose identifier is in the http
-     * request
-     *
-     * @param request The Http request
-     * @return the html code to confirm
-     */
-    @Action( ACTION_CONFIRM_REMOVE_SITE )
-    public XPage getConfirmRemoveSite( HttpServletRequest request ) throws SiteMessageException
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
-        UrlItem url = new UrlItem( JSP_PAGE_PORTAL );
-        url.addParameter( PARAM_PAGE, MARK_SITE );
-        url.addParameter( PARAM_ACTION, ACTION_REMOVE_SITE );
-        url.addParameter( PARAMETER_ID_SITE, nId );
-        
-        SiteMessageService.setMessage(request, MESSAGE_CONFIRM_REMOVE_SITE, SiteMessage.TYPE_CONFIRMATION, url.getUrl(  ));
-        return null;
-    }
-
-    /**
-     * Handles the removal form of a site
-     *
-     * @param request The Http request
-     * @return the jsp URL to display the form to manage sites
-     */
-    @Action( ACTION_REMOVE_SITE )
-    public XPage doRemoveSite( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
-        SiteHome.remove( nId );
-        addInfo( INFO_SITE_REMOVED, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_SITES );
-    }
-
-    /**
-     * Returns the form to update info about a site
-     *
-     * @param request The Http request
-     * @return The HTML form to update info
-     */
-    @View( VIEW_MODIFY_SITE )
-    public XPage getModifySite( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_SITE ) );
-
-        if ( _site == null  || ( _site.getId( ) != nId ))
-        {
-            _site = SiteHome.findByPrimaryKey( nId );
-        }
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_SITE, _site );
-        
-        return getXPage( TEMPLATE_MODIFY_SITE, request.getLocale(  ), model );
-    }
-
-    /**
-     * Process the change form of a site
-     *
-     * @param request The Http request
-     * @return The Jsp URL of the process result
-     */
-    @Action( ACTION_MODIFY_SITE )
-    public XPage doModifySite( HttpServletRequest request )
-    {
-        populate( _site, request );
-
-        // Check constraints
-        if ( !validateBean( _site, getLocale( request ) ) )
-        {
-            return redirect( request, VIEW_MODIFY_SITE, PARAMETER_ID_SITE, _site.getId( ) );
-        }
-
-        SiteHome.update( _site );
-        addInfo( INFO_SITE_UPDATED, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_SITES );
-    }
+    
     
     /**
      * Returns the infos about a site
@@ -308,11 +155,6 @@ public class SiteXPage extends MVCApplication
         
         int nMonths = TimeInterval.getMonthDiff( _site.getLastUpdate( ) );
         
-        /*System.out.println("==================");
-        System.out.println(monthsResult);
-        System.out.println(hoursResult);
-        System.out.println("==================");*/
-        
         Map<String, Object> model = getModel(  );
         model.put( MARK_SITE, _site );
         model.put( MARK_DEPENDENCY_LIST_BY_SITE, dependencyList );
@@ -321,43 +163,6 @@ public class SiteXPage extends MVCApplication
         
         return getXPage( TEMPLATE_DETAILS_SITE, request.getLocale(  ), model );
     }
-    
-    /**
-     * Returns the infos about all sites
-     *
-     * @param request The Http request
-     * @return The HTML page to display infos
-     */
-    @Action( ACTION_SEARCH_ALL_SITES )
-    public XPage doSearchAllSites( HttpServletRequest request )
-    {
-        Collection<Site> siteList = SiteHome.getSitesList( );
-
-        if ( !siteList.isEmpty( ) )
-        {
-        	VersionNote  n = new VersionNote();
-        	List<Integer> lNote = n.listNote( siteList );
-        	if ( lNote.isEmpty())
-        		System.out.println("\n\nlNote is empty\n\n");
-        	else
-        	{
-        		for ( int note : lNote )
-        		{
-            		System.out.println( "note = " + note );
-        		}
-        	}
-        	
-        	Map<String, Object> model = getModel(  );
-        	model.put( MARK_SITE_LIST, siteList );
-        	model.put( "note", lNote );
-
-        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
-        }
-        addError( ERROR_NOT_FOUND, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_SITES );
-    }
-    
     /**
      * Returns the infos about all sites ranked by artifactId
      *
@@ -375,7 +180,7 @@ public class SiteXPage extends MVCApplication
         	Map<String, Object> model = getModel(  );
         	model.put( MARK_SITE_LIST_BY_ARTIFACT_ID, siteList );
         
-        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
+        	return getXPage( TEMPLATE_MANAGE_SITES, request.getLocale(  ), model );
         }
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
@@ -399,7 +204,7 @@ public class SiteXPage extends MVCApplication
         	Map<String, Object> model = getModel(  );
         	model.put( MARK_SITE_LIST_BY_NAME, siteList );
         
-        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
+        	return getXPage( TEMPLATE_MANAGE_SITES, request.getLocale(  ), model );
         }
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
@@ -423,7 +228,7 @@ public class SiteXPage extends MVCApplication
         	Map<String, Object> model = getModel(  );
         	model.put( MARK_SITE_LIST_BY_VERSION, siteList );
         
-        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
+        	return getXPage( TEMPLATE_MANAGE_SITES, request.getLocale(  ), model );
         }
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
@@ -447,7 +252,7 @@ public class SiteXPage extends MVCApplication
         	Map<String, Object> model = getModel(  );
         	model.put( MARK_SITE_LIST_BY_LAST_UPDATE, siteList );
         
-        	return getXPage( TEMPLATE_LIST_SITES, request.getLocale(  ), model );
+        	return getXPage( TEMPLATE_MANAGE_SITES, request.getLocale(  ), model );
         }
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
@@ -466,7 +271,7 @@ public class SiteXPage extends MVCApplication
     	String strId = request.getParameter( PARAMETER_ID_SITE );
      	Site site = SiteHome.findByPrimaryKey( Integer.parseInt( strId ) );
     	String fileInputPath = site.getPath( );
-    	Integer nReturn = FileDownloader.download( fileInputPath );
+    	Integer nReturn = FileDownloader.updateAndDownload( fileInputPath );
     	
     	if ( nReturn == VALUE_INPUT_FILE_NOT_FOUND )
     	{

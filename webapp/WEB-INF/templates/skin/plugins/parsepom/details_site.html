@@ -6,13 +6,13 @@
 	    <@messages infos=infos />
   		<div class="panel panel-info">
   			<div class="panel-heading">
-     			<h3 class="panel-title">${site.artifactId}<font size="2"> (${site.name})</font> - ${site.version}</h3>
-     			<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
-     			<div class="pull-right">
-     				<h3 class="panel-title">
-     					<a style="margin-top:-15px;" href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-primary" role="button"><font color="white">#i18n{parsepom.details_site.downloadPom}</font></a>
-     				</h3>
-     			</div>
+     			<h3 class="panel-title"><font size="4">${site.artifactId}</font><font size="2"> (${site.name})</font> - ${site.version}
+     				<div class="pull-right">
+     					<h3 class="panel-title">
+     						<font size="2">#i18n{parsepom.details_site.lastUpdate} : <em>${site.lastUpdate}</em></font>
+     					</h3>
+     				</div>
+     			</h3>	
    			</div>
    			<div class="panel-body">
    				<#assign c = 0>
@@ -58,65 +58,140 @@
 		             	<#assign o = o + 1/>
 		            </#if>
 	                <#assign d = d + 1>
-                </#list>        
-				<p>#i18n{parsepom.details_site.fieldNbTotalDependency} : ${d}<br />
-				-> #i18n{parsepom.details_site.fieldNbCore} : ${c}<br />
-				-> #i18n{parsepom.details_site.fieldNbPlugins} : ${p}<br />
-				-> #i18n{parsepom.details_site.fieldNbModules} : ${m}<br />
-				-> #i18n{parsepom.details_site.fieldNbLibraries} : ${l}<br />
-				-> #i18n{parsepom.details_site.fieldNbOthers} : ${o}<br /></p>
-				<#assign ratio = "${s}"?number / "${d}"?number * 100>
-				<p>#i18n{parsepom.details_site.fieldNbSnapshots} : ${s} (${ratio?round}%)</p>
-				<p>Date de dernière mise à jour du pom : 
-				<#if "${last_update_time_interval}"?number == 0>
-				il y'a moins d'1 mois
-				<#elseif "${last_update_time_interval}"?number lt 12>
-					il y'a ${last_update_time_interval} mois
-				<#elseif "${last_update_time_interval}"?number == 12>
-					il y'a 1 an
-				<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
-					<#assign result = "${last_update_time_interval}"?number - 12>
-					il y'a un an et ${result} mois
-				<#elseif "${last_update_time_interval}"?number == 24>
-					il y'a 2 ans
-				<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
-					il y'a plus de 2 ans
-				<#elseif "${last_update_time_interval}"?number gte 60>
-					il y'a plus de 5 ans
-				</#if></p>
+                </#list>
+                <br />
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+	                <table class="table_stats">
+		                <thead>
+							<tr >        
+								<th>#i18n{parsepom.details_site.fieldTypeDependency}</th>
+							</tr>
+						</thead>
+		   				<tbody>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbCore}</td>
+								<td>${c}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbPlugins}</td>
+								<td>${p}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbModules}</td>
+								<td>${m}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbLibraries}</td>
+								<td>${l}</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldNbOthers}</td>
+								<td>${o}</td>
+							</tr>
+							<tr>
+								<td id="last_row">#i18n{parsepom.details_site.fieldNbTotalDependency}</td>
+								<td id="last_row">${d}</td>
+							</tr>
+						</tbody>
+					</table>
+				<br />
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<table class="table_stats">
+		                <thead>
+							<tr>        
+								<th>#i18n{parsepom.details_site.fieldStats}</th>
+							</tr>
+						</thead>
+		   				<tbody>
+							<tr>
+								<#assign ratioSS = "${s}"?number / "${d}"?number * 100>
+								<#assign nbWithoutSS = "${d}"?number - "${s}"?number>
+								<#assign ratioWithoutSS = nbWithoutSS / "${d}"?number * 100>
+								<#assign finalMark = (ratioWithoutSS / 10)?round>
+								<td>#i18n{parsepom.details_site.fieldNbSnapshots}</td>
+								<td>${s} (${ratioSS?round}%)</td>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_site.fieldLastUpdate}</td>
+								<td>
+									<#if "${last_update_time_interval}"?number == 0>
+										<#assign finalMark = finalMark + 10>
+										#i18n{parsepom.details_site.fieldDate1}
+									<#elseif "${last_update_time_interval}"?number lt 12>
+										<#assign finalMark = finalMark + 8>
+										<#if .locale?starts_with("fr")>
+											#i18n{parsepom.details_site.fieldDate2a} ${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2b}
+										<#else>
+											${last_update_time_interval} #i18n{parsepom.details_site.fieldDate2}
+										</#if>
+									<#elseif "${last_update_time_interval}"?number == 12>
+										<#assign finalMark = finalMark + 5>
+										#i18n{parsepom.details_site.fieldDate3}
+									<#elseif "${last_update_time_interval}"?number gt 12 && "${last_update_time_interval}"?number lt 24>
+										<#assign result = "${last_update_time_interval}"?number - 12>
+										<#assign finalMark = finalMark + 1>
+										#i18n{parsepom.details_site.fieldDate4a} ${result} #i18n{parsepom.details_site.fieldDate4b}
+									<#elseif "${last_update_time_interval}"?number == 24>
+										#i18n{parsepom.details_site.fieldDate5}
+									<#elseif "${last_update_time_interval}"?number gt 24 && "${last_update_time_interval}"?number lt 36>
+										<#assign finalMark = finalMark - 1>
+										#i18n{parsepom.details_site.fieldDate6}
+									<#elseif "${last_update_time_interval}"?number gte 60>
+										<#assign finalMark = finalMark - 2>
+										#i18n{parsepom.details_site.fieldDate7}
+									</#if>
+								</td>
+							</tr>
+							<tr>
+								<td id="last_row">#i18n{parsepom.details_site.fieldMark}</td>
+								<#if finalMark gt 20>
+									<#assign finalMark = 20>
+								</#if>
+								<#if finalMark lt 0>
+									<#assign finalMark = 0>
+								</#if>
+								<td id="last_row">${finalMark} / 20</td>
+							</tr>
+						</tbody>
+					</table>
+					<br /><br />
+					<a href="jsp/site/Portal.jsp?page=site&action=downloadPom&id=${site.id}" class="btn btn-success btn-block" role="button"><font color="white">#i18n{parsepom.details_site.downloadPom}</font></a>
+				</div>
 			</div>
-   			<table id="myTableSite" class="table"> 
+			<h3><center><u>#i18n{parsepom.details_site.titleDependency}</u></center></h3>
+   			<table id="myTableSite" class="table">
    				<thead>
-                <tr>
-                    <th id="first">#i18n{parsepom.details_site.columnGroupId}</th>
-                    <th id="second">#i18n{parsepom.details_site.columnArtifactId}</th>
-                    <th id="third">#i18n{parsepom.details_site.columnVersion}</th>
-                    <th id="fourth">#i18n{parsepom.details_site.columnType}</th>
-                    <th id="fifth">#i18n{parsepom.details_site.columnLastRelease}</th>
-                </tr>
-            </thead>
-            <tbody>
-            	<#list dependency_list_by_site as depend>
-                <tr id="hover_tr">
-                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
-                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
-                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.version}</a></td>
-                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
-                    <#if last_release_list?has_content>
-	                    <#list last_release_list?keys as key>
-	                    	<#if "${key}" == "${depend.artifactId}">
-	                    		<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
-	                    	</#if>
-	                    </#list>
-	                <#else>
-                    	<td>#i18n{parsepom.details_site.nonAvailable}</td>
-                   	</#if>
-                </tr>
-                </#list>                      
-            </tbody>
+	                <tr>
+	                    <th id="first">#i18n{parsepom.details_site.columnGroupId}</th>
+	                    <th id="second">#i18n{parsepom.details_site.columnArtifactId}</th>
+	                    <th id="third">#i18n{parsepom.details_site.columnVersion}</th>
+	                    <th id="fourth">#i18n{parsepom.details_site.columnType}</th>
+	                    <th id="fifth">#i18n{parsepom.details_site.columnLastRelease}</th>
+	                </tr>
+            	</thead>
+            	<tbody>
+	            	<#list dependency_list_by_site as depend>
+		                <tr class="hover_tr">
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.groupId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.artifactId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.version}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${depend.type}</a></td>
+		                    <#if last_release_list?has_content>
+			                    <#list last_release_list?keys as key>
+			                    	<#if "${key}" == "${depend.artifactId}">
+										<td><a href="jsp/site/Portal.jsp?page=dependency&view=detailsDependency&id=${depend.id}">${last_release_list[key]}</a></td>
+			                    	</#if>
+			                    </#list>
+			                <#else>
+		                    	<td>#i18n{parsepom.details_site.nonAvailable}</td>
+		                   	</#if>
+		                </tr>
+	                </#list>                      
+            	</tbody>
+            	</div>
    			</table>
-   			
-  		</div>
+   		</div>
   		<a href="jsp/site/Portal.jsp?page=parsepom" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>
   	</div>
 </div>

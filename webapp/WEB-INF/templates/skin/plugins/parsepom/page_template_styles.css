@@ -21,15 +21,8 @@ img.thumblist-large{width:128px;height:128px;}
 .avatar-large{width:64px;height:64px;}
 .avatar-huge{width:128px;height:128px;}
 
-/* jumbotron style */
-.jumbotron{box-shadow: 7px 7px 5px #888888;}
-
 /* autocompletion style */
 .ui-autocomplete{max-height:100px;overflow-y:auto;overflow-x:hidden;}
-
-/* Panel style */
-.panel-info > .panel-heading{color:#000000;background-color:#BDB76B;background-image:none;border-color:#BDB76B;}
-.panel-info{border-color:#BDB76B;}
 
 /* lists style */
 table .hover_tr:nth-child(odd){background:#EEEEEE;}
@@ -50,4 +43,5 @@ td a:hover{text-decoration:none;color:black;}
 
 /* button style */
 #margin_button{margin-right:1px;}
-#pullright_button{margin-top:-6px;}
+.panel-info > .panel-heading {color:#000000;background-color:#BDB76B;background-image:none;}
+.panel-info {border-color:#BDB76B;}

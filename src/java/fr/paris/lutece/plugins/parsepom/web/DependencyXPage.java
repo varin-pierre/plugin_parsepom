@@ -43,15 +43,11 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import fr.paris.lutece.portal.service.message.SiteMessageService;
-import fr.paris.lutece.portal.service.message.SiteMessage;
-import fr.paris.lutece.portal.service.message.SiteMessageException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -67,50 +63,26 @@ public class DependencyXPage extends MVCApplication
 	private static final long serialVersionUID = 1L;
 	
 	// Templates
-    private static final String TEMPLATE_MANAGE_DEPENDENCYS="/skin/plugins/parsepom/manage_dependencys.html";
-    private static final String TEMPLATE_CREATE_DEPENDENCY="/skin/plugins/parsepom/create_dependency.html";
-    private static final String TEMPLATE_MODIFY_DEPENDENCY="/skin/plugins/parsepom/modify_dependency.html";
+    private static final String TEMPLATE_MANAGE_DEPENDENCIES="/skin/plugins/parsepom/manage_dependencies.html";
     private static final String TEMPLATE_DETAILS_DEPENDENCY="/skin/plugins/parsepom/details_dependency.html";
-    private static final String TEMPLATE_LIST_DEPENDENCYS="/skin/plugins/parsepom/list_dependencys.html";
-    
-    // JSP
-    private static final String JSP_PAGE_PORTAL = "jsp/site/Portal.jsp";
     
     // Parameters
     private static final String PARAMETER_ID_DEPENDENCY="id";
-    private static final String PARAM_ACTION = "action";
-    private static final String PARAM_PAGE = "page";
     private static final String PARAMETER_ARTIFACT_ID_DEPENDENCY = "dependencyArtifactId";
     
     // Markers
-    private static final String MARK_DEPENDENCY_LIST = "dependency_list";
     private static final String MARK_DEPENDENCY = "dependency";
     private static final String MARK_SITES_LIST_BY_DEPENDENCY = "sites_list_by_dependency";
     private static final String MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES = "dependency_list_without_duplicates";
     private static final String MARK_LAST_RELEASE_LIST = "last_release_list";
     private static final String MARK_LAST_RELEASE_STRING = "last_release";
     
-    // Message
-    private static final String MESSAGE_CONFIRM_REMOVE_DEPENDENCY = "parsepom.message.confirmRemoveDependency";
-    
     // Views
     private static final String VIEW_MANAGE_DEPENDENCYS = "manageDependencys";
-    private static final String VIEW_CREATE_DEPENDENCY = "createDependency";
-    private static final String VIEW_MODIFY_DEPENDENCY = "modifyDependency";
     private static final String VIEW_DETAILS_DEPENDENCY = "detailsDependency";
 
     // Actions
-    private static final String ACTION_CREATE_DEPENDENCY = "createDependency";
-    private static final String ACTION_MODIFY_DEPENDENCY= "modifyDependency";
-    private static final String ACTION_REMOVE_DEPENDENCY = "removeDependency";
-    private static final String ACTION_CONFIRM_REMOVE_DEPENDENCY = "confirmRemoveDependency";
-    private static final String ACTION_SEARCH_ALL_DEPENDENCYS = "searchAllDependencys";
     private static final String ACTION_SEARCH_DEPENDENCY_BY_ARTIFACT_ID = "searchDependencyByArtifactId";
-
-    // Infos
-    private static final String INFO_DEPENDENCY_CREATED = "parsepom.info.dependency.created";
-    private static final String INFO_DEPENDENCY_UPDATED = "parsepom.info.dependency.updated";
-    private static final String INFO_DEPENDENCY_REMOVED = "parsepom.info.dependency.removed";
     
     // Errors
     private static final String ERROR_NOT_FOUND = "parsepom.error.dependency.notFound";
@@ -122,148 +94,31 @@ public class DependencyXPage extends MVCApplication
     public XPage getManageDependencys( HttpServletRequest request )
     {
         _dependency = null;
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_DEPENDENCY_LIST, DependencyHome.getDependencysList(  ) );
-        model.put( MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES, DependencyHome.getDependencysListWithoutDuplicates(  ) );
+        
+        Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates(  );
 
-        return getXPage( TEMPLATE_MANAGE_DEPENDENCYS, request.getLocale(  ), model );
-    }
-
-    /**
-     * Returns the form to create a dependency
-     *
-     * @param request The Http request
-     * @return the html code of the dependency form
-     */
-    @View( VIEW_CREATE_DEPENDENCY )
-    public XPage getCreateDependency( HttpServletRequest request )
-    {
-        _dependency = ( _dependency != null ) ? _dependency : new Dependency(  );
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_DEPENDENCY, _dependency );
-           
-        return getXPage( TEMPLATE_CREATE_DEPENDENCY, request.getLocale(  ), model );
-    }
-
-    /**
-     * Process the data capture form of a new dependency
-     *
-     * @param request The Http Request
-     * @return The Jsp URL of the process result
-     */
-    @Action( ACTION_CREATE_DEPENDENCY )
-    public XPage doCreateDependency( HttpServletRequest request )
-    {
-        populate( _dependency, request );
-
-        // Check constraints
-        if ( !validateBean( _dependency, getLocale( request ) ) )
+        if ( !dependencyList.isEmpty( ) )
         {
-            return redirectView( request, VIEW_CREATE_DEPENDENCY );
+        	Map<String, Object> model = getModel(  );
+            Map<String, String> listRelease = new HashMap<>( );
+            
+            for ( Dependency list : dependencyList)
+            {
+            	Tools tools = ToolsHome.findByArtifactId( list.getArtifactId( ) );
+            	if ( tools != null )
+            		listRelease.put( tools.getArtifactId( ) , tools.getLastRelease( ));
+            }
+        	model.put( MARK_LAST_RELEASE_LIST, listRelease );
+        	model.put( MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES, dependencyList );
+        	
+        	return getXPage( TEMPLATE_MANAGE_DEPENDENCIES, request.getLocale(  ), model );
         }
-
-        DependencyHome.create( _dependency );
-        
-        int nDId = _dependency.getId( );
-        int nDSiteId = _dependency.getSiteId( );
-        SiteHome.updateDependencyInSite( nDId, nDSiteId );
-        
-        addInfo( INFO_DEPENDENCY_CREATED, getLocale( request ) );
+        addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
+
     }
 
-    /**
-     * Manages the removal form of a dependency whose identifier is in the http
-     * request
-     *
-     * @param request The Http request
-     * @return the html code to confirm
-     */
-    @Action( ACTION_CONFIRM_REMOVE_DEPENDENCY )
-    public XPage getConfirmRemoveDependency( HttpServletRequest request ) throws SiteMessageException
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
-        UrlItem url = new UrlItem( JSP_PAGE_PORTAL );
-        url.addParameter( PARAM_PAGE, MARK_DEPENDENCY );
-        url.addParameter( PARAM_ACTION, ACTION_REMOVE_DEPENDENCY );
-        url.addParameter( PARAMETER_ID_DEPENDENCY, nId );
-        
-        SiteMessageService.setMessage(request, MESSAGE_CONFIRM_REMOVE_DEPENDENCY, SiteMessage.TYPE_CONFIRMATION, url.getUrl(  ));
-        return null;
-    }
-
-    /**
-     * Handles the removal form of a dependency
-     *
-     * @param request The Http request
-     * @return the jsp URL to display the form to manage dependencys
-     */
-    @Action( ACTION_REMOVE_DEPENDENCY )
-    public XPage doRemoveDependency( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
-        
-        if ( _dependency == null  || ( _dependency.getId( ) != nId ))
-        {
-            _dependency = DependencyHome.findByPrimaryKey( nId );
-        }
-        
-        int nDSiteId = _dependency.getSiteId( );
-        
-        DependencyHome.remove( nId );      
-        SiteHome.removeDependencyFromSite( nId, nDSiteId );
-        
-        addInfo( INFO_DEPENDENCY_REMOVED, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
-    }
-
-    /**
-     * Returns the form to update info about a dependency
-     *
-     * @param request The Http request
-     * @return The HTML form to update info
-     */
-    @View( VIEW_MODIFY_DEPENDENCY )
-    public XPage getModifyDependency( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
-
-        if ( _dependency == null  || ( _dependency.getId( ) != nId ))
-        {
-            _dependency = DependencyHome.findByPrimaryKey( nId );
-        }
-
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_DEPENDENCY, _dependency );
-        
-        return getXPage( TEMPLATE_MODIFY_DEPENDENCY, request.getLocale(  ), model );
-    }
-
-    /**
-     * Process the change form of a dependency
-     *
-     * @param request The Http request
-     * @return The Jsp URL of the process result
-     */
-    @Action( ACTION_MODIFY_DEPENDENCY )
-    public XPage doModifyDependency( HttpServletRequest request )
-    {
-        populate( _dependency, request );
-
-        // Check constraints
-        if ( !validateBean( _dependency, getLocale( request ) ) )
-        {
-            return redirect( request, VIEW_MODIFY_DEPENDENCY, PARAMETER_ID_DEPENDENCY, _dependency.getId( ) );
-        }
-
-        DependencyHome.update( _dependency );
-        addInfo( INFO_DEPENDENCY_UPDATED, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
-    }
     
     /**
      * Returns infos about a dependency
@@ -287,7 +142,9 @@ public class DependencyXPage extends MVCApplication
         
         Tools tools = ToolsHome.findByArtifactId( strArtifactId );
     	if ( tools != null )
+    	{
     		strRelease = tools.getLastRelease( );
+    	}
         
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
@@ -297,37 +154,6 @@ public class DependencyXPage extends MVCApplication
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }
     
-    /**
-     * Returns the infos about all sites
-     *
-     * @param request The Http request
-     * @return The HTML page to display infos
-     */
-    @Action( ACTION_SEARCH_ALL_DEPENDENCYS )
-    public XPage doSearchAllSites( HttpServletRequest request )
-    {
-        Collection<Dependency> dependencyList = DependencyHome.getDependencysListWithoutDuplicates(  );
-
-        if ( !dependencyList.isEmpty( ) )
-        {
-        	Map<String, Object> model = getModel(  );
-            Map<String, String> listRelease = new HashMap<>( );
-            
-            for ( Dependency list : dependencyList)
-            {
-            	Tools tools = ToolsHome.findByArtifactId( list.getArtifactId( ) );
-            	if ( tools != null )
-            		listRelease.put( tools.getArtifactId( ) , tools.getLastRelease( ));
-            }
-        	model.put( MARK_DEPENDENCY_LIST, dependencyList );
-        	model.put( MARK_LAST_RELEASE_LIST, listRelease );
-        	
-        	return getXPage( TEMPLATE_LIST_DEPENDENCYS, request.getLocale(  ), model );
-        }
-        addError( ERROR_NOT_FOUND, getLocale( request ) );
-
-        return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
-    }
     
     /**
      * Return Infos about dependency
@@ -351,7 +177,9 @@ public class DependencyXPage extends MVCApplication
         		
         		Tools tools = ToolsHome.findByArtifactId( strArtifactId );
             	if ( tools != null )
+            	{
             		strRelease = tools.getLastRelease( );
+            	}
         		
                 List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
                  

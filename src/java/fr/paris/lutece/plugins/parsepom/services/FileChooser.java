@@ -10,9 +10,9 @@ public class FileChooser
 
 		JFileChooser f = new JFileChooser( );
 		f.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY ); 
-		f.showSaveDialog( null );
+		int result = f.showSaveDialog( null );
 		
-		if ( f.getSelectedFile() != null )
+		if ( f.getSelectedFile() != null && result == JFileChooser.APPROVE_OPTION )
 			path = f.getSelectedFile( ).toString( );
 
 		return path ;

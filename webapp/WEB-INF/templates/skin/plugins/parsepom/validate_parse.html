@@ -6,10 +6,10 @@
 				<#assign i = 0>
 				<#assign j = 0>
 				<#list all! as a>
-					<#list conflict! as con>
-						<#assign j = j + 1>
-					</#list>
 					<#assign i = i + 1>
+				</#list>
+				<#list conflict! as con>
+					<#assign j = j + 1>
 				</#list>
 				<#assign i = i - j>
 				<#if i lt 0>
@@ -19,23 +19,21 @@
 			</div>
 			<ul class="list-group">
 				<#assign notEmpty = 0>
+				<#assign isNew = 0>
  				<#list all! as a>
-	 	 			<#assign doublon = 0>
+	 	 			<#assign isConflict = 0>
 					<#list conflict! as con>
 						<#if "${con.artifactId}" == "${a.artifactId}">
-							<#assign doublon = 1>
+							<#assign isConflict = 1>
 							<#assign notEmpty = 1>
 						</#if>
 					</#list>
-					<#if doublon == 0 >
+					<#if isConflict == 0 >
+						<#assign isNew = 1>
 						<li class="list-group-item">${a.artifactId} <font size="2">(${a.name}) - v${a.version}</font></li>
 					</#if>
 				</#list>
-				<#if all??>
-					<#if all?has_content && notEmpty == 0>
-					<#else>
-						<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
-					</#if>
+				<#if all?has_content && isNew == 1>
 				<#else>
 					<li class="list-group-item"><em>#i18n{parsepom.validate_parse.fieldNone}</em></li>
 				</#if>
@@ -61,7 +59,6 @@
 				</#if>
 			</ul>
 		</div>
-		<br />
 		<#if conflict?has_content >
 			<p><font color="red">#i18n{parsepom.validate_parse.warning} : 
 			<#list conflict as con>
@@ -71,8 +68,8 @@
 		</#if>
 	</div>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<form method="post"  action="jsp/site/Portal.jsp?page=parse">	
-			<button name="action_validate" class="btn btn-success" type="submit">
+		<form method="post" action="jsp/site/Portal.jsp?page=parsepom">	
+			<button id="buttonUpdate" name="action_validate" class="btn btn-success" type="submit">
 				<span class="glyphicon glyphicon-ok"></span> 
 				#i18n{parsepom.validate_parse.validate}
 			</button>
@@ -80,6 +77,7 @@
 				<span class="glyphicon glyphicon-ban-circle"></span> 
 				#i18n{parsepom.validate_parse.cancel}
 			</button>
+			<img src="css/img/ajax-loader3.gif" id="imgLoader" style="display:none" />
 		</form>
 	</div>
 </div>

@@ -85,7 +85,7 @@ public class Extract {
 		
 		if ( ( pom.length ) == 1 )
 		{
-			extratInfoPom( pom[0]);
+			extractInfoPom( pom[0]);
 			maxIdSite++;
 		}
 		else
@@ -166,7 +166,7 @@ public class Extract {
 	/**
 	 * Extract Data of pom.xml
 	 */
-	private void extratInfoPom( File pom ) throws IOException, SAXException, ParserConfigurationException
+	private void extractInfoPom( File pom ) throws IOException, SAXException, ParserConfigurationException
 	{
 	
         PomHandlerDom p = new PomHandlerDom();
