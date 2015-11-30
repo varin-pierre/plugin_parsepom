@@ -21,6 +21,9 @@ img.thumblist-large{width:128px;height:128px;}
 .avatar-large{width:64px;height:64px;}
 .avatar-huge{width:128px;height:128px;}
 
+/* jumbotron style */
+.jumbotron{box-shadow: 7px 7px 5px #888888;}
+
 /* autocompletion style */
 .ui-autocomplete{max-height:100px;overflow-y:auto;overflow-x:hidden;}
 
