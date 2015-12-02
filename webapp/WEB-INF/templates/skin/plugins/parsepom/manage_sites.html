@@ -55,34 +55,34 @@
    			</div>
    			<table id="myTableSite" class="table"> 
    				<thead>
-                <tr>
-                    <th id="first">#i18n{parsepom.manage_sites.columnArtifactId}</th>
-                    <th id="second">#i18n{parsepom.manage_sites.columnName}</th>
-                    <th id="third">#i18n{parsepom.manage_sites.columnVersion}</th>
-                    <th id="fourth">#i18n{parsepom.manage_sites.columnLastUpdate}</th>
-                </tr>
-            </thead>
-            <tbody>
-            	<#if site_list??>
-            		<#assign selected_sites = site_list>
-            	<#elseif site_list_by_artifact_id??>
-            		<#assign selected_sites = site_list_by_artifact_id>
-            	<#elseif site_list_by_name??>
-            		<#assign selected_sites = site_list_by_name>
-            	<#elseif site_list_by_version??>
-            		<#assign selected_sites = site_list_by_version>
-            	<#elseif site_list_by_last_update??>
-            		<#assign selected_sites = site_list_by_last_update>
-            	</#if>
-            	<#list selected_sites! as site>
-	                <tr class="hover_tr">
-	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId}</a></td>
-	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.name}</a></td>
-	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.version}</a></td>
-	                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.lastUpdate}</a></td>
+	                <tr>
+	                    <th id="first">#i18n{parsepom.manage_sites.columnArtifactId}</th>
+	                    <th id="second">#i18n{parsepom.manage_sites.columnName}</th>
+	                    <th id="third">#i18n{parsepom.manage_sites.columnVersion}</th>
+	                    <th id="fourth">#i18n{parsepom.manage_sites.columnLastUpdate}</th>
 	                </tr>
-                </#list>                      
-            </tbody>
+	            </thead>
+	            <tbody>
+	            	<#if site_list??>
+	            		<#assign selected_sites = site_list>
+	            	<#elseif site_list_by_artifact_id??>
+	            		<#assign selected_sites = site_list_by_artifact_id>
+	            	<#elseif site_list_by_name??>
+	            		<#assign selected_sites = site_list_by_name>
+	            	<#elseif site_list_by_version??>
+	            		<#assign selected_sites = site_list_by_version>
+	            	<#elseif site_list_by_last_update??>
+	            		<#assign selected_sites = site_list_by_last_update>
+	            	</#if>
+	            	<#list selected_sites! as site>
+		                <tr class="hover_tr">
+		                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.artifactId}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.name}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.version}</a></td>
+		                    <td><a href="jsp/site/Portal.jsp?page=site&view=detailsSite&id=${site.id}">${site.lastUpdate}</a></td>
+		                </tr>
+	                </#list>                      
+            	</tbody>
    			</table>
   		</div>
   		<a href="jsp/site/Portal.jsp?page=parsepom" class="btn btn-warning" role="button">#i18n{parsepom.util.labelHome}</a>

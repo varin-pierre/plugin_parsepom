@@ -92,7 +92,6 @@ public class HttpProcess
 	    		setErrorMessage( base, list.getArtifactId( ), RELEASE_NOT_FOUND );
 	    		AppLogService.error( e2.getMessage( ) );
 	    	}
-	    	
     	}
 	}
 	
