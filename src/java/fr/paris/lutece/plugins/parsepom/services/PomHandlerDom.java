@@ -92,15 +92,15 @@ public class PomHandlerDom
 			{
 				if (p.getNodeName( ).equals( TAG_ARTIFACT_ID ) )
 				{
-					_site.setArtifactId( p.getTextContent( ) );
+					_site.setArtifactId( p.getTextContent( ).trim( ) );
 				}
 				if (p.getNodeName( ).equals( TAG_VERSION ) )
 				{
-					_site.setVersion( p.getTextContent( ) );
+					_site.setVersion( p.getTextContent( ).trim( ) );
 				}
 				if (p.getNodeName( ).equals( TAG_NAME ) )
 				{
-					_site.setName( p.getTextContent( ) );
+					_site.setName( p.getTextContent( ).trim( ) );
 				}
 			}
 		}
@@ -118,19 +118,19 @@ public class PomHandlerDom
 			{
 				if ( t.getNodeName( ).equals( TAG_ARTIFACT_ID ) )
 				{
-					dep.setArtifactId(t.getTextContent( ) );
+					dep.setArtifactId(t.getTextContent( ).trim( ) );
 				}
 				if ( t.getNodeName( ).equals( TAG_VERSION ) )
 				{
-					dep.setVersion( t.getTextContent( ) );
+					dep.setVersion( t.getTextContent( ).trim( ) );
 				}
 				if ( t.getNodeName( ).equals( TAG_GROUP_ID ) )
 				{
-					dep.setGroupId( t.getTextContent( ) );
+					dep.setGroupId( t.getTextContent( ).trim( ) );
 				}
 				if ( t.getNodeName( ).equals( TAG_TYPE ) )
 				{
-					dep.setType( t.getTextContent( ) );
+					dep.setType( t.getTextContent( ).trim( ) );
 				}
 				if ( t.getNodeName( ).equals( TAG_EXCLUSIONS ) )
 				{

@@ -137,7 +137,7 @@ public class Extract {
 	 * check if file has been modify recently 
 	 * @params Site site
 	 */
-	private void findConfilct( Site site )
+	private void findConflict( Site site )
 	{
 		Collection <Site> listSiteDb = SiteHome.getSitesListByArtifactId( site.getArtifactId( ) );
 		Iterator<Site> it;
@@ -196,7 +196,7 @@ public class Extract {
         site.setPath(pom.getAbsolutePath( ) );
         siteFiledNotNull( site );
       
-        findConfilct( site );
+        findConflict( site );
 	}
 
 	/**
@@ -330,12 +330,12 @@ public class Extract {
     /*
      * Update Site
      */
-    private void updateSite( Site upSite, int siteId, String strArtifactId, String strName, String version, String strIdPlugins, String strLastUpdate )
+    private void updateSite( Site upSite, int nSiteId, String strArtifactId, String strName, String strVersion, String strIdPlugins, String strLastUpdate )
 	{
-		upSite.setId( siteId );
+		upSite.setId( nSiteId );
 		upSite.setArtifactId( strArtifactId );
 		upSite.setName( strName );
-		upSite.setVersion( version );
+		upSite.setVersion( strVersion );
 		upSite.setIdPlugins( strIdPlugins );
 		
 		SiteHome.update( upSite );

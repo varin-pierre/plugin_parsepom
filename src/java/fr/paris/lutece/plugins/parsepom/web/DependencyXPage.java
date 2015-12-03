@@ -130,15 +130,27 @@ public class DependencyXPage extends MVCApplication
     public XPage getDetailsDependency( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
+        
+        System.out.println("=================================");
+        System.out.println(nId);
+        System.out.println("=================================");
 
         if ( _dependency == null  || ( _dependency.getId( ) != nId ))
         {
             _dependency = DependencyHome.findByPrimaryKey( nId );
         }
         
+        System.out.println("=================================");
+        System.out.println("A");
+        System.out.println("=================================");
+        
         String strArtifactId = _dependency.getArtifactId( );
         List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
         String strRelease = "";
+        
+        System.out.println("=================================");
+        System.out.println("B");
+        System.out.println("=================================");
         
         Tools tools = ToolsHome.findByArtifactId( strArtifactId );
     	if ( tools != null )
@@ -146,10 +158,18 @@ public class DependencyXPage extends MVCApplication
     		strRelease = tools.getLastRelease( );
     	}
         
+    	System.out.println("=================================");
+        System.out.println("C");
+        System.out.println("=================================");
+    	
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
         model.put( MARK_LAST_RELEASE_STRING, strRelease );
         model.put( MARK_SITES_LIST_BY_DEPENDENCY, DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
+        
+        System.out.println("=================================");
+        System.out.println("D");
+        System.out.println("=================================");
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }

@@ -51,7 +51,7 @@ public class HttpProcess
     		//String JSONPath = URL_LUTECETOOLS_REST.concat( list.getArtifactId( ) ).concat( PARAM_LUTECETOOLS_JSON );
     		
     		String version = "";
-    		if ( list.getArtifactId( ).equals( LUTECE_CORE ))
+    		if ( list.getArtifactId( ).trim( ).equals( LUTECE_CORE ))
     		{
     			try
     			{
@@ -114,7 +114,12 @@ public class HttpProcess
 				strArr.add( linkText );
 			}
 		}
-		String strLastVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
+		
+		String strLastVersion = RELEASE_NOT_FOUND;	
+		if ( strArr.size( ) != 0 )
+		{
+			strLastVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
+		}
 
 		return ( strLastVersion );
 	}
@@ -138,8 +143,13 @@ public class HttpProcess
 				strArr.add( linkText );
 			}
 		}
-		String strLastVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
-
+		
+		String strLastVersion = RELEASE_NOT_FOUND;	
+		if ( strArr.size( ) != 0 )
+		{
+			strLastVersion = ( strArr.get( strArr.size( ) - 1 ) ).replace( "/", "" );
+		}
+		
 		return ( strLastVersion );
 	}
 	
