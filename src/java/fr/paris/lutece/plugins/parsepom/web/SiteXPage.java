@@ -103,9 +103,11 @@ public class SiteXPage extends MVCApplication
     private static final String INFO_FILE_DOWNLOADED = "parsepom.info.site.fileDownloaded";
     
     // Errors
+    private static final String ERROR_DIR_NOT_FOUND = "parsepom.error.site.DirNotFound";
     private static final String ERROR_NOT_FOUND = "parsepom.error.site.notFound";
     private static final String ERROR_FILE_NOT_FOUND = "parsepom.error.site.fileNotFound";
     private static final String ERROR_FILE_EXISTS = "parsepom.error.site.fileExists";
+    private static final int VALUE_NO_SUCH_DIRECTORY = -2;
     private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
     private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
     private static final int VALUE_SUCCESS = 1;
@@ -280,6 +282,10 @@ public class SiteXPage extends MVCApplication
     	else if ( nReturn == VALUE_OUTPUT_FILE_EXISTS )
     	{
     		addError( ERROR_FILE_EXISTS, getLocale( request ) );
+    	}
+    	else if ( nReturn == VALUE_NO_SUCH_DIRECTORY )
+    	{
+    		addError( ERROR_DIR_NOT_FOUND, getLocale( request ) );
     	}
     	else if ( nReturn == VALUE_SUCCESS )
     	{

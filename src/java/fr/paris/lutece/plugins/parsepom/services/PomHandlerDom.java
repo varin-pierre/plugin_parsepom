@@ -43,7 +43,7 @@ public class PomHandlerDom
     	return _site;
     }
     
-	public void parse( File pom ) throws SAXException, IOException, ParserConfigurationException
+	public void parse( File pom )
 	{
 		try 
 		{
@@ -53,9 +53,7 @@ public class PomHandlerDom
 			doc.getDocumentElement( ).normalize( );
 			
 			NodeList nlSite = doc.getChildNodes( ).item(0).getChildNodes( );
-
-			filledSite(nlSite);
-			
+			filledSite( nlSite );
 			NodeList nlDenpendency = doc.getElementsByTagName( TAG_DEPENDENCY );
 
 			for ( int i = 0; i < nlDenpendency.getLength( ); i++ )
@@ -69,15 +67,7 @@ public class PomHandlerDom
 			}
 			
 		}
-	    catch ( ParserConfigurationException e )
-        {
-        	 AppLogService.error( e.getMessage( ) , e );
-        }
-        catch ( SAXException e )
-        {
-        	 AppLogService.error( e.getMessage( ) , e );
-        }
-        catch ( IOException e )
+	    catch ( ParserConfigurationException | SAXException | IOException e )
         {
         	 AppLogService.error( e.getMessage( ) , e );
         }

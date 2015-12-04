@@ -49,15 +49,11 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 
 /**
@@ -95,6 +91,9 @@ public class ParsepomXPage extends MVCApplication
     private static final String ACTION_PARSE = "parse";
     private static final String ACTION_VALIDATE = "validate";
     private static final String ACTION_CLEAN = "clean";
+    
+    // Parameters
+    private static final String PARAMETER_PATH = "path";
     
     // Infos
     private static final String INFO_TOOLS_UPDATED = "parsepom.info.tools.updated";
@@ -197,9 +196,9 @@ public class ParsepomXPage extends MVCApplication
      * @return XPage
      */
     @Action( ACTION_PARSE )
-    public XPage doParse( HttpServletRequest request ) throws IOException, SAXException, ParserConfigurationException
+    public XPage doParse( HttpServletRequest request )
     {		
-    	path = request.getParameter( "path" );
+    	path = request.getParameter( PARAMETER_PATH );
 		
     	FileFilter filter = new Extract.DirFilter( );
     	File dirs = new File( path );

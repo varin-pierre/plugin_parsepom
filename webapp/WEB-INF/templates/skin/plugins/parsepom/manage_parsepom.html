@@ -21,11 +21,12 @@
 					#i18n{parsepom.manage_parsepom.browse}
 				</button>
 		  		<#if path?has_content>
-		  			<button name="action_parse" class="btn btn-success" type="submit" autofocus>
+		  			<button id="buttonLoader" name="action_parse" class="btn btn-success" type="submit" autofocus>
 					<span class="glyphicon glyphicon-wrench"></span> 
 						#i18n{parsepom.manage_parsepom.go}
 					</button>
 				</#if>
+				<img src="css/img/ajax-loader3.gif" id="imgLoader" style="display:none" />
 			</form>
 		</div>
 	</div>
@@ -33,11 +34,11 @@
 		<div class="jumbotron well">
 			<h3>#i18n{parsepom.manage_parsepom.updateTitle}</h3>
             <p class="p_description"><small>#i18n{parsepom.manage_parsepom.updateDescription}</small></p>
-            <a id="buttonUpdate" class="btn btn-success" href="jsp/site/Portal.jsp?page=parsepom&action=update" <#if exist == false>disabled="disabled"</#if> >
+            <a id="buttonLoader2" class="btn btn-success" href="jsp/site/Portal.jsp?page=parsepom&action=update" <#if exist == false>disabled="disabled"</#if> >
             <span class="glyphicon glyphicon-refresh"></span>
                 #i18n{parsepom.manage_parsepom.buttonUpdate}
             </a>
-            <img src="css/img/ajax-loader3.gif" id="imgLoader" style="display:none" />
+            <img src="css/img/ajax-loader3.gif" id="imgLoader2" style="display:none" />
 		</div>
 	</div>
 </div>

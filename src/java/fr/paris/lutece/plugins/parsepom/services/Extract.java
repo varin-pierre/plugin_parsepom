@@ -22,16 +22,17 @@ import fr.paris.lutece.plugins.parsepom.business.Site;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-public class Extract {
+public class Extract
+{
 	
 	// Markers
     private static final String MARK_TAGS = "tags";
     private static final String MARK_BRANCHES = "branches";
     
     // Session variable to store working values
-    private Collection<Site> _globaleSites = new ArrayList<Site>();
-    private Collection<Dependency> _globalDep = new ArrayList<Dependency>();
-    private Collection<Site> _conflict = new ArrayList<Site>();
+    private Collection<Site> _globaleSites = new ArrayList<Site>( );
+    private Collection<Dependency> _globalDep = new ArrayList<Dependency>( );
+    private Collection<Site> _conflict = new ArrayList<Site>( );
     private int maxIdSite = 0;
     private int maxIdDep = 0;
 	
@@ -48,7 +49,7 @@ public class Extract {
     	return _globalDep;
     }
     
-    public Collection<Site> getConflict()
+    public Collection<Site> getConflict( )
     {
     	return _conflict;
     }
@@ -58,17 +59,17 @@ public class Extract {
      */
     public void setGlobaleSiteClear( )
   	{
-  		 _globaleSites.clear();
+  		 _globaleSites.clear( );
   	}
 
 	public void setGlobaleDepClear( )
 	{
-	 	_globalDep.clear();
+	 	_globalDep.clear( );
 	}
 
-	public void setConflictClear()
+	public void setConflictClear( )
 	{
-	 	_conflict.clear();
+	 	_conflict.clear( );
 	}
     
 	/**
@@ -77,15 +78,22 @@ public class Extract {
 	 * @throws ParserConfigurationException 
 	 * @throws SAXException 
     */
-	public void openDir( File dirs, FileFilter filter ) throws IOException, SAXException, ParserConfigurationException
+	public void openDir( File dirs, FileFilter filter )
     {
 		
-		FileFilter _pomFilter = new PomFilter(  );
+		FileFilter _pomFilter = new PomFilter( );
 		File[] pom = dirs.listFiles( _pomFilter );
 		
 		if ( ( pom.length ) == 1 )
 		{
-			extractInfoPom( pom[0]);
+			try
+			{
+				extractInfoPom( pom[0] );
+			}
+			catch ( IOException e )
+			{
+				AppLogService.error( e.getMessage( ) );
+			}
 			maxIdSite++;
 		}
 		else
@@ -166,12 +174,12 @@ public class Extract {
 	/**
 	 * Extract Data of pom.xml
 	 */
-	private void extractInfoPom( File pom ) throws IOException, SAXException, ParserConfigurationException
+	private void extractInfoPom( File pom ) throws IOException
 	{
 	
-        PomHandlerDom p = new PomHandlerDom();
+        PomHandlerDom p = new PomHandlerDom( );
        
-		p.parse(pom);
+		p.parse( pom );
 	
         Site site = new Site( );
 

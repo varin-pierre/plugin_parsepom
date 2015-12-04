@@ -127,10 +127,10 @@ function autoComplete(  ) {
 function datePicker( )
 {
 	$( '#submit' ).attr( 'disabled', true );
-	$( "#datepicker" ).datepicker({
+	$( "#datepicker" ).datepicker( {
 		dateFormat: 'yy-mm-dd',
-	    onClose: function( dateText ){
-	        if( !dateText ){
+	    onClose: function( dateText ) {
+	        if( !dateText ) {
 	        	$( '#submit' ).attr( 'disabled', true );
 	        }
 	        else
@@ -144,7 +144,12 @@ function datePicker( )
 
 function updateLoader( )
 {
-	$( '#buttonUpdate' ).click( function( ) {
+	$( '#buttonLoader' ).click( function( ) {
 		$( '#imgLoader' ).show( );
+		$( '#buttonLoader' ).hide( );
+	})
+	$( '#buttonLoader2' ).click( function( ) {
+		$( '#imgLoader2' ).show( );
+		$( '#buttonLoader2' ).hide( );
 	})
 }

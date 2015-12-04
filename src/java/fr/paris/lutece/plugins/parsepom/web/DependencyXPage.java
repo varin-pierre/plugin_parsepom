@@ -67,7 +67,7 @@ public class DependencyXPage extends MVCApplication
     private static final String TEMPLATE_DETAILS_DEPENDENCY="/skin/plugins/parsepom/details_dependency.html";
     
     // Parameters
-    private static final String PARAMETER_ID_DEPENDENCY="id";
+    private static final String PARAMETER_ID_DEPENDENCY = "id";
     private static final String PARAMETER_ARTIFACT_ID_DEPENDENCY = "dependencyArtifactId";
     
     // Markers
@@ -140,36 +140,20 @@ public class DependencyXPage extends MVCApplication
             _dependency = DependencyHome.findByPrimaryKey( nId );
         }
         
-        System.out.println("=================================");
-        System.out.println("A");
-        System.out.println("=================================");
-        
         String strArtifactId = _dependency.getArtifactId( );
         List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
         String strRelease = "";
-        
-        System.out.println("=================================");
-        System.out.println("B");
-        System.out.println("=================================");
         
         Tools tools = ToolsHome.findByArtifactId( strArtifactId );
     	if ( tools != null )
     	{
     		strRelease = tools.getLastRelease( );
     	}
-        
-    	System.out.println("=================================");
-        System.out.println("C");
-        System.out.println("=================================");
     	
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
         model.put( MARK_LAST_RELEASE_STRING, strRelease );
         model.put( MARK_SITES_LIST_BY_DEPENDENCY, DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
-        
-        System.out.println("=================================");
-        System.out.println("D");
-        System.out.println("=================================");
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }

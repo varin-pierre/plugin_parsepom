@@ -38,7 +38,8 @@ public class FileDownloader
 	private static final String DIALOG_MESS_TITLE = "Warning";
 	
 	// Errors
-	private static final int VALUE_CANCELLED = -2;
+	private static final int VALUE_CANCELLED = -3;
+	private static final int VALUE_NO_SUCH_DIRECTORY = -2;
 	private static final int VALUE_INPUT_FILE_NOT_FOUND = -1;
     private static final int VALUE_OUTPUT_FILE_EXISTS = 0;
     private static final int VALUE_SUCCESS = 1;
@@ -69,28 +70,22 @@ public class FileDownloader
 				return VALUE_OUTPUT_FILE_EXISTS;
 			}
 			
+			File isValidDirectory = fout.getParentFile( );
+			if ( !isValidDirectory.exists( ) )
+			{
+				return VALUE_NO_SUCH_DIRECTORY;
+			}
+						
 			Integer update = updateAndDownloadPOM( fin, fout );
 			if ( update.equals( VALUE_CANCELLED ) )
 			{
 				return VALUE_CANCELLED;
 			}
     	} 
-    	catch ( IOException e1 )
+    	catch ( IOException | ParserConfigurationException | SAXException | TransformerException e )
     	{
-    		AppLogService.error( e1.getMessage( ) );
+    		AppLogService.error( e.getMessage( ) );
     	}
-    	catch (ParserConfigurationException e2)
-    	{
-    		AppLogService.error( e2.getMessage( ) );
-		}
-    	catch (SAXException e3)
-    	{
-			AppLogService.error( e3.getMessage( ) );
-		}
-    	catch (TransformerException e4)
-    	{
-			AppLogService.error( e4.getMessage( ) );
-		} 
     	
     	return VALUE_SUCCESS;
 	}
