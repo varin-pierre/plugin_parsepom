@@ -65,7 +65,6 @@ public class PomHandlerDom
 					filledDependency( n );
 				}
 			}
-			
 		}
 	    catch ( ParserConfigurationException | SAXException | IOException e )
         {
@@ -101,7 +100,7 @@ public class PomHandlerDom
 		Dependency dep = new Dependency( );
 		NodeList nl = n.getChildNodes( );
 		
-		for ( int i = 0; i < nl.getLength(); i++ )
+		for ( int i = 0; i < nl.getLength( ); i++ )
 		{
 			Node t = n.getChildNodes().item(i);
 			if ( t.getNodeType( ) == Node.ELEMENT_NODE)
