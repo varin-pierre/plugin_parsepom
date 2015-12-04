@@ -30,7 +30,7 @@ public class PomHandlerDom
 	private static final String TAG_EXCLUSIONS = "exclusions";
 	private static final String TAG_MAIN_NODE = "project";
 		
-	private   ArrayList<Dependency> _listDependencies = new ArrayList<Dependency>(  );
+	private   ArrayList<Dependency> _listDependencies = new ArrayList<Dependency>( );
 	private   Site _site = new Site( );
 	
 	public  List<Dependency> getDependencies(  )
