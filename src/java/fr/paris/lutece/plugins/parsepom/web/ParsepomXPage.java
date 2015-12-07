@@ -239,13 +239,16 @@ public class ParsepomXPage extends MVCApplication
 				ext.conflictSite(  siteConflict ) ;
 
 				itConflict.remove( );
-				}
+			}
 		}
 		itSite = _globaleSites.iterator( );
 		while ( itSite.hasNext( ) )
 		{
 			Site currentSite = itSite.next( );
-			ext.createSite( currentSite );
+			if ( !currentSite.getIdPlugins( ).isEmpty( ) )
+			{
+				ext.createSite( currentSite );
+			}
 			itSite.remove( );
 	    }
 		path = "";

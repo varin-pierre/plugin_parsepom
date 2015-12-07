@@ -130,10 +130,6 @@ public class DependencyXPage extends MVCApplication
     public XPage getDetailsDependency( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_DEPENDENCY ) );
-        
-        System.out.println("=================================");
-        System.out.println(nId);
-        System.out.println("=================================");
 
         if ( _dependency == null  || ( _dependency.getId( ) != nId ))
         {

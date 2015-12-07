@@ -73,8 +73,8 @@ public class Extract
 	}
     
 	/**
-    * open recursive directory
-    * stop recursive at value of _nMaxDepth 
+	 * open recursive directory
+	 * stop recursive at value of _nMaxDepth 
 	 * @throws ParserConfigurationException 
 	 * @throws SAXException 
     */
@@ -146,7 +146,7 @@ public class Extract
 	 * @params Site site
 	 */
 	private void findConflict( Site site )
-	{
+	{		
 		Collection <Site> listSiteDb = SiteHome.getSitesListByArtifactId( site.getArtifactId( ) );
 		Iterator<Site> it;
         it = listSiteDb.iterator( );
@@ -159,15 +159,19 @@ public class Extract
         	{
         		return ;
         	}
-        	else if ( tmp.getArtifactId( ).equals(site.getArtifactId( ) ) ) 
+        	else if ( tmp.getArtifactId( ).equals( site.getArtifactId( ) ) ) 
     		{
 				_conflict.add( tmp );
 				_globaleSites.add( site );
     		}
     	}
-        else
+        else if ( !site.getIdPlugins( ).isEmpty( ) )
         {
         	_globaleSites.add( site );
+        }
+        else
+        {
+        	AppLogService.error( "Encoding error : the pom located in \"" + site.getPath( ) + "\" is not valid and will not be registered." );
         }
 	}
 	
@@ -227,7 +231,7 @@ public class Extract
     	@Override
     	public boolean accept( File file )
     	{
-    		return file.getName( ).equals("pom.xml");
+    		return file.getName( ).equals( "pom.xml" );
     	}
     }
     
