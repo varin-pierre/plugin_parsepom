@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.parsepom.business.DependencyHome;
 import fr.paris.lutece.plugins.parsepom.business.SiteHome;
 import fr.paris.lutece.plugins.parsepom.business.Tools;
 import fr.paris.lutece.plugins.parsepom.business.ToolsHome;
+import fr.paris.lutece.plugins.parsepom.services.HttpProcess;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -116,7 +117,6 @@ public class DependencyXPage extends MVCApplication
         addError( ERROR_NOT_FOUND, getLocale( request ) );
 
         return redirectView( request, VIEW_MANAGE_DEPENDENCYS );
-
     }
 
     
@@ -146,10 +146,14 @@ public class DependencyXPage extends MVCApplication
     		strRelease = tools.getLastRelease( );
     	}
     	
+    	HashMap<String, String> sonarData = new HashMap<String, String>();
+    	sonarData = HttpProcess.getSonarDatasFromArtifactId(strArtifactId);
+    	
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
         model.put( MARK_LAST_RELEASE_STRING, strRelease );
         model.put( MARK_SITES_LIST_BY_DEPENDENCY, DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
+        model.put( "sonarData", sonarData );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }

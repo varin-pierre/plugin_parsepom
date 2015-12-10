@@ -2,9 +2,11 @@ package fr.paris.lutece.plugins.parsepom.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -37,12 +39,54 @@ public class HttpProcess
 	//private static final String TAG_COMPONENT = "component";
 	//private static final String ELEMENT_VERSION = "version";
 	private static final String RELEASE_NOT_FOUND = "Release not found";
+	
+	private static HttpAccess httpAccess = new HttpAccess( );
     
+	public static HashMap<String, String> getSonarDatasFromArtifactId( String artifactId )
+	{
+		HashMap<String, String> datas = new HashMap<String, String>();
+		String JSONPath = "http://dev.lutece.paris.fr/sonar/api/resources?resource=fr.paris.lutece.plugins:".concat(artifactId).concat("&metrics=violations,ncloc,tests,complexity,coverage,functions,classes,files&format=json");
+		String strHtml;
+		try 
+		{
+			strHtml = httpAccess.doGet( JSONPath );
+			JSONObject json = new JSONObject( strHtml.substring(1, strHtml.lastIndexOf("]") ));
+			JSONArray msr = json.getJSONArray( "msr" );
+			for (int i = 0; i < msr.length(); ++i) {
+			    JSONObject key = msr.getJSONObject(i);
+			    if (key.getString("key").equals("ncloc"))
+			    {
+			    	datas.put("ncloc", key.getString("frmt_val"));
+			    	System.out.println("====================");
+				    System.out.println(key.getString("frmt_val"));
+				    System.out.println("====================");
+			    }
+			    if (key.getString("key").equals("files"))
+			    {
+			    	datas.put("files", key.getString("frmt_val"));
+			    	System.out.println("====================");
+				    System.out.println(key.getString("frmt_val"));
+				    System.out.println("====================");
+			    }
+			    if (key.getString("key").equals("coverage"))
+			    {
+			    	datas.put("coverage", key.getString("frmt_val"));
+			    	System.out.println("====================");
+				    System.out.println(key.getString("frmt_val"));
+				    System.out.println("====================");
+			    }
+			}
+		}
+		catch ( HttpAccessException | JSONException e )
+		{
+			AppLogService.error( e.getMessage( ) );
+		}
+		
+		return datas;
+	}
 	
 	public static void getLastReleases( Collection<Dependency> dependencyList )
 	{
-		HttpAccess httpAccess = new HttpAccess( );
-		
     	for ( Dependency list : dependencyList )
     	{
     		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
