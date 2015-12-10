@@ -17,27 +17,39 @@
 		   				<tbody>
 							<tr>
 								<td>#i18n{parsepom.details_dependency.fieldNbLineCode}</td>
-								<#list sonarData?keys as k>
-									<#if "${k}" == "ncloc">
-										<td>${sonarData[k]}</td>
-									</#if>
-								</#list>
+								<#if sonarData?has_content>
+									<#list sonarData?keys as k>
+										<#if "${k}" == "ncloc">
+											<td>${sonarData[k]}</td>
+										</#if>
+									</#list>
+								<#else>
+									<td>Not found</td>
+								</#if>
 							</tr>
 							<tr>
 								<td>#i18n{parsepom.details_dependency.fieldNbFile}</td>
-								<#list sonarData?keys as k>
-									<#if "${k}" == "files">
-										<td>${sonarData[k]}</td>
-									</#if>
-								</#list>
+								<#if sonarData?has_content>
+									<#list sonarData?keys as k>
+										<#if "${k}" == "files">
+											<td>${sonarData[k]}</td>
+										</#if>
+									</#list>
+								<#else>
+									<td>Not found</td>
+								</#if>
 							</tr>
 							<tr>
 								<td>#i18n{parsepom.details_dependency.fieldUnitTestCoverage}</td>
-								<#list sonarData?keys as k>
-									<#if "${k}" == "coverage">
-										<td>${sonarData[k]}</td>
-									</#if>
-								</#list>
+								<#if sonarData?has_content>
+									<#list sonarData?keys as k>
+										<#if "${k}" == "coverage">
+											<td>${sonarData[k]}</td>
+										</#if>
+									</#list>
+								<#else>
+									<td>Not found</td>
+								</#if>
 							</tr>
 						</tbody>
 					</table>
