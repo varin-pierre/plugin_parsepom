@@ -29,51 +29,80 @@ public class HttpProcess
 	private static final String URL_MAVEN_LUTECORE = AppPropertiesService.getProperty( PROPERTY_MAVEN_LUTECECORE_URL );
 	private static final String PROPERTY_MAVEN_PLUGINS_URL = "parsepom.maven.plugins.url";
 	private static final String URL_MAVEN_PLUGINS = AppPropertiesService.getProperty( PROPERTY_MAVEN_PLUGINS_URL );
-	//private static final String PROPERTY_LUTECETOOLS_REST_URL = "parsepom.lutecetools.rest.url";
-	//private static final String URL_LUTECETOOLS_REST = AppPropertiesService.getProperty( PROPERTY_LUTECETOOLS_REST_URL );
-	//private static final String PROPERTY_LUTECETOOLS_JSON_PARAM = "parsepom.lutecetools.json.param";
-	//private static final String PARAM_LUTECETOOLS_JSON = AppPropertiesService.getProperty( PROPERTY_LUTECETOOLS_JSON_PARAM );
-	private static final String PATTERN_VERSION = "[0-9]+.[0-9]+.[0-9]+";
+	private static final String PROPERTY_SONAR_JSON_URL = "parsepom.sonar.json.url";
+	private static final String URL_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_URL );
+	private static final String PROPERTY_SONAR_JSON_METRICS = "parsepom.sonar.json.metrics";
+	private static final String METRICS_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_METRICS );
+	private static final String PROPERTY_SONAR_JSON_LC_RESOURCE = "parsepom.sonar.json.lutececore.resource";
+	private static final String RESOURCE_LC_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_LC_RESOURCE );
+	private static final String PROPERTY_SONAR_JSON_PLUGINS_RESOURCE = "parsepom.sonar.json.plugins.resource";
+	private static final String RESOURCE_PLUGINS_SONAR_JSON = AppPropertiesService.getProperty( PROPERTY_SONAR_JSON_PLUGINS_RESOURCE );
+	
+	// Tags
 	private static final String TAG_HTML_SELECT = "td a";
-	private static final String LUTECE_CORE = "lutece-core";
-	//private static final String TAG_COMPONENT = "component";
-	//private static final String ELEMENT_VERSION = "version";
+	private static final String TAG_LUTECE_CORE = "lutece-core";
+	
+	// Regex
+	private static final String PATTERN_VERSION = "[0-9]+.[0-9]+.[0-9]+";
+	
+	// Keys
+	private static final String KEY_MSR = "msr";
+	private static final String KEY_KEY = "key";
+	private static final String KEY_FRMT_VAL = "frmt_val";
+	private static final String KEY_NCLOC = "ncloc";
+	private static final String KEY_FILES = "files";
+	private static final String KEY_TESTS_COVERAGE = "coverage";
+	private static final String KEY_TESTS_SUCCESS = "test_success_density";
+	private static final String KEY_VIOLATIONS = "violations";
+	
+	// Errors
 	private static final String RELEASE_NOT_FOUND = "Release not found";
 	
 	private static HttpAccess httpAccess = new HttpAccess( );
     
-	public static HashMap<String, String> getSonarDatasFromArtifactId( String artifactId )
+	public static HashMap<String, String> getSonarMetricsFromArtifactId( String artifactId )
 	{
-		HashMap<String, String> datas = new HashMap<String, String>();
-		String JSONPath = "http://dev.lutece.paris.fr/sonar/api/resources?resource=fr.paris.lutece.plugins:".concat(artifactId).concat("&metrics=violations,ncloc,tests,complexity,coverage,functions,classes,files&format=json");
-		String strHtml;
+		HashMap<String, String> metrics = new HashMap<String, String>( );
+		String JSONUrl;
+		
+		if ( artifactId.equals( TAG_LUTECE_CORE ) )
+		{
+			JSONUrl = URL_SONAR_JSON.concat( RESOURCE_LC_SONAR_JSON ).concat( artifactId ).concat( METRICS_SONAR_JSON );
+		}
+		else
+		{
+			JSONUrl = URL_SONAR_JSON.concat( RESOURCE_PLUGINS_SONAR_JSON ).concat( artifactId ).concat( METRICS_SONAR_JSON );
+		}
+		
 		try 
 		{
-			strHtml = httpAccess.doGet( JSONPath );
-			JSONObject json = new JSONObject( strHtml.substring(1, strHtml.lastIndexOf("]") ));
-			JSONArray msr = json.getJSONArray( "msr" );
-			for (int i = 0; i < msr.length(); ++i) {
-			    JSONObject key = msr.getJSONObject(i);
-			    if (key.getString("key").equals("ncloc"))
+			String strHtml = httpAccess.doGet( JSONUrl );
+			JSONObject json = new JSONObject( strHtml.substring( 1, strHtml.lastIndexOf( "]" ) ) );
+			JSONArray msr = json.getJSONArray( KEY_MSR );
+			
+			for ( int i = 0; i < msr.length( ); i++ )
+			{
+			    JSONObject key = msr.getJSONObject( i );
+			    
+			    if (key.getString( KEY_KEY ).equals( KEY_NCLOC ) )
 			    {
-			    	datas.put("ncloc", key.getString("frmt_val"));
-			    	System.out.println("====================");
-				    System.out.println(key.getString("frmt_val"));
-				    System.out.println("====================");
+			    	metrics.put( KEY_NCLOC, key.getString( KEY_FRMT_VAL ) );
 			    }
-			    if (key.getString("key").equals("files"))
+			    if (key.getString( KEY_KEY ).equals( KEY_FILES ) )
 			    {
-			    	datas.put("files", key.getString("frmt_val"));
-			    	System.out.println("====================");
-				    System.out.println(key.getString("frmt_val"));
-				    System.out.println("====================");
+			    	metrics.put( KEY_FILES, key.getString( KEY_FRMT_VAL ) );
 			    }
-			    if (key.getString("key").equals("coverage"))
+			    if (key.getString( KEY_KEY ).equals( KEY_TESTS_COVERAGE ) )
 			    {
-			    	datas.put("coverage", key.getString("frmt_val"));
-			    	System.out.println("====================");
-				    System.out.println(key.getString("frmt_val"));
-				    System.out.println("====================");
+			    	metrics.put( KEY_TESTS_COVERAGE, key.getString( KEY_FRMT_VAL ) );
+			    }
+			    if (key.getString( KEY_KEY ).equals( KEY_TESTS_SUCCESS ) )
+			    {
+			    	metrics.put( KEY_TESTS_SUCCESS, key.getString( KEY_FRMT_VAL ) );
+			    }
+			    if (key.getString( KEY_KEY ).equals( KEY_VIOLATIONS ) )
+			    {
+			    	metrics.put( KEY_VIOLATIONS, key.getString( KEY_FRMT_VAL ) );
 			    }
 			}
 		}
@@ -82,7 +111,7 @@ public class HttpProcess
 			AppLogService.error( e.getMessage( ) );
 		}
 		
-		return datas;
+		return metrics;
 	}
 	
 	public static void getLastReleases( Collection<Dependency> dependencyList )
@@ -92,30 +121,26 @@ public class HttpProcess
     		AppLogService.debug( "Find last version of : " + list.getArtifactId( ) );
 
     		Tools base  = ToolsHome.findByArtifactId( list.getArtifactId( ) );
-    		//String JSONPath = URL_LUTECETOOLS_REST.concat( list.getArtifactId( ) ).concat( PARAM_LUTECETOOLS_JSON );
     		
     		String version = "";
-    		if ( list.getArtifactId( ).trim( ).equals( LUTECE_CORE ))
+    		if ( list.getArtifactId( ).equals( TAG_LUTECE_CORE ) )
     		{
     			try
     			{
     				version = getLastVersionFromCore( httpAccess );
     			}
-    			catch ( HttpAccessException e1 )
+    			catch ( HttpAccessException e )
     	    	{
     	    		setErrorMessage( base, list.getArtifactId( ), RELEASE_NOT_FOUND );
-    	    		AppLogService.error( e1.getMessage( ) );
+    	    		AppLogService.error( e.getMessage( ) );
     	    	}
     		}
     		
 	    	try
 	    	{
-	    		//String strHtml = httpAccess.doGet( JSONPath );
-	    		//JSONObject json = new JSONObject( strHtml );
 	    		if ( version.isEmpty( ) )
 	    		{
 	    			version = getLastVersionFromPlugin( list.getArtifactId( ), httpAccess );
-	    			//json.getJSONObject( TAG_COMPONENT ).getString( ELEMENT_VERSION );
 	    		}
 
 		    	if ( base == null )
@@ -131,10 +156,10 @@ public class HttpProcess
 		    		ToolsHome.update( base );
 		    	}
 	    	}
-	    	catch ( HttpAccessException e2 )
+	    	catch ( HttpAccessException e )
 	    	{
 	    		setErrorMessage( base, list.getArtifactId( ), RELEASE_NOT_FOUND );
-	    		AppLogService.error( e2.getMessage( ) );
+	    		AppLogService.error( e.getMessage( ) );
 	    	}
     	}
 	}

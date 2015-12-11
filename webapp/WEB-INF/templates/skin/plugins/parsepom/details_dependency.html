@@ -17,38 +17,87 @@
 		   				<tbody>
 							<tr>
 								<td>#i18n{parsepom.details_dependency.fieldNbLineCode}</td>
-								<#if sonarData?has_content>
-									<#list sonarData?keys as k>
+								<#if sonar_data?has_content>
+									<#assign exist = 0>
+									<#list sonar_data?keys as k>
 										<#if "${k}" == "ncloc">
-											<td>${sonarData[k]}</td>
+											<td>${sonar_data[k]}</td>
+											<#assign exist = 1>
 										</#if>
 									</#list>
+									<#if exist = 0>
+										<td>#i18n{parsepom.error.metric.notFound}</td>
+									</#if>
 								<#else>
-									<td>Not found</td>
+									<td>#i18n{parsepom.error.metric.notFound}</td>
 								</#if>
 							</tr>
 							<tr>
 								<td>#i18n{parsepom.details_dependency.fieldNbFile}</td>
-								<#if sonarData?has_content>
-									<#list sonarData?keys as k>
+								<#if sonar_data?has_content>
+									<#assign exist = 0>
+									<#list sonar_data?keys as k>
 										<#if "${k}" == "files">
-											<td>${sonarData[k]}</td>
+											<td>${sonar_data[k]}</td>
+											<#assign exist = 1>
 										</#if>
 									</#list>
+									<#if exist = 0>
+										<td>#i18n{parsepom.error.metric.notFound}</td>
+									</#if>
 								<#else>
-									<td>Not found</td>
+									<td>#i18n{parsepom.error.metric.notFound}</td>
 								</#if>
 							</tr>
 							<tr>
 								<td>#i18n{parsepom.details_dependency.fieldUnitTestCoverage}</td>
-								<#if sonarData?has_content>
-									<#list sonarData?keys as k>
+								<#if sonar_data?has_content>
+									<#assign exist = 0>
+									<#list sonar_data?keys as k>
 										<#if "${k}" == "coverage">
-											<td>${sonarData[k]}</td>
+											<td>${sonar_data[k]}</td>
+											<#assign exist = 1>
 										</#if>
 									</#list>
+									<#if exist = 0>
+										<td>#i18n{parsepom.error.metric.notFound}</td>
+									</#if>
 								<#else>
-									<td>Not found</td>
+									<td>#i18n{parsepom.error.metric.notFound}</td>
+								</#if>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_dependency.fieldUnitTestSuccess}</td>
+								<#if sonar_data?has_content>
+									<#assign exist = 0>
+									<#list sonar_data?keys as k>
+										<#if "${k}" == "test_success_density">
+											<td>${sonar_data[k]}</td>
+											<#assign exist = 1>
+										</#if>
+									</#list>
+									<#if exist = 0>
+										<td>#i18n{parsepom.error.metric.notFound}</td>
+									</#if>
+								<#else>
+									<td>#i18n{parsepom.error.metric.notFound}</td>
+								</#if>
+							</tr>
+							<tr>
+								<td>#i18n{parsepom.details_dependency.fieldViolations}</td>
+								<#if sonar_data?has_content>
+									<#assign exist = 0>
+									<#list sonar_data?keys as k>
+										<#if "${k}" == "violations">
+											<td>${sonar_data[k]}</td>
+											<#assign exist = 1>
+										</#if>
+									</#list>
+									<#if exist = 0>
+										<td>#i18n{parsepom.error.metric.notFound}</td>
+									</#if>
+								<#else>
+									<td>#i18n{parsepom.error.metric.notFound}</td>
 								</#if>
 							</tr>
 						</tbody>

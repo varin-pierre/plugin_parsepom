@@ -77,6 +77,7 @@ public class DependencyXPage extends MVCApplication
     private static final String MARK_DEPENDENCY_LIST_WITHOUT_DUPLICATES = "dependency_list_without_duplicates";
     private static final String MARK_LAST_RELEASE_LIST = "last_release_list";
     private static final String MARK_LAST_RELEASE_STRING = "last_release";
+    private static final String MARK_SONAR_DATA = "sonar_data";
     
     // Views
     private static final String VIEW_MANAGE_DEPENDENCYS = "manageDependencys";
@@ -146,14 +147,14 @@ public class DependencyXPage extends MVCApplication
     		strRelease = tools.getLastRelease( );
     	}
     	
-    	HashMap<String, String> sonarData = new HashMap<String, String>();
-    	sonarData = HttpProcess.getSonarDatasFromArtifactId(strArtifactId);
+    	HashMap<String, String> sonarData = new HashMap<String, String>( );
+    	sonarData = HttpProcess.getSonarMetricsFromArtifactId( strArtifactId );
     	
         Map<String, Object> model = getModel(  );
         model.put( MARK_DEPENDENCY, _dependency );
         model.put( MARK_LAST_RELEASE_STRING, strRelease );
         model.put( MARK_SITES_LIST_BY_DEPENDENCY, DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
-        model.put( "sonarData", sonarData );
+        model.put( MARK_SONAR_DATA, sonarData );
         
         return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
     }
@@ -186,11 +187,15 @@ public class DependencyXPage extends MVCApplication
             	}
         		
                 List<List<Integer>> idSitesList = SiteHome.getIdSitesListByDependency( );
-                 
+                
+                HashMap<String, String> sonarData = new HashMap<String, String>( );
+            	sonarData = HttpProcess.getSonarMetricsFromArtifactId( strArtifactId );
+                
                 Map<String, Object> model = getModel(  );
                 model.put( MARK_DEPENDENCY, _dependency );
                 model.put( MARK_LAST_RELEASE_STRING, strRelease );
                 model.put( MARK_SITES_LIST_BY_DEPENDENCY,  DependencyHome.getSitesListByDependencyId( strArtifactId, idSitesList ) );
+                model.put( MARK_SONAR_DATA, sonarData );
                 
                 return getXPage( TEMPLATE_DETAILS_DEPENDENCY, request.getLocale(  ), model );
         	}
